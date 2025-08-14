@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+// ===============================================
+// CÁC BẢNG DỮ LIỆU CHÍNH
+// ===============================================
+
+model Song {
+  id            Int      @id @default(autoincrement())
+  title         String
+  slug          String   @unique
+  lyrics_chords String
+  original_key  String?
+  rhythm        String?
+  tempo         Int?
+  views         Int      @default(0)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Mối quan hệ: Một bài hát thuộc về MỘT tác giả (composer)
+  composer_id   Int?
+  composer      Composer? @relation(fields: [composer_id], references: [id])
+
+  // Mối quan hệ: Một bài hát được đăng bởi MỘT người dùng (author)
+  author_id     String
+  author        User     @relation("AuthoredSongs", fields: [author_id], references: [id])
+
+  // Mối quan hệ: Một bài hát có NHIỀU nghệ sĩ (artists)
+  artists       SongArtist[]
+
+  // Mối quan hệ: Một bài hát có NHIỀU thể loại (genres)
+  genres        SongGenre[]
+
+  // Mối quan hệ: Một bài hát được NHIỀU người dùng yêu thích
+  favoritedBy   UserFavorite[]
+}
+
+model Artist {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slug      String   @unique
+  bio       String?
+  image_url String?
+
+  // Mối quan hệ: Một nghệ sĩ trình bày NHIỀU bài hát
+  songs     SongArtist[]
+}
+
+model Composer {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slug      String   @unique
+  bio       String?
+  image_url String?
+
+  // Mối quan hệ: Một tác giả sáng tác NHIỀU bài hát
+  songs     Song[]
+}
+
+model Genre {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+
+  // Mối quan hệ: Một thể loại có NHIỀU bài hát
+  songs       SongGenre[]
+}
+
+// ===============================================
+// CÁC BẢNG NỐI (JUNCTION TABLES)
+// ===============================================
+
+// Bảng nối giữa Song và Artist (Quan hệ Nhiều - Nhiều)
+model SongArtist {
+  song_id   Int
+  artist_id Int
+
+  song      Song   @relation(fields: [song_id], references: [id])
+  artist    Artist @relation(fields: [artist_id], references: [id])
+
+  @@id([song_id, artist_id])
+}
+
+// Bảng nối giữa Song và Genre (Quan hệ Nhiều - Nhiều)
+model SongGenre {
+  song_id  Int
+  genre_id Int
+
+  song     Song  @relation(fields: [song_id], references: [id])
+  genre    Genre @relation(fields: [genre_id], references: [id])
+
+  @@id([song_id, genre_id])
+}
+
+// Bảng nối giữa User và Song (cho chức năng Yêu thích)
+model UserFavorite {
+  user_id  String
+  song_id  Int
+  added_at DateTime @default(now())
+
+  user     User @relation("FavoriteSongs", fields: [user_id], references: [id])
+  song     Song @relation(fields: [song_id], references: [id])
+
+  @@id([user_id, song_id])
+}
+
+// Cập nhật lại model User để thêm các mối quan hệ ngược
+model User {
+  id            String    @id @default(cuid())
+  username      String    @unique
+  email         String    @unique
+  password_hash String
+  avatar_url    String?
+  provider      String    @default("email")
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  // Mối quan hệ: Một người dùng có thể đăng NHIỀU bài hát
+  authoredSongs Song[]   @relation("AuthoredSongs")
+
+  // Mối quan hệ: Một người dùng có thể yêu thích NHIỀU bài hát
+  favoriteSongs UserFavorite[] @relation("FavoriteSongs")
+}
+

@@ -26,10 +26,29 @@ export async function getAllGenres() {
     return data;
   } catch (error) {
     // In lỗi ra console để gỡ lỗi
-    console.error(error);
+    console.error('Lỗi API (getAllGenres):', error);
     // Trả về một mảng rỗng để tránh làm sập trang web nếu API lỗi
     return [];
   }
 }
 
-// (Trong tương lai, chúng ta sẽ thêm các hàm khác như getAllComposers ở đây)
+/**
+ * Hàm để lấy danh sách tất cả các tác giả từ backend
+ * @returns {Promise<Array>} Một mảng chứa các đối tượng composer
+ */
+export async function getAllComposers() {
+  try {
+    // Dùng fetch để gửi một yêu cầu GET đến "đường ống" /api/composers
+    const response = await fetch(`${API_BASE_URL}/api/composers`);
+
+    if (!response.ok) {
+      throw new Error('Lỗi khi lấy dữ liệu tác giả từ API');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Lỗi API (getAllComposers):', error);
+    return [];
+  }
+}

@@ -1,11 +1,11 @@
 // Import hàm "gọi hàng" mà chúng ta vừa tạo
-import { getAllGenres } from '@/lib/api';
+import { getAllGenres, getAllComposers } from '@/lib/api';
 
 // Trang chủ bây giờ là một "Server Component"
-// Nó có thể chạy code bất đồng bộ (async) trực tiếp
 export default async function HomePage() {
   // 1. Ở phía Server: Gọi API để lấy dữ liệu trước khi trang được render
   const genres = await getAllGenres();
+  const composers = await getAllComposers();
 
   // 2. Ở phía Client: Dùng dữ liệu đã lấy được để render ra HTML
   return (
@@ -18,9 +18,7 @@ export default async function HomePage() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">Khám phá theo Thể loại</h2>
 
-        {/* Kiểm tra xem có dữ liệu không */}
         {genres.length > 0 ? (
-          // Nếu có, hiển thị danh sách
           <div className="flex flex-wrap gap-4">
             {genres.map((genre) => (
               <a
@@ -33,12 +31,31 @@ export default async function HomePage() {
             ))}
           </div>
         ) : (
-          // Nếu không có (API lỗi), hiển thị thông báo
           <p>Không thể tải được danh sách thể loại vào lúc này.</p>
         )}
       </section>
 
-      {/* (Trong tương lai, chúng ta sẽ thêm khu vực "Tác giả nổi bật" ở đây) */}
+      {/* Khu vực "Tác giả Nổi bật" */}
+      <section className="mt-8">
+        <h2 className="text-2xl font-semibold mb-4">Tác giả Nổi bật</h2>
+
+        {composers.length > 0 ? (
+          <div className="flex flex-wrap gap-4">
+            {composers.map((composer) => (
+              <a
+                key={composer.id}
+                href={`/songs/composer/${composer.slug}`}
+                className="text-gray-800 hover:text-blue-600 transition-colors"
+              >
+                {composer.name}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p>Không thể tải được danh sách tác giả vào lúc này.</p>
+        )}
+      </section>
+      
     </main>
   );
 }

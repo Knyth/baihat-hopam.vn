@@ -1,3 +1,6 @@
+// Triệu hồi components/SongLyrics
+import SongLyrics from '@/components/SongLyrics';
+
 // Hàm này sẽ lấy dữ liệu từ API mà chúng ta vừa tạo
 async function getSongData(slug) {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
@@ -29,7 +32,7 @@ export default async function SongDetailPage({ params }) {
         Sáng tác: {songData.composer.name}
       </h2>
       
-      {/* (Trong tương lai, chúng ta sẽ hiển thị lời và hợp âm ở đây) */}
+      <SongLyrics lyrics_chords={songData.lyrics_chords} />
     </main>
   );
 }

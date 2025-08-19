@@ -85,3 +85,31 @@ a {
 .genre-button:hover {
     background-color: #dee2e6;
 }
+
+/* =============================================== */
+/* STYLE CHO LỜI BÀI HÁT VÀ HỢP ÂM             */
+/* =============================================== */
+
+.lyrics-container {
+  font-family: var(--font-content); /* Dùng font Lora cho nội dung */
+  font-size: 1.125rem; /* Cỡ chữ 18px, dễ đọc */
+  line-height: 2.2; /* Giãn dòng ra xa hơn cho thoáng */
+  white-space: pre-wrap; /* Giữ lại các khoảng trắng và xuống dòng từ text gốc */
+  margin-top: 2rem;
+}
+
+.song-line {
+  margin-bottom: 0.5rem;
+}
+
+.chord {
+  font-weight: 700; /* In đậm */
+  color: var(--primary-color); /* Dùng màu xanh dương chủ đạo */
+  cursor: pointer; /* Biến con trỏ thành hình bàn tay khi di chuột vào */
+  transition: color 150ms ease-in-out;
+  /* Hiệu ứng chuyển màu mượt mà */
+}
+
+.chord:hover {
+  color: #003d6b; /* Màu xanh đậm hơn một chút khi di chuột vào */
+}

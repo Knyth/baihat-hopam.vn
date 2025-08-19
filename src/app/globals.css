@@ -92,7 +92,7 @@ a {
 
 .lyrics-container {
   font-family: var(--font-content); /* Dùng font Lora cho nội dung */
-  font-size: 1.125rem; /* Cỡ chữ 18px, dễ đọc */
+  /* font-size: 1.125rem;  Cỡ chữ 18px, dễ đọc */
   line-height: 2.2; /* Giãn dòng ra xa hơn cho thoáng */
   white-space: pre-wrap; /* Giữ lại các khoảng trắng và xuống dòng từ text gốc */
   margin-top: 2rem;
@@ -112,4 +112,69 @@ a {
 
 .chord:hover {
   color: #003d6b; /* Màu xanh đậm hơn một chút khi di chuột vào */
+}
+
+/* =============================================== */
+/* STYLE CHO BẢNG ĐIỀU KHIỂN (CONTROL PANEL)      */
+/* =============================================== */
+
+.panel-card {
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.control-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.control-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.transpose-controls, .fontsize-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-button {
+  background-color: #e9ecef;
+  color: #343a40;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1rem;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background-color 150ms ease-in-out, border-color 150ms ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.control-button:hover {
+  background-color: #dee2e6;
+}
+
+.current-key {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--primary-color);
+  width: 50px;
+  text-align: center;
 }

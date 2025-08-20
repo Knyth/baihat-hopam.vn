@@ -1,31 +1,39 @@
 "use client";
 
-// Nó KHÔNG cần useState ở đây
-
-export default function ControlPanel({ original_key, fontSize, onFontSizeChange }) {
+// Nhận vào các props mới: current_key và onTranspose
+export default function ControlPanel({ current_key, onFontSizeChange, onTranspose }) {
   
   return (
     <div className="control-panel">
       <div className="panel-card">
-        {/* ... (phần tiêu đề và tông) ... */}
         <h3 className="panel-title">Bảng Điều Khiển</h3>
         
         <div className="control-group">
           <label className="control-label">Tông</label>
           <div className="transpose-controls">
-            <button className="control-button">-</button>
-            <span className="current-key">{original_key}</span> 
-            <button className="control-button">+</button>
+            {/* NỐI DÂY: Gắn hàm onTranspose vào sự kiện onClick */}
+            <button 
+              className="control-button"
+              onClick={() => onTranspose(-1)} // Giảm 1 nửa cung
+            >
+              -
+            </button>
+            <span className="current-key">{current_key}</span> 
+            <button 
+              className="control-button"
+              onClick={() => onTranspose(1)} // Tăng 1 nửa cung
+            >
+              +
+            </button>
           </div>
         </div>
-        
+
         <div className="control-group">
           <label className="control-label">Cỡ chữ</label>
           <div className="fontsize-controls">
-            {/* Quan trọng: Phải có sự kiện `onClick` ở đây */}
             <button 
               className="control-button" 
-              onClick={() => onFontSizeChange(-2)} 
+              onClick={() => onFontSizeChange(-2)}
             >
               A-
             </button>

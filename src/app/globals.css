@@ -1,180 +1,84 @@
-/* =============================================== */
-/* KHỞI TẠO VÀ CÁC BIẾN MÀU SẮC (VARIABLES)       */
-/* Dựa trên Master Blueprint v1.0                 */
-/* =============================================== */
-
 :root {
-  /* Bảng màu */
-  --primary-color: #005A9E; /* Xanh dương đậm */
-  --background-color: #f8f9fa; /* Xám rất nhạt */
-  --container-color: #ffffff; /* Trắng */
-  --highlight-color: #fffbe6; /* Vàng nhạt */
-  --text-main: #212529; /* Đen */
-  --text-secondary: #6c757d; /* Xám */
-  --success-color: #28a745; /* Xanh lá */
-  --error-color: #dc3545; /* Đỏ */
+  --primary-color: #005A9E;
+  --background-color: #f8f9fa;
+  --container-color: #ffffff;
+  --text-main: #212529;
+  --text-secondary: #6c757d;
   --border-color: #dee2e6;
-  
-  /* Font chữ */
   --font-ui: 'Nunito Sans', sans-serif;
   --font-content: 'Lora', serif;
 }
 
+* { box-sizing: border-box; padding: 0; margin: 0; }
+html, body { max-width: 100vw; overflow-x: hidden; }
+body { color: var(--text-main); background-color: var(--background-color); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+a { color: inherit; text-decoration: none; }
 
-/* =============================================== */
-/* RESET CSS VÀ CÁC THIẾT LẬP TOÀN CỤC (GLOBAL)   */
-/* =============================================== */
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--text-main);
-  background-color: var(--background-color);
-  font-family: var(--font-ui); /* Font mặc định cho UI */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* =============================================== */
-/* CÁC LỚP TIỆN ÍCH (UTILITY CLASSES) TỰ ĐỊNH NGHĨA */
-/* Chúng ta sẽ bắt chước các lớp của Tailwind mà chúng ta cần */
-/* =============================================== */
-
-/* Căn lề và khoảng cách */
-.p-8 { padding: 2rem; }
-.mb-8 { margin-bottom: 2rem; }
-.mb-4 { margin-bottom: 1rem; }
-.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.px-4 { padding-left: 1rem; padding-right: 1rem; }
-.gap-4 { gap: 1rem; }
-
-/* Font chữ */
+.mt-6 { margin-top: 1.5rem; }
 .text-4xl { font-size: 2.25rem; }
 .text-2xl { font-size: 1.5rem; }
 .font-bold { font-weight: 700; }
-.font-semibold { font-weight: 600; }
+.text-gray-600 { color: #6c757d; }
 
-/* Flexbox */
-.flex { display: flex; }
-.flex-wrap { flex-wrap: wrap; }
+.lyrics-container { font-family: var(--font-content); line-height: 2.2; white-space: pre-wrap; margin-top: 2rem; }
+.song-line { margin-bottom: 0.5rem; }
+.chord { font-weight: 700; color: var(--primary-color); cursor: pointer; transition: color 150ms ease-in-out; }
+.chord:hover { color: #003d6b; }
 
-/* Giao diện nút bấm thể loại */
-.genre-button {
-    background-color: #e9ecef;
-    color: #343a40;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.genre-button:hover {
-    background-color: #dee2e6;
-}
 
-/* =============================================== */
-/* STYLE CHO LỜI BÀI HÁT VÀ HỢP ÂM             */
-/* =============================================== */
+/* ================================================================ */
+/* === BẢN GIAO HƯỞNG CÂN BẰNG (PHIÊN BẢN DUY NHẤT) === */
+/* ================================================================ */
 
-.lyrics-container {
-  font-family: var(--font-content); /* Dùng font Lora cho nội dung */
-  /* font-size: 1.125rem;  Cỡ chữ 18px, dễ đọc */
-  line-height: 2.2; /* Giãn dòng ra xa hơn cho thoáng */
-  white-space: pre-wrap; /* Giữ lại các khoảng trắng và xuống dòng từ text gốc */
-  margin-top: 2rem;
-}
+.song-detail-layout { display: grid; grid-template-columns: 1fr 350px; gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.song-sidebar { position: sticky; top: 2rem; align-self: start; }
 
-.song-line {
-  margin-bottom: 0.5rem;
-}
+.panel-card { background-color: var(--container-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+.panel-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
 
-.chord {
-  font-weight: 700; /* In đậm */
-  color: var(--primary-color); /* Dùng màu xanh dương chủ đạo */
-  cursor: pointer; /* Biến con trỏ thành hình bàn tay khi di chuột vào */
-  transition: color 150ms ease-in-out;
-  /* Hiệu ứng chuyển màu mượt mà */
-}
-
-.chord:hover {
-  color: #003d6b; /* Màu xanh đậm hơn một chút khi di chuột vào */
-}
-
-/* =============================================== */
-/* STYLE CHO BẢNG ĐIỀU KHIỂN (CONTROL PANEL)      */
-/* =============================================== */
-
-.panel-card {
-  background-color: var(--container-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.panel-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
+/* === PHÉP THUẬT CĂN CHỈNH CUỐI CÙNG === */
 .control-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+    display: grid; /* Dùng Grid để kiểm soát bố cục */
+    grid-template-columns: 100px 1fr; /* Cột 1 (label) rộng 100px, Cột 2 (controls) chiếm phần còn lại */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 1rem; /* Khoảng cách giữa label và controls */
+    margin-bottom: 1.25rem;
 }
+.control-group:last-child { margin-bottom: 0; }
+.control-label { font-weight: 600; color: var(--text-secondary); }
 
-.control-label {
-  font-weight: 600;
-  color: var(--text-secondary);
-}
+/* Layout cho Tông & Cỡ chữ */
+.transpose-controls, .fontsize-controls { display: flex; justify-content: space-between; align-items: center; }
+.current-key { font-weight: 700; font-size: 1.125rem; color: var(--primary-color); text-align: center; }
 
-.transpose-controls, .fontsize-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+/* Layout cho Cuộn trang */
+.autoscroll-controls { display: flex; align-items: center; gap: 0.75rem; }
 
-.control-button {
-  background-color: #e9ecef;
-  color: #343a40;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 1rem;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: background-color 150ms ease-in-out, border-color 150ms ease-in-out;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/* Nút bấm nhỏ */
+.control-button { background-color: #e9ecef; color: #343a40; border: 1px solid var(--border-color); border-radius: 6px; font-weight: 700; font-size: 1rem; width: 40px; height: 40px; cursor: pointer; transition: background-color 150ms ease-in-out; display: flex; justify-content: center; align-items: center; }
+.control-button:hover { background-color: #dee2e6; }
 
-.control-button:hover {
-  background-color: #dee2e6;
-}
+/* Nút Icon (Play/Pause) */
+.icon-button { background-color: #f8f9fa; border: 1px solid var(--border-color); border-radius: 0.375rem; padding: 0.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s; }
+.icon-button:hover { background-color: #e9ecef; }
+.icon-button svg { width: 20px; height: 20px; }
 
-.current-key {
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--primary-color);
-  width: 50px;
-  text-align: center;
+/* Thanh trượt tốc độ */
+.speed-slider { -webkit-appearance: none; appearance: none; flex-grow: 1; height: 5px; background: #e9ecef; outline: none; border-radius: 3px; cursor: pointer; transition: background 0.2s ease-in-out; }
+.speed-slider:hover { background: #dee2e6; }
+.speed-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 15px; height: 15px; background: var(--primary-color); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.2); }
+
+/* Nút "Tải về PDF" tối thượng */
+.action-controls { grid-column: 2 / -1; } /* Cho nút này bắt đầu từ cột thứ 2 */
+.download-pdf-main { width: 100%; padding: 0.75rem; font-weight: bold; border-radius: 0.375rem; cursor: pointer; transition: all 0.2s ease-in-out; color: #495057; background-color: #f8f9fa; border: 1px solid var(--border-color); }
+.download-pdf-main:hover { color: #fff; background-color: var(--primary-color); border-color: var(--primary-color); }
+.download-pdf-main:active { background-color: #004a83; border-color: #004a83; transform: scale(0.98); opacity: 0.9; }
+
+/* Tối ưu cho di động */
+@media (max-width: 768px) {
+  .song-detail-layout { grid-template-columns: 1fr; }
+  .song-sidebar { position: static; height: auto; margin-top: 2rem; }
+  .control-group { grid-template-columns: 1fr; } /* Trên di động, label nằm trên controls */
+  .control-label { margin-bottom: 0.25rem; }
+  .action-controls { grid-column: 1 / -1; } /* Quay lại chiếm toàn bộ chiều rộng */
 }

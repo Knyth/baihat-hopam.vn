@@ -3,8 +3,6 @@
 import { useState, useMemo } from 'react';
 import SongLyrics from '@/components/SongLyrics';
 import ControlPanel from '@/components/ControlPanel';
-// === THAY ĐỔI QUAN TRỌNG NHẤT LÀ ĐÂY ===
-// Nhập khẩu "gói hàng" mặc định và đặt tên cho nó là transposeChord
 import transposeChord from '@/utils/music';
 
 export default function SongDisplay({ songData }) {
@@ -23,14 +21,12 @@ export default function SongDisplay({ songData }) {
     if (transposeStep === 0) return songData.lyrics_chords;
     const regex = /\[([^\]]+)\]/g;
     return songData.lyrics_chords.replace(regex, (match, chord) => {
-      // Bây giờ chúng ta có thể gọi trực tiếp, không cần musicUtils. nữa
       const transposed = transposeChord(chord, transposeStep);
       return `[${transposed}]`;
     });
   }, [transposeStep, songData.lyrics_chords]);
 
   const currentKey = useMemo(() => {
-    // Gọi trực tiếp
     return transposeChord(songData.original_key, transposeStep);
   }, [transposeStep, songData.original_key]);
 
@@ -42,7 +38,7 @@ export default function SongDisplay({ songData }) {
           Sáng tác: {songData.composer.name}
         </h2>
         
-        <div id="song-content-to-print" style={{ fontSize: `${fontSize}px` }}>
+        <div id="song-content-to-print" style={{ fontSize: `${fontSize}px` }} className="mt-6">
           <SongLyrics lyrics_chords={transposedLyrics} />
         </div>
       </main>
@@ -53,9 +49,9 @@ export default function SongDisplay({ songData }) {
           onFontSizeChange={handleFontSizeChange}
           onTranspose={handleTranspose}
           songSlug={songData.slug}
+          fontSize={fontSize} // TRUYỀN FONTSIZE VÀO CONTROL PANEL
         />
       </aside>
     </div>
   );
 }
-

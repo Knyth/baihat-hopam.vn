@@ -12,11 +12,7 @@
 }
 
 * { box-sizing: border-box; padding: 0; margin: 0; }
-
-html, body {
-  max-width: 100vw;
-}
-
+html, body { max-width: 100vw; overflow-x: hidden; }
 body { color: var(--text-main); background-color: var(--background-color); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 a { color: inherit; text-decoration: none; }
 
@@ -29,28 +25,30 @@ a { color: inherit; text-decoration: none; }
 .lyrics-container { font-family: var(--font-content); line-height: 1.7; white-space: pre-wrap; margin-top: 2rem; }
 .song-line { margin-bottom: 0.3rem; }
 
-/* Bỏ in đậm cho hợp âm */
 .chord { color: var(--primary-color); cursor: pointer; transition: color 150ms ease-in-out; white-space: nowrap; }
 .chord:hover { color: #003d6b; }
+.chord strong { font-weight: 700; }
 
 .composer-link { color: var(--primary-color); font-weight: 600; transition: all 150ms ease-in-out; }
 .composer-link:hover { color: #003d6b; text-decoration: underline; }
 
-.song-detail-container { display: flex; gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 2rem; align-items: flex-start; }
-.song-detail-main { flex: 1; min-width: 0; }
-.song-detail-sidebar { width: 350px; position: sticky; top: 2rem; flex-shrink: 0; }
+.song-detail-layout { display: grid; grid-template-columns: 1fr 350px; gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 2rem; height: calc(100vh - 4rem); }
+
+.song-content { overflow-y: auto; padding-right: 1rem; }
+
+/* ================================================================ */
+/* === GIẢI PHÁP 1: Thanh cuộn tinh tế === */
+/* ================================================================ */
+.song-content::-webkit-scrollbar { width: 8px; }
+.song-content::-webkit-scrollbar-track { background: transparent; }
+.song-content::-webkit-scrollbar-thumb { background-color: #dee2e6; border-radius: 10px; border: 2px solid var(--background-color); }
+.song-content::-webkit-scrollbar-thumb:hover { background-color: #b0b8c0; }
+
+
+.song-sidebar { position: sticky; top: 0; align-self: start; max-height: calc(100vh - 4rem); overflow-y: auto; }
 
 .panel-card { background-color: var(--container-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-.panel-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; text-align: center; }
-
-/* Style cho đường kẻ ngang */
-.panel-divider {
-  border: 0;
-  height: 1px;
-  background-color: var(--border-color);
-  margin-bottom: 1.5rem;
-}
-
+.panel-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
 .control-group { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
 .control-group:last-child { margin-bottom: 0; }
 .control-label { font-weight: 600; color: var(--text-secondary); }
@@ -71,8 +69,9 @@ a { color: inherit; text-decoration: none; }
 .download-pdf-main:active { background-color: #004a83; border-color: #004a83; transform: scale(0.98); opacity: 0.9; }
 
 @media (max-width: 768px) {
-  .song-detail-container { flex-direction: column; }
-  .song-detail-sidebar { position: static; width: 100%; }
+  .song-detail-layout { grid-template-columns: 1fr; height: auto; }
+  .song-content { overflow-y: visible; padding-right: 0; }
+  .song-sidebar { position: static; max-height: none; }
   .control-group { grid-template-columns: 1fr; }
   .control-label { margin-bottom: 0.25rem; }
   .action-controls { grid-column: 1 / -1; }

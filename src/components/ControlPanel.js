@@ -1,3 +1,5 @@
+// src/components/ControlPanel.js
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -11,8 +13,14 @@ export default function ControlPanel({ current_key, onFontSizeChange, onTranspos
 
   useEffect(() => {
     let intervalId = null;
-    if (isScrolling) { intervalId = setInterval(() => { window.scrollBy(0, 1); }, 120 - (scrollSpeed * 10)); }
-    return () => { if (intervalId) clearInterval(intervalId); };
+    if (isScrolling) {
+      intervalId = setInterval(() => {
+        window.scrollBy(0, 1);
+      }, 120 - (scrollSpeed * 10));
+    }
+    return () => { 
+      if (intervalId) clearInterval(intervalId); 
+    };
   }, [isScrolling, scrollSpeed]);
 
   const handleToggleScroll = () => setIsScrolling(prev => !prev);
@@ -21,16 +29,30 @@ export default function ControlPanel({ current_key, onFontSizeChange, onTranspos
   const handleDownloadPDF = async () => {
     const element = document.getElementById('song-content-to-print');
     if (!element) return;
+    
+    const lyricsContainer = element.querySelector('.lyrics-container');
+    const originalLineHeight = lyricsContainer ? lyricsContainer.style.lineHeight : '';
+
+    if (lyricsContainer) {
+      lyricsContainer.style.lineHeight = '1.4'; 
+    }
+
     const html2pdf = (await import('html2pdf.js')).default;
     const opt = { margin: 1, filename: `${songSlug}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
-    html2pdf().from(element).set(opt).save();
+
+    html2pdf().from(element).set(opt).save().then(() => {
+      if (lyricsContainer) {
+        lyricsContainer.style.lineHeight = originalLineHeight;
+      }
+    });
   };
 
   return (
     <div className="panel-card">
       <h3 className="panel-title">Bảng Điều Kiển</h3>
       
-      {/* === TÁI CẤU TRÚC: NHÓM LABEL VÀ CONTROL LẠI VỚI NHAU === */}
+      <hr className="panel-divider" />
+      
       <div className="control-group">
         <label className="control-label">Tông</label>
         <div className="transpose-controls">
@@ -39,7 +61,6 @@ export default function ControlPanel({ current_key, onFontSizeChange, onTranspos
           <button className="control-button" onClick={() => onTranspose(1)}>+</button>
         </div>
       </div>
-
       <div className="control-group">
         <label className="control-label">Cỡ chữ</label>
         <div className="fontsize-controls">
@@ -48,7 +69,6 @@ export default function ControlPanel({ current_key, onFontSizeChange, onTranspos
           <button className="control-button" onClick={() => onFontSizeChange(2)}>A+</button>
         </div>
       </div>
-
       <div className='control-group'>
         <label className='control-label'>Cuộn trang</label>
         <div className='autoscroll-controls'>
@@ -58,7 +78,6 @@ export default function ControlPanel({ current_key, onFontSizeChange, onTranspos
           <input type="range" min="1" max="10" step="1" value={scrollSpeed} onChange={handleSpeedChange} className='speed-slider' />
         </div>
       </div>
-
       <div className='control-group'>
         <label className='control-label'>Lưu trữ</label>
         <div className='action-controls'>

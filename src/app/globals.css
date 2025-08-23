@@ -12,11 +12,7 @@
 }
 
 * { box-sizing: border-box; padding: 0; margin: 0; }
-
-html, body {
-  max-width: 100vw;
-}
-
+html, body { max-width: 100vw; }
 body { color: var(--text-main); background-color: var(--background-color); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 a { color: inherit; text-decoration: none; }
 
@@ -28,29 +24,18 @@ a { color: inherit; text-decoration: none; }
 
 .lyrics-container { font-family: var(--font-content); line-height: 1.7; white-space: pre-wrap; margin-top: 2rem; }
 .song-line { margin-bottom: 0.3rem; }
-
-/* Bỏ in đậm cho hợp âm */
 .chord { color: var(--primary-color); cursor: pointer; transition: color 150ms ease-in-out; white-space: nowrap; }
 .chord:hover { color: #003d6b; }
-
 .composer-link { color: var(--primary-color); font-weight: 600; transition: all 150ms ease-in-out; }
 .composer-link:hover { color: #003d6b; text-decoration: underline; }
 
+/* === Layout Trang Chi tiết === */
 .song-detail-container { display: flex; gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 2rem; align-items: flex-start; }
 .song-detail-main { flex: 1; min-width: 0; }
 .song-detail-sidebar { width: 350px; position: sticky; top: 2rem; flex-shrink: 0; }
-
 .panel-card { background-color: var(--container-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
 .panel-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; text-align: center; }
-
-/* Style cho đường kẻ ngang */
-.panel-divider {
-  border: 0;
-  height: 1px;
-  background-color: var(--border-color);
-  margin-bottom: 1.5rem;
-}
-
+.panel-divider { border: 0; height: 1px; background-color: var(--border-color); margin-bottom: 1.5rem; }
 .control-group { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
 .control-group:last-child { margin-bottom: 0; }
 .control-label { font-weight: 600; color: var(--text-secondary); }
@@ -70,9 +55,33 @@ a { color: inherit; text-decoration: none; }
 .download-pdf-main:hover { color: #fff; background-color: var(--primary-color); border-color: var(--primary-color); }
 .download-pdf-main:active { background-color: #004a83; border-color: #004a83; transform: scale(0.98); opacity: 0.9; }
 
+/* ================================================================ */
+/* === THÊM MỚI: Layout cho Trang Danh sách === */
+/* ================================================================ */
+.list-page-layout {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  align-items: flex-start;
+}
+
+.list-main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-sidebar {
+  width: 300px; /* Sidebar của trang list có thể nhỏ hơn một chút */
+  position: sticky;
+  top: 2rem;
+  flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
-  .song-detail-container { flex-direction: column; }
-  .song-detail-sidebar { position: static; width: 100%; }
+  .song-detail-container, .list-page-layout { flex-direction: column; }
+  .song-detail-sidebar, .list-sidebar { position: static; width: 100%; }
   .control-group { grid-template-columns: 1fr; }
   .control-label { margin-bottom: 0.25rem; }
   .action-controls { grid-column: 1 / -1; }

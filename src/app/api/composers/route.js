@@ -1,32 +1,30 @@
-// Import công cụ để tạo phản hồi API từ Next.js
+// src/app/api/composers/route.js
+
 import { NextResponse } from 'next/server';
+// === THAY ĐỔI 1: Import instance Prisma đã được quản lý tập trung ===
+import prisma from '@/lib/prisma';
 
-// Import "bộ công cụ" Prisma Client của chúng ta
-import { PrismaClient } from '@/generated/prisma';
-
-// Khởi tạo một đối tượng PrismaClient
-const prisma = new PrismaClient();
-
-// Đây là hàm đặc biệt sẽ xử lý các yêu cầu GET gửi đến /api/composers
+// Hàm xử lý yêu cầu GET
 export async function GET(request) {
   try {
-    // Dùng Prisma để tìm tất cả các bản ghi trong bảng "composer"
-    // Sắp xếp theo tên (name) tăng dần (A-Z)
+    // === THAY ĐỔI 2: Dùng instance 'prisma' đã import ===
     const composers = await prisma.composer.findMany({
+      // Sắp xếp theo tên (A-Z) là lựa chọn hợp lý
       orderBy: {
         name: 'asc',
       },
     });
 
-    // Nếu thành công, trả về dữ liệu composers dưới dạng JSON với mã trạng thái 200 (OK)
-    return NextResponse.json(composers, { status: 200 });
-  } catch (error) {
-    // In lỗi ra console của server
-    console.error('Lỗi khi lấy danh sách tác giả:', error); // <-- Sửa lỗi chính tả ở đây
+    // Trả về dữ liệu thành công
+    return NextResponse.json(composers);
 
-    // Trả về một thông báo lỗi chung chung
+  } catch (error) {
+    // Nếu có lỗi
+    console.error('Failed to fetch composers:', error);
+
+    // Trả về thông báo lỗi nhất quán
     return NextResponse.json(
-      { message: 'Đã xảy ra lỗi ở phía server.' },
+      { error: 'Internal Server Error' },
       { status: 500 }
     );
   }

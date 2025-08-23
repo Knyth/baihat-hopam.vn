@@ -1,35 +1,72 @@
-// Đây là file "gieo mầm" cho database
-// Chúng ta sẽ dùng nó để tạo dữ liệu ban đầu
+// prisma/seed.js
 
-// Import "bộ công cụ" Prisma Client
-const { PrismaClient } = require('../src/generated/prisma');
-
-// Khởi tạo một đối tượng PrismaClient
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Danh sách các "hạt giống" thể loại nhạc
-const genresToSeed = [
-  { name: 'Nhạc Trịnh', slug: 'nhac-trinh', description: 'Những bản tình ca bất hủ của Trịnh Công Sơn.' },
-  { name: 'Nhạc Vàng', slug: 'nhac-vang', description: 'Dòng nhạc trữ tình phổ biến trước năm 1975.' },
-  { name: 'V-Pop', slug: 'v-pop', description: 'Nhạc Pop hiện đại của Việt Nam.' },
-  { name: 'Ballad', slug: 'ballad', description: 'Những bản nhạc nhẹ nhàng, sâu lắng.' },
-  { name: 'Rock', slug: 'rock', description: 'Dòng nhạc mạnh mẽ, cá tính.' },
-];
+async function main() {
+  console.log('Bắt đầu quá trình gieo mầm thông minh...');
 
-// Danh sách các "hạt giống" tác giả
-const composersToSeed = [
-  { name: 'Trịnh Công Sơn', slug: 'trinh-cong-son', bio: 'Một trong những nhạc sĩ lớn nhất của Tân nhạc Việt Nam.' },
-  { name: 'Lam Phương', slug: 'lam-phuong', bio: 'Nhạc sĩ của những ca khúc trữ tình, bình dân và giai điệu giản dị.' },
-  { name: 'Phạm Duy', slug: 'pham-duy', bio: 'Nhạc sĩ, ca sĩ, nhà nghiên cứu âm nhạc lớn của Việt Nam.' },
-  { name: 'Văn Cao', slug: 'van-cao', bio: 'Tác giả của Quốc ca Việt Nam và những bản tình ca lãng mạn.' },
-];
+  // === 1. TẠO NGƯỜI DÙNG MẪU (Dùng upsert) ===
+  const user = await prisma.user.upsert({
+    where: { email: 'admin@baihat-hopam.vn' },
+    update: {},
+    create: {
+      username: 'admin',
+      email: 'admin@baihat-hopam.vn',
+      password_hash: 'supersecretpassword', // Chỉ để test
+    },
+  });
+  console.log(`Đã tạo/cập nhật người dùng mẫu: ${user.username}`);
 
-// Dữ liệu bài hát mẫu để "gieo mầm"
-const songsToSeed = [
-  {
-    title: 'Diễm Xưa',
-    slug: 'diem-xua',
-    lyrics_chords: `1. Mưa vẫn mưa bay trên tầng tháp [Am] cổ
+
+  // === 2. TẠO THỂ LOẠI (Dùng upsert) ===
+  const genresToSeed = [
+    { name: 'Nhạc Trịnh', slug: 'nhac-trinh' },
+    { name: 'Nhạc Vàng', slug: 'nhac-vang' },
+    { name: 'V-Pop', slug: 'v-pop' },
+    { name: 'Ballad', slug: 'ballad' },
+    { name: 'Rock', slug: 'rock' },
+  ];
+  for (const genreData of genresToSeed) {
+    await prisma.genre.upsert({
+      where: { slug: genreData.slug },
+      update: {},
+      create: genreData,
+    });
+  }
+  console.log('Đã gieo mầm xong thể loại.');
+
+
+  // === 3. TẠO TÁC GIẢ (Dùng upsert) ===
+  const composersToSeed = [
+    { name: 'Trịnh Công Sơn', slug: 'trinh-cong-son' },
+    { name: 'Lam Phương', slug: 'lam-phuong' },
+    { name: 'Phạm Duy', slug: 'pham-duy' },
+    { name: 'Văn Cao', slug: 'van-cao' },
+  ];
+  for (const composerData of composersToSeed) {
+    await prisma.composer.upsert({
+      where: { slug: composerData.slug },
+      update: {},
+      create: composerData,
+    });
+  }
+  console.log('Đã gieo mầm xong tác giả.');
+
+
+  // === 4. TẠO HOẶC CẬP NHẬT BÀI HÁT ===
+
+  // Lấy ID của Trịnh Công Sơn
+  const tcs = await prisma.composer.findUnique({ where: { slug: 'trinh-cong-son' } });
+
+  // --- DIỄM XƯA ---
+  const diemXua = await prisma.song.upsert({
+    where: { slug: 'diem-xua' },
+    update: {}, // Không cập nhật gì nếu đã tồn tại
+    create: {
+      title: 'Diễm Xưa',
+      slug: 'diem-xua',
+      lyrics_chords: `1. Mưa vẫn mưa bay trên tầng tháp [Am] cổ
 Dài tay em [C] mấy thuở mắt xanh [Dm] xao
 [E7] Nghe lá thu [Am] mưa reo mòn gót [E7] nhỏ
 Đường dài hun hút cho mắt thêm [C] sầu. [E7]
@@ -54,67 +91,61 @@ Làm sao em [C] nhớ những vết chim [Dm] di
 Làm sao em [C] biết bia đá không [Dm] đau
 [E7] Xin hãy cho [Am] mưa qua miền đất [E7] rộng
 Ngày sau sỏi đá cũng cần có [Am] nhau.)`,
-    original_key: 'Am',
-    rhythm: 'Slow',
-  },
-];
-
-// Hàm chính để thực hiện việc "gieo mầm"
-async function main() {
-  console.log('Bắt đầu quá trình gieo mầm...');
-
-  // Gieo mầm cho bảng User (tạo một người dùng mẫu)
-  console.log('Đang tạo người dùng mẫu...');
-  const user = await prisma.user.upsert({
-    where: { email: 'admin@baihat-hopam.vn' },
-    update: {},
-    create: {
-      username: 'admin',
-      email: 'admin@baihat-hopam.vn',
-      password_hash: 'supersecretpassword', // Mật khẩu giả để test
+      original_key: 'Am',
+      rhythm: 'Slow',
+      composer_id: tcs.id,
+      author_id: user.id,
     },
   });
-  console.log(`Đã tạo/cập nhật người dùng mẫu: ${user.username}`);
+  console.log(`Đã tạo/cập nhật bài hát: ${diemXua.title}`);
 
-  // Gieo mầm cho bảng Genre
-  console.log('Đang gieo mầm thể loại...');
-  for (const genre of genresToSeed) {
-    await prisma.genre.create({ data: genre });
-  }
-  console.log('Đã gieo mầm xong thể loại.');
-
-  // Gieo mầm cho bảng Composer
-  console.log('Đang gieo mầm tác giả...');
-  for (const composer of composersToSeed) {
-    await prisma.composer.create({ data: composer });
-  }
-  console.log('Đã gieo mầm xong tác giả.');
-
-  // Gieo mầm cho bảng Song
-  console.log('Đang gieo mầm bài hát...');
-  const tcs = await prisma.composer.findUnique({
-    where: { slug: 'trinh-cong-son' },
+  // --- HẠ TRẮNG ---
+  const haTrang = await prisma.song.upsert({
+    where: { slug: 'ha-trang' },
+    update: {},
+    create: {
+      title: 'Hạ Trắng',
+      slug: 'ha-trang',
+      lyrics_chords: '[Am] Gọi nắng! [G] Trên vai em gầy [C] đường xa áo bay...',
+      original_key: 'Am',
+      rhythm: 'Ballad',
+      composer_id: tcs.id,
+      author_id: user.id,
+    },
   });
+  console.log(`Đã tạo/cập nhật bài hát: ${haTrang.title}`);
 
-  if (tcs && user) {
-    for (const song of songsToSeed) {
-      await prisma.song.create({
-        data: {
-          ...song,
-          composer_id: tcs.id,
-          author_id: user.id, // Sử dụng ID của user vừa tạo
-        },
-      });
-      console.log(`Đã tạo bài hát: ${song.title}`);
-    }
-  } else {
-    console.log('Bỏ qua gieo mầm bài hát vì không tìm thấy tác giả hoặc người dùng.');
-  }
+
+  // === 5. KẾT NỐI BÀI HÁT VỚI THỂ LOẠI (Bước quan trọng nhất) ===
+  
+  // Lấy ID của các thể loại
+  const nhacTrinh = await prisma.genre.findUnique({ where: { slug: 'nhac-trinh' } });
+  const ballad = await prisma.genre.findUnique({ where: { slug: 'ballad' } });
+
+  // Kết nối "Diễm Xưa" với Nhạc Trịnh và Ballad
+  await prisma.songGenre.upsert({
+    where: { song_id_genre_id: { song_id: diemXua.id, genre_id: nhacTrinh.id } },
+    update: {},
+    create: { song_id: diemXua.id, genre_id: nhacTrinh.id },
+  });
+  await prisma.songGenre.upsert({
+    where: { song_id_genre_id: { song_id: diemXua.id, genre_id: ballad.id } },
+    update: {},
+    create: { song_id: diemXua.id, genre_id: ballad.id },
+  });
+  console.log(`Đã kết nối "${diemXua.title}" với các thể loại.`);
+
+  // Kết nối "Hạ Trắng" với Nhạc Trịnh
+  await prisma.songGenre.upsert({
+    where: { song_id_genre_id: { song_id: haTrang.id, genre_id: nhacTrinh.id } },
+    update: {},
+    create: { song_id: haTrang.id, genre_id: nhacTrinh.id },
+  });
+  console.log(`Đã kết nối "${haTrang.title}" với các thể loại.`);
 
   console.log('Quá trình gieo mầm đã hoàn tất!');
 }
 
-// Chạy hàm chính và xử lý kết quả
 main()
   .catch((e) => {
     console.error(e);

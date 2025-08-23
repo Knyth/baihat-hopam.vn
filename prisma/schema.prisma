@@ -6,7 +6,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  // ================================================================
+  // === THAY ĐỔI DUY NHẤT: Xóa dòng 'output' ===
+  // Bằng cách xóa dòng này, Prisma sẽ tự động tạo client ở vị trí
+  // mặc định là 'node_modules/@prisma/client', giúp Next.js tìm thấy.
+  // ================================================================
 }
 
 datasource db {
@@ -136,4 +140,3 @@ model User {
   // Mối quan hệ: Một người dùng có thể yêu thích NHIỀU bài hát
   favoriteSongs UserFavorite[] @relation("FavoriteSongs")
 }
-

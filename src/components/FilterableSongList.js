@@ -2,34 +2,46 @@
 
 import SongList from '@/components/SongList';
 
+// Hàm này sẽ chạy ở phía server để lấy dữ liệu
 async function getFilteredSongs(searchParams) {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
   
-  const genre = searchParams.genre || '';
-  // === LẤY THAM SỐ MỚI ===
-  const composer = searchParams.composer || '';
+  // === GIẢI PHÁP: CHUYỂN ĐỔI THỦ CÔNG AN TOÀN ===
+  // 1. Tạo một đối tượng URLSearchParams trống.
+  const params = new URLSearchParams();
 
-  // Dùng mảng để xây dựng query string một cách linh hoạt
-  const queryParts = [];
-  if (genre) {
-    queryParts.push(`genre=${encodeURIComponent(genre)}`);
-  }
-  if (composer) {
-    queryParts.push(`composer=${encodeURIComponent(composer)}`);
-  }
+  // 2. Lặp qua từng cặp key-value trong searchParams object đặc biệt của Next.js
+  //    và thêm chúng vào đối tượng params của chúng ta một cách an toàn.
+  //    Object.entries(searchParams) sẽ trích xuất chỉ các cặp [key, value] hữu hình.
+  Object.entries(searchParams).forEach(([key, value]) => {
+    // Nếu value là một mảng (ví dụ: ?genre=pop&genre=rock), chúng ta thêm từng cái một
+    if (Array.isArray(value)) {
+      value.forEach(v => params.append(key, v));
+    } else {
+      // Nếu không, chúng ta chỉ cần đặt giá trị đó
+      params.set(key, value);
+    }
+  });
 
-  const queryString = queryParts.join('&');
+  // 3. Giờ đây, queryString được tạo ra từ một đối tượng an toàn và sạch sẽ.
+  const queryString = params.toString();
   
   const songsUrl = `${API_BASE_URL}/api/songs?${queryString}`;
+  
   const res = await fetch(songsUrl, { cache: 'no-store' });
   
   if (!res.ok) {
-    console.error("Failed to fetch filtered songs:", res.statusText);
+    console.error("Failed to fetch filtered songs:", res.status, res.statusText);
     return [];
   }
 
-  const songsData = await res.json();
-  return songsData.data;
+  try {
+    const songsData = await res.json();
+    return songsData.data || [];
+  } catch (error) {
+    console.error("Failed to parse JSON response:", error);
+    return [];
+  }
 }
 
 export default async function FilterableSongList({ searchParams }) {

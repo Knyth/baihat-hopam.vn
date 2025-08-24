@@ -1,7 +1,8 @@
 -- CreateTable
 CREATE TABLE "public"."Song" (
     "id" SERIAL NOT NULL,
-    "title" TEXT NOT NULL,
+    -- THAY ĐỔI DUY NHẤT: Dùng collation quốc tế
+    "title" VARCHAR(255) NOT NULL, 
     "slug" TEXT NOT NULL,
     "lyrics_chords" TEXT NOT NULL,
     "original_key" TEXT,
@@ -19,7 +20,7 @@ CREATE TABLE "public"."Song" (
 -- CreateTable
 CREATE TABLE "public"."Artist" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
     "slug" TEXT NOT NULL,
     "bio" TEXT,
     "image_url" TEXT,
@@ -30,7 +31,7 @@ CREATE TABLE "public"."Artist" (
 -- CreateTable
 CREATE TABLE "public"."Composer" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
     "slug" TEXT NOT NULL,
     "bio" TEXT,
     "image_url" TEXT,
@@ -73,6 +74,20 @@ CREATE TABLE "public"."UserFavorite" (
     CONSTRAINT "UserFavorite_pkey" PRIMARY KEY ("user_id","song_id")
 );
 
+-- CreateTable
+CREATE TABLE "public"."User" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password_hash" TEXT NOT NULL,
+    "avatar_url" TEXT,
+    "provider" TEXT NOT NULL DEFAULT 'email',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Song_slug_key" ON "public"."Song"("slug");
 
@@ -93,6 +108,12 @@ CREATE UNIQUE INDEX "Genre_name_key" ON "public"."Genre"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Genre_slug_key" ON "public"."Genre"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "public"."User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "public"."User"("email");
 
 -- AddForeignKey
 ALTER TABLE "public"."Song" ADD CONSTRAINT "Song_composer_id_fkey" FOREIGN KEY ("composer_id") REFERENCES "public"."Composer"("id") ON DELETE SET NULL ON UPDATE CASCADE;

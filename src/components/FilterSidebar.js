@@ -3,7 +3,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useTransition, useState } from 'react'; // === THÊM useState ===
+import { useTransition, useState } from 'react';
 
 export default function FilterSidebar({ genres, composers }) {
   const searchParams = useSearchParams();
@@ -11,7 +11,6 @@ export default function FilterSidebar({ genres, composers }) {
   const { replace } = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // === THÊM STATE ĐỂ QUẢN LÝ Ô TÌM KIẾM TÁC GIẢ ===
   const [composerSearch, setComposerSearch] = useState(searchParams.get('composer') || '');
 
   const handleFilterChange = (term, type) => {
@@ -35,14 +34,26 @@ export default function FilterSidebar({ genres, composers }) {
     });
   };
 
-  // === HÀM MỚI: Xử lý khi người dùng tìm kiếm tác giả ===
   const handleComposerSearch = (e) => {
-    e.preventDefault(); // Ngăn form tải lại cả trang
+    e.preventDefault(); 
     const params = new URLSearchParams(searchParams);
     if (composerSearch) {
       params.set('composer', composerSearch);
     } else {
       params.delete('composer');
+    }
+    startTransition(() => {
+      replace(`${pathname}?${params.toString()}`);
+    });
+  };
+  
+  // === HÀM MỚI: Xử lý khi người dùng thay đổi cách sắp xếp ===
+  const handleSortChange = (sortValue) => {
+    const params = new URLSearchParams(searchParams);
+    if (sortValue) {
+      params.set('sort', sortValue);
+    } else {
+      params.delete('sort'); // Mặc dù chúng ta sẽ luôn có giá trị mặc định
     }
     startTransition(() => {
       replace(`${pathname}?${params.toString()}`);
@@ -72,30 +83,32 @@ export default function FilterSidebar({ genres, composers }) {
         </div>
       </div>
       
-      {/* === NỐI DÂY ĐIỆN CHO Ô TÌM KIẾM TÁC GIẢ === */}
       <div style={{ marginBottom: '1.5rem' }}>
         <h4 style={{ fontWeight: '700', marginBottom: '0.75rem' }}>Tác giả</h4>
-        {/* Bọc input trong một form */}
         <form onSubmit={handleComposerSearch}>
           <input 
             type="text" 
             placeholder="Tìm tên tác giả..." 
             style={{ width: '100%', padding: '0.5rem', border: '1px solid var(--border-color)', borderRadius: '6px' }} 
-            // Cập nhật state khi người dùng gõ
             onChange={(e) => setComposerSearch(e.target.value)}
-            // Giá trị của input được kiểm soát bởi state
             value={composerSearch}
           />
-          {/* Người dùng có thể nhấn Enter để tìm */}
         </form>
       </div>
 
+       {/* === NỐI DÂY ĐIỆN CHO BỘ SẮP XẾP === */}
        <div>
         <h4 style={{ fontWeight: '700', marginBottom: '0.75rem' }}>Sắp xếp theo</h4>
-        <select style={{ width: '100%', padding: '0.5rem', border: '1px solid var(--border-color)', borderRadius: '6px' }}>
-          <option>Mới nhất</option>
-          <option>Xem nhiều nhất</option>
-          <option>Tên (A-Z)</option>
+        <select 
+          style={{ width: '100%', padding: '0.5rem', border: '1px solid var(--border-color)', borderRadius: '6px' }}
+          // 1. Gán giá trị từ URL, nếu không có thì mặc định là 'newest'
+          value={searchParams.get('sort') || 'newest'}
+          // 2. Gọi hàm handleSortChange khi người dùng chọn
+          onChange={(e) => handleSortChange(e.target.value)}
+        >
+          <option value="newest">Mới nhất</option>
+          <option value="views">Xem nhiều nhất</option>
+          <option value="name_asc">Tên (A-Z)</option>
         </select>
       </div>
     </div>

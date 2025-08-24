@@ -1,16 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
-  // ================================================================
-  // === THAY ĐỔI DUY NHẤT: Xóa dòng 'output' ===
-  // Bằng cách xóa dòng này, Prisma sẽ tự động tạo client ở vị trí
-  // mặc định là 'node_modules/@prisma/client', giúp Next.js tìm thấy.
-  // ================================================================
 }
 
 datasource db {
@@ -18,114 +9,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-// ===============================================
-// CÁC BẢNG DỮ LIỆU CHÍNH
-// ===============================================
-
-model Song {
-  id            Int      @id @default(autoincrement())
-  title         String
-  slug          String   @unique
-  lyrics_chords String
-  original_key  String?
-  rhythm        String?
-  tempo         Int?
-  views         Int      @default(0)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-
-  // Mối quan hệ: Một bài hát thuộc về MỘT tác giả (composer)
-  composer_id   Int?
-  composer      Composer? @relation(fields: [composer_id], references: [id])
-
-  // Mối quan hệ: Một bài hát được đăng bởi MỘT người dùng (author)
-  author_id     String
-  author        User     @relation("AuthoredSongs", fields: [author_id], references: [id])
-
-  // Mối quan hệ: Một bài hát có NHIỀU nghệ sĩ (artists)
-  artists       SongArtist[]
-
-  // Mối quan hệ: Một bài hát có NHIỀU thể loại (genres)
-  genres        SongGenre[]
-
-  // Mối quan hệ: Một bài hát được NHIỀU người dùng yêu thích
-  favoritedBy   UserFavorite[]
-}
-
-model Artist {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  slug      String   @unique
-  bio       String?
-  image_url String?
-
-  // Mối quan hệ: Một nghệ sĩ trình bày NHIỀU bài hát
-  songs     SongArtist[]
-}
-
-model Composer {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  slug      String   @unique
-  bio       String?
-  image_url String?
-
-  // Mối quan hệ: Một tác giả sáng tác NHIỀU bài hát
-  songs     Song[]
-}
-
-model Genre {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  slug        String   @unique
-  description String?
-
-  // Mối quan hệ: Một thể loại có NHIỀU bài hát
-  songs       SongGenre[]
-}
-
-// ===============================================
-// CÁC BẢNG NỐI (JUNCTION TABLES)
-// ===============================================
-
-// Bảng nối giữa Song và Artist (Quan hệ Nhiều - Nhiều)
-model SongArtist {
-  song_id   Int
-  artist_id Int
-
-  song      Song   @relation(fields: [song_id], references: [id])
-  artist    Artist @relation(fields: [artist_id], references: [id])
-
-  @@id([song_id, artist_id])
-}
-
-// Bảng nối giữa Song và Genre (Quan hệ Nhiều - Nhiều)
-model SongGenre {
-  song_id  Int
-  genre_id Int
-
-  song     Song  @relation(fields: [song_id], references: [id])
-  genre    Genre @relation(fields: [genre_id], references: [id])
-
-  @@id([song_id, genre_id])
-}
-
-// Bảng nối giữa User và Song (cho chức năng Yêu thích)
-model UserFavorite {
-  user_id  String
-  song_id  Int
-  added_at DateTime @default(now())
-
-  user     User @relation("FavoriteSongs", fields: [user_id], references: [id])
-  song     Song @relation(fields: [song_id], references: [id])
-
-  @@id([user_id, song_id])
-}
-
-// Cập nhật lại model User để thêm các mối quan hệ ngược
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(uuid())
   username      String    @unique
   email         String    @unique
   password_hash String
@@ -133,10 +18,86 @@ model User {
   provider      String    @default("email")
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
+  songs         Song[]
+  favorites     UserFavorite[]
+}
 
-  // Mối quan hệ: Một người dùng có thể đăng NHIỀU bài hát
-  authoredSongs Song[]   @relation("AuthoredSongs")
+model Song {
+  id              Int           @id @default(autoincrement())
+  title           String
+  slug            String        @unique
+  lyrics_chords   String        @db.Text
+  original_key    String?
+  rhythm          String?
+  tempo           Int?
+  views           Int           @default(0)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  
+  composer_id     Int?
+  composer        Composer?     @relation(fields: [composer_id], references: [id])
+  
+  author_id       String
+  author          User          @relation(fields: [author_id], references: [id])
 
-  // Mối quan hệ: Một người dùng có thể yêu thích NHIỀU bài hát
-  favoriteSongs UserFavorite[] @relation("FavoriteSongs")
+  genres          SongGenre[]
+  artists         SongArtist[]
+  favoritedBy     UserFavorite[]
+}
+
+model Composer {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  // === DÒNG MỚI ĐƯỢC THÊM VÀO ===
+  search_name  String   // Trường mới để tìm kiếm không dấu
+  // ==============================
+  slug         String   @unique
+  bio          String?  @db.Text
+  image_url    String?
+  songs        Song[]
+}
+
+model Artist {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slug      String   @unique
+  bio       String?  @db.Text
+  image_url String?
+  songs     SongArtist[]
+}
+
+model Genre {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  slug         String        @unique
+  description  String?
+  songs        SongGenre[]
+}
+
+model SongGenre {
+  song_id  Int
+  genre_id Int
+  song     Song   @relation(fields: [song_id], references: [id], onDelete: Cascade)
+  genre    Genre  @relation(fields: [genre_id], references: [id], onDelete: Cascade)
+
+  @@id([song_id, genre_id])
+}
+
+model SongArtist {
+  song_id   Int
+  artist_id Int
+  song      Song   @relation(fields: [song_id], references: [id], onDelete: Cascade)
+  artist    Artist @relation(fields: [artist_id], references: [id], onDelete: Cascade)
+
+  @@id([song_id, artist_id])
+}
+
+model UserFavorite {
+  user_id   String
+  song_id   Int
+  added_at  DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  song      Song     @relation(fields: [song_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, song_id])
 }

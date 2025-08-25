@@ -101,5 +101,5 @@ a { color: inherit; text-decoration: none; }
 }
 
 .button-primary:hover {
-  background-color: #004a80;
+  background-color: #004a80; /* Màu đậm hơn một chút khi hover */
 }

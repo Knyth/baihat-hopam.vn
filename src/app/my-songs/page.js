@@ -4,43 +4,34 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-// Hàm lấy dữ liệu cho Server Component này
 async function getFavoriteSongs() {
-  const cookieStore = cookies(); // Lấy cookies
-  // Chúng ta cần gửi cookie 'session' đi cùng với request
+  const cookieStore = cookies();
   const sessionCookie = cookieStore.get('session');
 
-  // Nếu không có cookie, không cần gọi API làm gì
   if (!sessionCookie) {
-    return null;
+    return null; // Trả về null nếu không có cookie
   }
 
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
   const res = await fetch(`${API_BASE_URL}/api/user/favorites`, {
-    headers: {
-      // Gửi cookie đi để API có thể xác thực
-      'Cookie': `session=${sessionCookie.value}`
-    },
-    cache: 'no-store', // Luôn lấy dữ liệu mới nhất
+    headers: { 'Cookie': `session=${sessionCookie.value}` },
+    cache: 'no-store',
   });
 
   if (!res.ok) {
-    // Nếu API trả về lỗi (ví dụ 401 Unauthorized), trả về null
     console.error("Failed to fetch favorites:", res.statusText);
-    return null;
+    return null; // Trả về null nếu API báo lỗi (ví dụ: 401)
   }
 
   const data = await res.json();
   return data.data;
 }
 
-
 export default async function MySongsPage() {
   const songs = await getFavoriteSongs();
 
-  // === CƠ CHẾ BẢO VỆ ===
-  // Nếu getFavoriteSongs trả về null (do không có cookie hoặc lỗi xác thực)
-  // thì chuyển hướng người dùng về trang đăng nhập
+  // Cơ chế bảo vệ: Nếu không lấy được danh sách bài hát (chưa đăng nhập)
+  // thì chuyển hướng về trang auth
   if (songs === null) {
     redirect('/auth');
   }

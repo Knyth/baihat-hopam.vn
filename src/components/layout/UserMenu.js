@@ -1,33 +1,41 @@
 // src/components/layout/UserMenu.js
-'use client';
+"use client";
 
 import { useState } from 'react';
+import Link from 'next/link'; // <-- Đổi 'a' thành 'Link' để điều hướng mượt hơn
 import styles from './Header.module.css';
-import { logout } from './actions'; // Action đăng xuất
+import { logout } from './actions';
 
 export default function UserMenu({ user }) {
   const [isOpen, setIsOpen] = useState(false);
-  
-  const handleLogout = async () => {
-    await logout();
-  }
+
+  // Không cần hàm handleLogout nữa
 
   return (
     <div className={styles.userMenu} onMouseLeave={() => setIsOpen(false)}>
-      <button className={styles.avatarButton} onMouseEnter={() => setIsOpen(true)}>
+      <button 
+        className={styles.avatarButton} 
+        onMouseEnter={() => setIsOpen(true)}
+        onClick={() => setIsOpen(!isOpen)} // Thêm onClick để hoạt động tốt hơn trên mobile
+      >
         <span>{user.username}</span>
-        {/* Sẽ thay bằng avatar sau */}
         <div className={styles.avatarPlaceholder}>{user.username.charAt(0).toUpperCase()}</div>
       </button>
 
       {isOpen && (
         <div className={styles.dropdown}>
-          <a href="/my-songs" className={styles.dropdownItem}>Bài hát yêu thích</a>
-          <a href="/settings" className={styles.dropdownItem}>Cài đặt tài khoản</a>
+          <Link href="/my-songs" className={styles.dropdownItem}>Bài hát yêu thích</Link>
+          <Link href="/settings" className={styles.dropdownItem}>Cài đặt tài khoản</Link>
           <hr className={styles.dropdownDivider} />
-          <button onClick={handleLogout} className={styles.dropdownItem}>
-            Đăng xuất
-          </button>
+          
+          {/* === NÂNG CẤP QUAN TRỌNG NHẤT === */}
+          {/* Bọc nút Đăng xuất trong một thẻ form để đảm bảo Server Action được kích hoạt đúng cách */}
+          <form action={logout}>
+            <button type="submit" className={styles.dropdownItem}>
+              Đăng xuất
+            </button>
+          </form>
+
         </div>
       )}
     </div>

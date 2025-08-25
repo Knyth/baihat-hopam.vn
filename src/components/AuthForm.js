@@ -1,11 +1,13 @@
 // src/components/AuthForm.js
+
 "use client";
 
 import { useState, useTransition } from 'react';
 import styles from './AuthForm.module.css';
-import { registerUser, loginUser } from '@/app/auth/actions';
+// KHÔNG CÒN IMPORT ACTIONS Ở ĐÂY NỮA
 
-export default function AuthForm() {
+// 1. Component giờ đây nhận các action qua props
+export default function AuthForm({ registerUserAction, loginUserAction }) {
   const [activeTab, setActiveTab] = useState('register');
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -15,10 +17,10 @@ export default function AuthForm() {
     e.preventDefault();
     setMessage('');
     setIsError(false);
-
     startTransition(async () => {
       const formData = new FormData(e.currentTarget);
-      const result = await registerUser(formData);
+      // 2. Thi hành "mệnh lệnh" đã nhận
+      const result = await registerUserAction(formData);
       if (result.success) {
         setIsError(false);
         setMessage('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.');
@@ -34,20 +36,20 @@ export default function AuthForm() {
     e.preventDefault();
     setMessage('');
     setIsError(false);
-
     startTransition(async () => {
       const formData = new FormData(e.currentTarget);
-      const result = await loginUser(formData);
-      
-      if (result.success) {
+      // 3. Thi hành "mệnh lệnh" đã nhận
+      const result = await loginUserAction(formData);
+      if (result && result.success) { // Cần kiểm tra result tồn tại
         window.location.href = '/';
-      } else {
+      } else if (result && result.error) {
         setIsError(true);
         setMessage(result.error);
       }
     });
   };
 
+  // ... Phần JSX còn lại giữ nguyên y hệt phiên bản trước ...
   return (
     <div className={styles.authCard}>
       <div className={styles.tabContainer}>
@@ -58,14 +60,12 @@ export default function AuthForm() {
           Đăng nhập
         </button>
       </div>
-
       <div className={styles.formContainer}>
         {message && (
           <p className={`${styles.message} ${isError ? styles.error : styles.success}`}>
             {message}
           </p>
         )}
-
         {activeTab === 'register' && (
           <form onSubmit={handleRegister}>
             <div className={styles.inputGroup}><label htmlFor="register-username">Tên hiển thị</label><input type="text" id="register-username" name="username" required disabled={isPending} /></div>
@@ -76,7 +76,6 @@ export default function AuthForm() {
             </button>
           </form>
         )}
-
         {activeTab === 'login' && (
           <form onSubmit={handleLogin}>
             <div className={styles.inputGroup}><label htmlFor="login-email">Email</label><input type="email" id="login-email" name="email" required disabled={isPending} /></div>

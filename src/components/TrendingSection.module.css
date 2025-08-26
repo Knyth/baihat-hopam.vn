@@ -2,11 +2,11 @@
 
 .section {
   padding: 4rem 1.5rem;
-  background-color: #f8f9fa; /* Cho một chút khác biệt với khu vực trên */
+  background-color: #f8f9fa; 
 }
 
 .container {
-  max-width: 800px; /* Thu hẹp lại để danh sách trông tập trung hơn */
+  max-width: 800px; 
   margin: 0 auto;
 }
 
@@ -38,7 +38,8 @@
 .songRank {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #adb5bd;
+  /* === THAY ĐỔI DUY NHẤT: ĐỔI MÀU TỪ #adb5bd SANG #6c757d (ĐẬM HƠN) === */
+  color: #6c757d; 
   min-width: 50px;
   text-align: center;
 }

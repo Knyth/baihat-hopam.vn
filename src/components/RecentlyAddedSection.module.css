@@ -19,6 +19,32 @@
 
 .songsGrid {
   display: grid;
+  /* Mặc định là 4-5 cột trên màn hình lớn */
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem; 
 }
+
+/* === MEDIA QUERY ĐƯỢC THÊM VÀO === */
+/* Khi màn hình có chiều rộng từ 768px trở xuống (máy tính bảng) */
+@media (max-width: 768px) {
+  .section {
+    padding: 3rem 1rem; /* Giảm padding trên màn hình nhỏ */
+  }
+  .sectionTitle {
+    font-size: 1.8rem; /* Giảm cỡ chữ tiêu đề */
+  }
+  .songsGrid {
+    /* Hiển thị 2 cột */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem; /* Giảm khoảng cách */
+  }
+}
+
+/* Khi màn hình có chiều rộng từ 480px trở xuống (điện thoại) */
+@media (max-width: 480px) {
+  .songsGrid {
+    /* Hiển thị 1 cột duy nhất */
+    grid-template-columns: 1fr;
+  }
+}
+

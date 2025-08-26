@@ -1,19 +1,32 @@
-/* src/components/layout/Header.module.css (Phiên bản Chuẩn) */
+/* src/components/layout/Header.module.css (Phiên bản "Vi phẫu thuật") */
 
 .header {
-  background-color: var(--card-bg); /* <-- Dòng này giờ sẽ tìm thấy đúng "thùng sơn" */
-  border-bottom: 1px solid var(--border-color);
-  padding: 1rem 0;
+  background-color: transparent !important;
+  border-bottom: 1px solid transparent;
+  /* Bỏ padding ở đây để màu nền có thể tràn ra toàn bộ chiều rộng */
+  /* padding: 1rem 0; */ 
   position: sticky;
   top: 0;
   z-index: 50;
   width: 100%;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.scrolled {
+  background-color: #ffffff !important;
+  border-color: #dee2e6 !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* === ĐÂY LÀ THAY ĐỔI QUAN TRỌNG NHẤT === */
+  max-width: 1200px; /* Giới hạn chiều rộng nội dung bên trong Header */
+  margin: 0 auto; /* Căn giữa nội dung */
+  padding: 1rem 1.5rem; /* Thêm padding vào đây, thay vì .header */
+  /* 1rem cho trên/dưới, 1.5rem cho trái/phải */
 }
 
 .logo a {
@@ -29,6 +42,7 @@
   gap: 1rem;
 }
 
+/* Các styles còn lại giữ nguyên */
 .navLink {
   text-decoration: none;
   font-weight: 600;
@@ -52,7 +66,6 @@
   color: white;
 }
 
-/* User Menu Styles */
 .userMenu { position: relative; }
 .avatarButton {
   display: flex; align-items: center; gap: 0.75rem; background: none; border: none;

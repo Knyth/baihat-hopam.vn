@@ -6,10 +6,7 @@
   justify-content: center;
   text-align: center;
   padding: 6rem 1.5rem;
-  background-color: #f8f9fa; /* Màu nền xám nhạt như trong blueprint */
-  /* Tùy chọn: Thêm ảnh nền tinh tế sau này */
-  /* background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('/path/to/your/image.jpg'); */
-  /* background-size: cover; */
+  background-color: #f8f9fa;
   border-bottom: 1px solid #dee2e6;
 }
 
@@ -18,22 +15,22 @@
 }
 
 .heroTitle {
-  font-size: 2.8rem; /* Cỡ chữ lớn cho tiêu đề chính (H1) */
+  font-size: 2.8rem;
   font-weight: 700;
-  color: #212529; /* Màu chữ đen như trong blueprint */
+  color: #212529;
   line-height: 1.2;
 }
 
 .heroSubtitle {
   font-size: 1.25rem;
-  color: #6c757d; /* Màu chữ xám cho mô tả phụ */
+  color: #6c757d;
   margin-top: 1rem;
   margin-bottom: 2.5rem;
 }
 
 .heroCtaButton {
   display: inline-block;
-  background-color: #005A9E; /* Màu xanh dương đậm chủ đạo */
+  background-color: #005A9E;
   color: #ffffff;
   padding: 0.8rem 2.5rem;
   font-size: 1.1rem;
@@ -46,4 +43,17 @@
 .heroCtaButton:hover {
   background-color: #004a80;
   transform: translateY(-2px);
+}
+
+/* === MEDIA QUERY CHO HERO SECTION === */
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 4rem 1rem; /* Giảm padding */
+  }
+  .heroTitle {
+    font-size: 2.2rem; /* Giảm cỡ chữ */
+  }
+  .heroSubtitle {
+    font-size: 1.1rem; /* Giảm cỡ chữ */
+  }
 }

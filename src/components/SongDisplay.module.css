@@ -1,0 +1,23 @@
+/* src/components/SongDisplay.module.css */
+
+.lyricsArea {
+  font-family: 'Lora', serif; /* Font chữ Lora như trong blueprint */
+  font-size: 1.125rem; /* 18px */
+  line-height: 2.2; /* Tăng khoảng cách dòng để dễ đọc hợp âm */
+  color: var(--text-primary);
+  white-space: pre-wrap; /* Giữ lại các khoảng trắng và xuống dòng */
+}
+
+.line {
+  margin-bottom: 0.5rem;
+}
+
+.chord {
+  font-family: 'Nunito Sans', sans-serif; /* Dùng font UI cho hợp âm */
+  font-weight: 700;
+  color: var(--primary-color); /* Màu xanh chủ đạo */
+  position: relative;
+  top: -0.8em; /* Đẩy hợp âm lên phía trên dòng text */
+  margin: 0 0.25em;
+  display: inline-block;
+}

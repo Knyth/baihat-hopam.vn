@@ -1,0 +1,66 @@
+/* src/components/TrendingSection.module.css */
+
+.section {
+  padding: 4rem 1.5rem;
+  background-color: #f8f9fa; /* Cho một chút khác biệt với khu vực trên */
+}
+
+.container {
+  max-width: 800px; /* Thu hẹp lại để danh sách trông tập trung hơn */
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.songList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.songListItem {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.songListItem:last-child {
+  border-bottom: none;
+}
+
+.songRank {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #adb5bd;
+  min-width: 50px;
+  text-align: center;
+}
+
+.songInfo {
+  margin-left: 1rem;
+}
+
+.songTitle a {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #212529;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.songTitle a:hover {
+  color: #005A9E;
+}
+
+.displayName {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 0.2rem;
+}

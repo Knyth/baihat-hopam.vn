@@ -1,0 +1,41 @@
+/* src/components/BrowseByGenreSection.module.css */
+
+.section {
+  padding: 4rem 1.5rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 2.5rem;
+}
+
+.genreGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.genreTag {
+  background-color: #ffffff;
+  color: #005A9E; /* Màu chữ là màu xanh chủ đạo */
+  border: 1px solid #005A9E;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px; /* Bo tròn để tạo thành tag */
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.genreTag:hover {
+  background-color: #005A9E;
+  color: #ffffff;
+}

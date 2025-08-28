@@ -12,7 +12,11 @@ export default function RootLayout({ children }) {
     <html lang="vi">
       <body>
         <Header />
-        <main className="container">{children}</main>
+        {/* NÂNG CẤP: Loại bỏ className="container" khỏi <main> */}
+        {/* Giờ đây thẻ <main> chỉ là một cái bọc đơn giản */}
+        <main>
+          {children}
+        </main>
       </body>
     </html>
   );

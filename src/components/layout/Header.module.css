@@ -1,5 +1,4 @@
 /* src/components/layout/Header.module.css (Phiên bản "Vi phẫu thuật") */
-
 .header {
   background-color: transparent !important;
   border-bottom: 1px solid transparent;
@@ -11,13 +10,11 @@
   width: 100%;
   transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
-
 .scrolled {
   background-color: #ffffff !important;
   border-color: #dee2e6 !important;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
-
 .container {
   display: flex;
   justify-content: space-between;
@@ -28,20 +25,17 @@
   padding: 1rem 1.5rem; /* Thêm padding vào đây, thay vì .header */
   /* 1rem cho trên/dưới, 1.5rem cho trái/phải */
 }
-
 .logo a {
   font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-primary);
   text-decoration: none;
 }
-
 .navigation {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 /* Các styles còn lại giữ nguyên */
 .navLink {
   text-decoration: none;
@@ -51,12 +45,10 @@
   border-radius: 6px;
   transition: background-color 0.2s;
 }
-
 .navLink:hover {
   background-color: #f0f2f5;
   color: var(--text-primary);
 }
-
 .signUp {
   background-color: var(--primary-color);
   color: white;
@@ -65,7 +57,6 @@
   background-color: #004a80;
   color: white;
 }
-
 .userMenu { position: relative; }
 .avatarButton {
   display: flex; align-items: center; gap: 0.75rem; background: none; border: none;

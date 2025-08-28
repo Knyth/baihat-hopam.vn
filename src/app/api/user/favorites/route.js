@@ -1,5 +1,3 @@
-// src/app/api/user/favorites/route.js
-
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
@@ -9,12 +7,17 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 // Hàm trợ giúp để lấy ID người dùng từ token
 async function getUserIdFromToken() {
-  const token = cookies().get('session')?.value;
+  // SỬA LỖI: Thêm 'await' trước khi gọi cookies()
+  const cookieStore = await cookies();
+  const token = cookieStore.get('session')?.value;
+
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     return payload.id;
   } catch (error) {
+    // Lỗi này thường xảy ra khi token hết hạn hoặc không hợp lệ
+    console.error("JWT Verification Error:", error.message);
     return null;
   }
 }
@@ -37,7 +40,8 @@ export async function GET(request) {
         added_at: 'desc',
       },
       // Dùng 'include' để lấy cả thông tin chi tiết của bài hát liên quan
-      include: {
+      select: { // Dùng 'select' để cấu trúc dữ liệu trả về gọn hơn
+        added_at: true,
         song: {
           select: {
             id: true,
@@ -56,6 +60,7 @@ export async function GET(request) {
     // Trích xuất và định dạng lại dữ liệu cho gọn gàng
     const songs = favoriteSongs.map(fav => ({
       ...fav.song,
+      composerName: fav.song.composer?.name, // Làm phẳng tên tác giả
       added_at: fav.added_at,
     }));
 

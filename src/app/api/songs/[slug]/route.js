@@ -1,55 +1,73 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@/generated/prisma';
+import prisma from '@/lib/prisma'; // Sử dụng Prisma client tập trung
 
-const prisma = new PrismaClient();
-
-// Hàm GET này nhận vào 2 tham số: request và một đối tượng chứa params
-// Next.js sẽ tự động bỏ slug từ URL vào trong params
 export async function GET(request, { params }) {
-  // Lấy slug từ params
   const { slug } = params;
 
-  // Kiểm tra xem có slug không
   if (!slug) {
-    return NextResponse.json(
-      { message: 'Thiếu slug của bài hát.' },
-      { status: 400 } // 400 Bad Request
-    );
+    return NextResponse.json({ error: 'Song slug is required' }, { status: 400 });
   }
 
   try {
-    // Dùng Prisma để tìm một bài hát duy nhất (findUnique) có slug tương ứng
     const song = await prisma.song.findUnique({
-      where: {
-        slug: slug,
+      where: { 
+        slug: slug 
       },
-      // Thêm "include" để lấy kèm cả thông tin của tác giả liên quan
-      include: {
-        composer: {
-          select: { // Chỉ lấy những trường cần thiết của composer
-            name: true,
-            slug: true,
-          },
+      // SỬ DỤNG SELECT ĐỂ TỐI ƯU VÀ BẢO MẬT
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        lyrics_chords: true,
+        original_key: true,
+        rhythm: true,
+        tempo: true,
+        views: true,
+        created_at: true,
+        composer: { 
+          select: { 
+            name: true, 
+            slug: true 
+          } 
         },
-        // (Trong tương lai có thể include thêm artists, genres ở đây)
+        artists: { 
+          select: { 
+            artist: { 
+              select: { 
+                name: true, 
+                slug: true 
+              } 
+            } 
+          } 
+        },
+        genres: { 
+          select: { 
+            genre: { 
+              select: { 
+                name: true, 
+                slug: true 
+              } 
+            } 
+          } 
+        }
       },
     });
 
-    // Nếu không tìm thấy bài hát
     if (!song) {
-      return NextResponse.json(
-        { message: 'Không tìm thấy bài hát.' },
-        { status: 404 } // 404 Not Found
-      );
+      return NextResponse.json({ error: 'Song not found' }, { status: 404 });
     }
 
-    // Nếu tìm thấy, trả về dữ liệu bài hát
-    return NextResponse.json(song, { status: 200 });
+    // Định dạng lại dữ liệu artists và genres để frontend dễ sử dụng
+    const formattedSong = {
+        ...song,
+        artists: song.artists.map(a => a.artist),
+        genres: song.genres.map(g => g.genre)
+    };
+
+    return NextResponse.json(formattedSong);
+
   } catch (error) {
-    console.error(`Lỗi khi lấy dữ liệu bài hát [${slug}]:`, error);
-    return NextResponse.json(
-      { message: 'Đã xảy ra lỗi ở phía server.' },
-      { status: 500 }
-    );
+    console.error(`Failed to fetch song with slug: ${slug}`, error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

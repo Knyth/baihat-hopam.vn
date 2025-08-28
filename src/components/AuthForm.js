@@ -1,17 +1,21 @@
 // src/components/AuthForm.js
-
 "use client";
 
-import { useState, useTransition } from 'react';
+import React, { useState, useTransition, useEffect } from 'react';
 import styles from './AuthForm.module.css';
-// KHÔNG CÒN IMPORT ACTIONS Ở ĐÂY NỮA
 
-// 1. Component giờ đây nhận các action qua props
-export default function AuthForm({ registerUserAction, loginUserAction }) {
+export default function AuthForm({ registerUserAction, loginUserAction, initialMessage, callbackUrl }) {
   const [activeTab, setActiveTab] = useState('register');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(initialMessage || '');
   const [isError, setIsError] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (initialMessage.includes('thành công')) {
+      setActiveTab('login');
+      setIsError(false);
+    }
+  }, [initialMessage]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -19,16 +23,13 @@ export default function AuthForm({ registerUserAction, loginUserAction }) {
     setIsError(false);
     startTransition(async () => {
       const formData = new FormData(e.currentTarget);
-      // 2. Thi hành "mệnh lệnh" đã nhận
       const result = await registerUserAction(formData);
-      if (result.success) {
-        setIsError(false);
-        setMessage('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.');
-        setActiveTab('login');
-      } else {
+
+      if (result && result.error) {
         setIsError(true);
         setMessage(result.error);
       }
+      // Khi thành công, Server Action sẽ tự redirect
     });
   };
 
@@ -38,18 +39,18 @@ export default function AuthForm({ registerUserAction, loginUserAction }) {
     setIsError(false);
     startTransition(async () => {
       const formData = new FormData(e.currentTarget);
-      // 3. Thi hành "mệnh lệnh" đã nhận
       const result = await loginUserAction(formData);
-      if (result && result.success) { // Cần kiểm tra result tồn tại
-        window.location.href = '/';
+      
+      if (result && result.success) {
+        // GIẢI PHÁP TỐI THƯỢỢNG: Dùng hard navigation đến đúng callbackUrl
+        window.location.href = callbackUrl; 
       } else if (result && result.error) {
         setIsError(true);
         setMessage(result.error);
       }
     });
   };
-
-  // ... Phần JSX còn lại giữ nguyên y hệt phiên bản trước ...
+  
   return (
     <div className={styles.authCard}>
       <div className={styles.tabContainer}>
@@ -78,6 +79,7 @@ export default function AuthForm({ registerUserAction, loginUserAction }) {
         )}
         {activeTab === 'login' && (
           <form onSubmit={handleLogin}>
+            <input type="hidden" name="callbackUrl" value={callbackUrl} />
             <div className={styles.inputGroup}><label htmlFor="login-email">Email</label><input type="email" id="login-email" name="email" required disabled={isPending} /></div>
             <div className={styles.inputGroup}><label htmlFor="login-password">Mật khẩu</label><input type="password" id="login-password" name="password" required disabled={isPending} /></div>
             <button type="submit" className={styles.submitButton} disabled={isPending}>

@@ -9,17 +9,21 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 // Hàm trợ giúp để xác thực người dùng từ token
 async function getUserIdFromToken() {
-  const token = cookies().get('session')?.value;
+  // SỬA LỖI QUAN TRỌNG: Thêm 'await' trước khi gọi cookies()
+  const cookieStore = await cookies();
+  const token = cookieStore.get('session')?.value;
+
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     return payload.id; // Trả về ID của người dùng
   } catch (error) {
+    console.error("JWT Verification error:", error.message);
     return null;
   }
 }
 
-// === XỬ LÝ HÀNH ĐỘNG "THÊM VÀO YÊU THÍCH" ===
+// === XỬ LÝ HÀNH ĐỘNG "THÊM VÀO YÊU THÍCH" (Giữ nguyên logic của bạn) ===
 export async function POST(request, { params }) {
   const userId = await getUserIdFromToken();
   if (!userId) {
@@ -38,18 +42,17 @@ export async function POST(request, { params }) {
         song_id: songId,
       },
     });
-    return NextResponse.json({ success: true }, { status: 201 });
+    return NextResponse.json({ success: true, message: 'Added to favorites' }, { status: 201 });
   } catch (error) {
-    // Xử lý trường hợp đã yêu thích rồi (lỗi unique constraint)
-    if (error.code === 'P2002') {
-      return NextResponse.json({ success: true, message: 'Already favorited' });
+    if (error.code === 'P2002') { // Đã yêu thích rồi
+      return NextResponse.json({ success: true, message: 'Already favorited' }, { status: 200 });
     }
     console.error("Failed to add favorite:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-// === XỬ LÝ HÀNH ĐỘNG "XÓA KHỎI YÊU THÍCH" ===
+// === XỬ LÝ HÀNH ĐỘNG "XÓA KHỎI YÊU THÍCH" (Giữ nguyên logic của bạn + tối ưu hóa) ===
 export async function DELETE(request, { params }) {
   const userId = await getUserIdFromToken();
   if (!userId) {
@@ -70,11 +73,11 @@ export async function DELETE(request, { params }) {
         },
       },
     });
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: true, message: 'Removed from favorites' }, { status: 200 });
   } catch (error) {
-    // Xử lý trường hợp bản ghi không tồn tại để xóa
-    if (error.code === 'P2025') {
-       return NextResponse.json({ success: true, message: 'Record not found' });
+    if (error.code === 'P2025') { // Bản ghi không tồn tại để xóa
+       // TỐI ƯU HÓA NHỎ: Trả về lỗi 404 để client biết rõ hơn
+       return NextResponse.json({ error: 'Favorite entry not found' }, { status: 404 });
     }
     console.error("Failed to delete favorite:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

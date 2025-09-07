@@ -1,85 +1,66 @@
 // src/app/api/user/favorites/[songId]/route.js
-
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
 import prisma from '@/lib/prisma';
+import { getUserFromSession } from '@/lib/auth';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
-
-// Hàm trợ giúp để xác thực người dùng từ token
-async function getUserIdFromToken() {
-  // SỬA LỖI QUAN TRỌNG: Thêm 'await' trước khi gọi cookies()
-  const cookieStore = await cookies();
-  const token = cookieStore.get('session')?.value;
-
-  if (!token) return null;
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload.id; // Trả về ID của người dùng
-  } catch (error) {
-    console.error("JWT Verification error:", error.message);
-    return null;
-  }
-}
-
-// === XỬ LÝ HÀNH ĐỘNG "THÊM VÀO YÊU THÍCH" (Giữ nguyên logic của bạn) ===
+// --- POST: THÊM MỘT BÀI HÁT VÀO YÊU THÍCH ---
 export async function POST(request, { params }) {
-  const userId = await getUserIdFromToken();
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const songId = parseInt(params.songId, 10);
-  if (isNaN(songId)) {
-    return NextResponse.json({ error: 'Invalid song ID' }, { status: 400 });
-  }
-
+  const user = await getUserFromSession();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  
   try {
-    await prisma.userFavorite.create({
-      data: {
-        user_id: userId,
-        song_id: songId,
-      },
+    const songId = parseInt(params.songId, 10);
+    if (isNaN(songId)) return NextResponse.json({ error: 'Invalid Song ID' }, { status: 400 });
+
+    // Sử dụng upsert để tránh lỗi trùng lặp, nếu đã có thì không làm gì
+    await prisma.userFavorite.upsert({
+        where: {
+            userId_songId: {
+                userId: user.userId,
+                songId: songId,
+            }
+        },
+        update: {},
+        create: {
+            userId: user.userId,
+            songId: songId,
+        }
     });
-    return NextResponse.json({ success: true, message: 'Added to favorites' }, { status: 201 });
+
+    return NextResponse.json({ message: 'Favorite added successfully' }, { status: 200 });
   } catch (error) {
-    if (error.code === 'P2002') { // Đã yêu thích rồi
-      return NextResponse.json({ success: true, message: 'Already favorited' }, { status: 200 });
-    }
-    console.error("Failed to add favorite:", error);
+    console.error("API POST Favorite Error:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-// === XỬ LÝ HÀNH ĐỘNG "XÓA KHỎI YÊU THÍCH" (Giữ nguyên logic của bạn + tối ưu hóa) ===
-export async function DELETE(request, { params }) {
-  const userId = await getUserIdFromToken();
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
 
-  const songId = parseInt(params.songId, 10);
-  if (isNaN(songId)) {
-    return NextResponse.json({ error: 'Invalid song ID' }, { status: 400 });
-  }
+// --- DELETE: XÓA MỘT BÀI HÁT KHỎI YÊU THÍCH ---
+export async function DELETE(request, { params }) {
+  const user = await getUserFromSession();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
+    const songId = parseInt(params.songId, 10);
+    if (isNaN(songId)) return NextResponse.json({ error: 'Invalid Song ID' }, { status: 400 });
+
+    // Sử dụng delete thay vì deleteMany cho trường hợp này
     await prisma.userFavorite.delete({
       where: {
-        user_id_song_id: {
-          user_id: userId,
-          song_id: songId,
+        userId_songId: {
+            userId: user.userId,
+            songId: songId,
         },
       },
     });
-    return NextResponse.json({ success: true, message: 'Removed from favorites' }, { status: 200 });
+
+    return NextResponse.json({ message: 'Favorite removed successfully' }, { status: 200 });
   } catch (error) {
-    if (error.code === 'P2025') { // Bản ghi không tồn tại để xóa
-       // TỐI ƯU HÓA NHỎ: Trả về lỗi 404 để client biết rõ hơn
-       return NextResponse.json({ error: 'Favorite entry not found' }, { status: 404 });
+    // Nếu bản ghi không tồn tại, Prisma sẽ throw lỗi, chúng ta có thể bỏ qua
+    if (error.code === 'P2025') {
+        return NextResponse.json({ message: 'Favorite not found, but operation is successful.' }, { status: 200 });
     }
-    console.error("Failed to delete favorite:", error);
+    console.error("API DELETE Favorite Error:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

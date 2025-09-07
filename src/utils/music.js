@@ -1,33 +1,44 @@
-// File này chứa các tiện ích liên quan đến nhạc lý
+// src/utils/music.js
 
-const NOTES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const NOTES_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+// Hàm này sẽ nhận một hợp âm và một lượng để dịch chuyển
+export const transposeChord = (chord, amount) => {
+  // BƯỚC BẢO VỆ (GUARD CLAUSE):
+  // Nếu "chord" không phải là một chuỗi ký tự hợp lệ,
+  // hãy trả về ngay lập tức để tránh bị crash.
+  if (!chord || typeof chord !== 'string') {
+    return chord;
+  }
 
-const transposeChord = (chord, amount) => {
-  const regex = /^([A-G][#b]?)/;
+  // Mảng các nốt nhạc theo thứ tự chromatic
+  const scale = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  const flatScale = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+
+  // Regex để tách nốt gốc và phần còn lại của hợp âm (ví dụ: "m7", "sus4")
+  const regex = /^([A-G][#b]?)(.*)/;
   const match = chord.match(regex);
 
+  // Nếu không khớp với định dạng hợp âm, trả về nguyên bản
   if (!match) return chord;
 
-  const rootNote = match[1];
-  const restOfChord = chord.substring(rootNote.length);
+  const root = match[1];
+  const rest = match[2];
 
-  let noteIndex = NOTES_FLAT.indexOf(rootNote);
-  let scale = NOTES_FLAT;
-  
-  if (noteIndex === -1) {
-    noteIndex = NOTES_SHARP.indexOf(rootNote);
-    scale = NOTES_SHARP;
+  // Tìm vị trí của nốt gốc trong thang âm
+  let rootIndex = scale.indexOf(root);
+  if (rootIndex === -1) {
+    rootIndex = flatScale.indexOf(root);
   }
-  
-  if (noteIndex === -1) return chord;
-  
-  const newNoteIndex = (noteIndex + amount + scale.length) % scale.length;
-  const newRootNote = scale[newNoteIndex];
-  
-  return newRootNote + restOfChord;
+  if (rootIndex === -1) return chord; // Không tìm thấy nốt, trả về nguyên bản
+
+  // Tính toán vị trí mới sau khi dịch chuyển
+  let newIndex = (rootIndex + amount) % 12;
+  if (newIndex < 0) {
+    newIndex += 12;
+  }
+
+  // Lấy nốt mới và ghép lại với phần còn lại
+  const newRoot = scale[newIndex];
+  return newRoot + rest;
 };
 
-// === THAY ĐỔI QUAN TRỌNG NHẤT LÀ ĐÂY ===
-// Chúng ta "xuất khẩu" hàm này ra như là một "gói hàng" mặc định duy nhất.
-export default transposeChord;
+// Bạn có thể thêm các hàm xử lý nhạc lý khác vào đây trong tương lai

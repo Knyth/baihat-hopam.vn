@@ -1,46 +1,32 @@
 // src/components/layout/AuthStatus.js
-"use client";
+// Server Component
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import UserMenu from './UserMenu';
-import styles from './Header.module.css';
+import Link from "next/link";
+import { auth } from "../../lib/auth";
+import UserMenu from "./UserMenu";
+import styles from "./Header.module.css";
 
-export default function AuthStatus() {
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+export default async function AuthStatus() {
+  const session = await auth();
+  const user = session?.user;
 
-  useEffect(() => {
-    // Khi component được tải ở client, nó sẽ gọi API để kiểm tra trạng thái đăng nhập
-    const fetchUser = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        setUser(data.user);
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  if (isLoading) {
-    // Trong khi đang kiểm tra, có thể hiển thị một placeholder trống
-    return <div style={{width: '120px', height: '40px'}}></div>;
+  if (!user) {
+    return (
+      <nav className={styles.nav} aria-label="Tài khoản">
+        <Link href="/auth" className={styles.cta}>
+          Đăng nhập / Đăng ký
+        </Link>
+      </nav>
+    );
   }
 
   return (
-    <>
-      {user ? (
-        <UserMenu user={user} />
-      ) : (
-        <>
-          <Link href="/auth" className={styles.navLink}>Đăng nhập</Link>
-          <Link href="/auth" className={`${styles.navLink} ${styles.signUp}`}>Đăng ký</Link>
-        </>
-      )}
-    </>
+    <nav className={styles.nav} aria-label="Tài khoản">
+      <UserMenu
+        name={user.name || "Bạn"}
+        email={user.email || ""}
+        image={user.image || ""}
+      />
+    </nav>
   );
 }

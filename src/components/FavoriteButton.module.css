@@ -1,0 +1,63 @@
+/* // src/components/FavoriteButton.module.css */
+.favoriteButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    background-color: transparent;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-size: 16px;
+    flex-grow: 1; /* Để nút chiếm không gian đều nhau với nút Tải PDF */
+}
+
+.favoriteButton:hover:not(:disabled) {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.favoriteButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.icon {
+    font-size: 20px;
+    color: #6c757d;
+    transition: all 0.2s ease;
+}
+
+.favorited .icon {
+    color: #e5383b; /* Màu đỏ cho trái tim đã thích */
+    transform: scale(1.1); /* Giữ lại trạng thái phóng to nhẹ khi đã thích */
+}
+
+.favorited {
+    border-color: #ffb3c1;
+    background-color: #fff0f3;
+}
+
+/* === PHẦN MỚI THÊM VÀO === */
+
+/* 1. Lớp này sẽ được thêm vào nút để kích hoạt hiệu ứng */
+.animating .icon {
+    /* Tạm thời ghi đè transform để animation chạy mượt mà */
+    transform: scale(1); 
+    animation: popEffect 0.4s ease-out;
+}
+
+/* 2. Định nghĩa Keyframe cho hiệu ứng "nảy" */
+@keyframes popEffect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5); /* Phóng to lên 150% ở giữa animation */
+    }
+    100% {
+        transform: scale(1.1); /* Kết thúc ở trạng thái đã phóng to nhẹ */
+    }
+}

@@ -1,0 +1,23 @@
+/* src/components/ActionButtonsSkeleton.module.css */
+.skeletonContainer {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.skeletonButton {
+    height: 42px; /* Chiều cao tương đương nút thật */
+    flex-grow: 1;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}

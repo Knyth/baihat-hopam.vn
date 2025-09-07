@@ -1,43 +1,103 @@
 // src/components/layout/UserMenu.js
 "use client";
 
-import { useState } from 'react';
-import Link from 'next/link'; // <-- Đổi 'a' thành 'Link' để điều hướng mượt hơn
-import styles from './Header.module.css';
-import { logout } from './actions';
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+import styles from "./Header.module.css";
 
-export default function UserMenu({ user }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function UserMenu({ name = "Bạn", email = "", image = "" }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
+  const hoverTimer = useRef(null);
 
-  // Không cần hàm handleLogout nữa
+  useEffect(() => {
+    function onDocClick(e) {
+      if (!wrapRef.current) return;
+      if (!wrapRef.current.contains(e.target)) setOpen(false);
+    }
+    function onEsc(e) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("click", onDocClick);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("click", onDocClick);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, []);
+
+  const onEnter = () => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    setOpen(true);
+  };
+  const onLeave = () => {
+    hoverTimer.current = setTimeout(() => setOpen(false), 120);
+  };
+
+  const onFocus = () => setOpen(true);
+  const onBlur = (e) => {
+    if (!wrapRef.current?.contains(e.relatedTarget)) setOpen(false);
+  };
+
+  const initial = (name || email || "B").trim().charAt(0).toUpperCase();
 
   return (
-    <div className={styles.userMenu} onMouseLeave={() => setIsOpen(false)}>
-      <button 
-        className={styles.avatarButton} 
-        onMouseEnter={() => setIsOpen(true)}
-        onClick={() => setIsOpen(!isOpen)} // Thêm onClick để hoạt động tốt hơn trên mobile
+    <div
+      ref={wrapRef}
+      className={`${styles.userMenu} ${open ? styles.open : ""}`}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    >
+      <button
+        type="button"
+        className={styles.userTrigger}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        title={`${name}${email ? ` • ${email}` : ""}`}
       >
-        <span>{user.username}</span>
-        <div className={styles.avatarPlaceholder}>{user.username.charAt(0).toUpperCase()}</div>
+        <span className={styles.userName}>{name}</span>
+        <span className={styles.avatar} aria-hidden="true">
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={image} alt="" />
+          ) : (
+            initial
+          )}
+        </span>
       </button>
 
-      {isOpen && (
-        <div className={styles.dropdown}>
-          <Link href="/my-songs" className={styles.dropdownItem}>Bài hát yêu thích</Link>
-          <Link href="/settings" className={styles.dropdownItem}>Cài đặt tài khoản</Link>
-          <hr className={styles.dropdownDivider} />
-          
-          {/* === NÂNG CẤP QUAN TRỌNG NHẤT === */}
-          {/* Bọc nút Đăng xuất trong một thẻ form để đảm bảo Server Action được kích hoạt đúng cách */}
-          <form action={logout}>
-            <button type="submit" className={styles.dropdownItem}>
+      <div className={styles.dropdown} role="menu">
+        <ul className={styles.dropdownList}>
+          <li role="none">
+            <Link href="/my-songs" role="menuitem" className={styles.dropdownItem}>
+              Bài hát yêu thích
+            </Link>
+          </li>
+          <li role="none">
+            <Link href="/settings" role="menuitem" className={styles.dropdownItem}>
+              Cài đặt tài khoản
+            </Link>
+          </li>
+
+          {/* Vạch ngăn cách chạm sát 2 viền */}
+          <li className={styles.dropdownSep} role="separator" aria-hidden="true" />
+
+          <li role="none">
+            <button
+              type="button"
+              role="menuitem"
+              className={styles.dropdownItemDanger}
+              onClick={() => signOut()}
+            >
               Đăng xuất
             </button>
-          </form>
-
-        </div>
-      )}
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }

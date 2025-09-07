@@ -1,0 +1,65 @@
+/* src/components/layout/Header.module.css */
+
+.header {
+    width: 100%;
+    padding: 1rem 0;
+    background-color: #fff;
+    border-bottom: 1px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.userActions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.username {
+    font-weight: 500;
+    color: #333;
+}
+
+.navButton {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    font-family: inherit; /* Đảm bảo nút dùng font của trang web */
+}
+
+.navButton:hover {
+    background-color: #f8f9fa;
+}
+
+.primary {
+    background-color: #005A9E; /* Màu xanh chủ đạo */
+    color: #fff;
+    border-color: #005A9E;
+}
+
+.primary:hover {
+    background-color: #004a80;
+}

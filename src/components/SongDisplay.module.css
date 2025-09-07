@@ -1,23 +1,66 @@
 /* src/components/SongDisplay.module.css */
 
-.lyricsArea {
-  font-family: 'Lora', serif; /* Font chữ Lora như trong blueprint */
-  font-size: 1.125rem; /* 18px */
-  line-height: 2.2; /* Tăng khoảng cách dòng để dễ đọc hợp âm */
-  color: var(--text-primary);
-  white-space: pre-wrap; /* Giữ lại các khoảng trắng và xuống dòng */
+/* <<< ĐÃ ĐỔI TÊN TỪ .mainLayout THÀNH .songDetailLayout THEO CHỈ THỊ >>> */
+.songDetailLayout {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
 }
 
-.line {
-  margin-bottom: 0.5rem;
+.mainContent {
+    flex: 3;
+    min-width: 0;
+}
+
+.sidebar {
+    flex: 1;
+    position: sticky;
+    top: 80px;
+    /* top: 3rem; */
+    align-self: flex-start;
+    /* Chiều cao của sidebar sẽ tự điều chỉnh theo nội dung của nó */
+    /* Bỏ height và overflow để tránh các lỗi hiển thị không mong muốn */
+}
+
+/* === CLASS CSS CHO TÊN TÁC GIẢ VÀ META === */
+.songMeta {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-top: 0.5rem; /* Thêm một chút khoảng cách với tiêu đề */
+}
+
+.composerLink {
+  color: #005A9E; /* Màu xanh chủ đạo */
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 5px;
+}
+
+.composerLink:hover {
+  text-decoration: underline;
+}
+
+/* Thêm style cho các phần tử khác nếu cần */
+.header h1 {
+    margin-bottom: 0;
+}
+
+.lyricsContainer {
+    margin-top: 1.5rem;
+}
+
+.lyricsLine {
+    margin-bottom: 0.5rem;
+    line-height: 1.8;
 }
 
 .chord {
-  font-family: 'Nunito Sans', sans-serif; /* Dùng font UI cho hợp âm */
-  font-weight: 700;
-  color: var(--primary-color); /* Màu xanh chủ đạo */
-  position: relative;
-  top: -0.8em; /* Đẩy hợp âm lên phía trên dòng text */
-  margin: 0 0.25em;
-  display: inline-block;
+    font-weight: 700;
+    color: #005A9E; /* Màu xanh chủ đạo */
+}
+
+.lineBreak {
+    height: 1rem;
 }

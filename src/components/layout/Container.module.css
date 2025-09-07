@@ -1,0 +1,8 @@
+.container {
+    width: 100%;
+    max-width: 1140px; /* Chiều rộng tối đa của nội dung, bạn có thể thay đổi */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem; /* Khoảng cách lề trái */
+    padding-right: 1.5rem; /* Khoảng cách lề phải */
+}

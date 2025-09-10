@@ -1,0 +1,170 @@
+/* ===== Settings page (CSS Modules) ===== */
+
+/* Heading & subheading */
+.pageHeading {
+  margin: 30px 0 6px;
+  font-size: 40px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #111827;
+}
+.subtitle {
+  margin: 0 0 30px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+/* GIỮ một divider ngang phía dưới heading */
+.divider { height: 1px; background: #e5e7eb; margin: 16px 0 36px; }
+
+/* Wrapper tokens & 2-column layout */
+.wrapper {
+  --color-primary: var(--brand, #005a9e);
+  --color-text: #111827;
+  --color-muted: #6b7280;
+  --color-border: var(--border, #e5e7eb);
+
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;                  /* ✅ có cả column-gap & row-gap */
+  align-items: start;
+
+  padding-bottom: 100px;      /* ✅ Tăng khoảng cách bottom, dể THOÁNG hơn, by Ken */
+}
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 88px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 1px rgba(0,0,0,0.04);
+  padding: 16px;
+}
+.sidebarTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 8px;
+}
+.navList { list-style: none; margin: 0; padding: 0; }
+.navItem {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  display: block;
+  padding: 10px 8px;
+  border-radius: 8px;
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+.navItem:hover { background: #f3f4f6; color: var(--color-primary); }
+.menuActive { background: #E9ECEF; }
+
+/* Content & divider dọc (outer background = màu body) */
+.content {
+  min-width: 0;
+  border-left: 1px solid var(--color-border);
+  padding-left: 36px;
+  background: transparent;   /* trùng outer-background */
+}
+
+/* Card ở cột phải (no border, no shadow) */
+.card { background: transparent; border: none; border-radius: 0; box-shadow: none; }
+.cardHeader { padding: 0 0 10px 0; font-weight: 700; color: var(--color-text); border-bottom: none; background: transparent; }
+.cardBody { padding: 0; }
+
+/* Form */
+.form { max-width: 720px; }
+.inputGrp { margin-bottom: 16px; display: grid; gap: 6px; }
+.label { font-size: 14px; color: var(--color-text); font-weight: 600; }
+
+.input {
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0 12px;
+  width: 100%;                /* ✅ full width trên viewport nhỏ */
+  max-width: none;            /* ✅ bỏ giới hạn 500px để không bó width */
+  outline: none;
+  background: #fff;
+}
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0,90,158,.1);
+}
+.input:disabled { background: #f3f4f6; color: #6b7280; }
+
+/* Helper text */
+.helpText { margin-top: 0; margin-bottom: 6px; font-size: 13px; color: #6b7280; font-weight: 600; font-style: italic; }
+
+/* Alerts */
+.alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; }
+.success { background: #D1FAE5; color: #065F46; }
+.error   { background: #FEE2E2; color: #991B1B; }
+
+/* Buttons (radius 8px) */
+.primaryBtn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  transition: background .15s ease, transform .05s ease, opacity .15s;
+}
+.primaryBtn:hover { filter: brightness(0.92); }
+.primaryBtn:disabled { opacity: .6; cursor: not-allowed; }
+
+/* =================== Responsive =================== */
+
+/* ≤ 1200px: thu nhỏ chút khoảng cách */
+@media (max-width: 1200px) {
+  .wrapper { gap: 32px; }
+  .content { padding-left: 28px; }
+}
+
+/* ≤ 1024px: đổi sang 1 cột, thêm khoảng cách rõ ràng để KHÔNG “stick together” */
+@media (max-width: 1024px) {
+  .wrapper {
+    grid-template-columns: 1fr;  /* 1 cột */
+    gap: 28px;                   /* ✅ row-gap giúp tách content & sidebar */
+  }
+  .content {
+    order: 1;
+    border-left: none;           /* bỏ divider dọc */
+    padding-left: 0;
+  }
+  .sidebar {
+    order: 2;
+    position: static;            /* ✅ tắt sticky để khỏi “dính” khi scroll */
+    margin-top: 6px;             /* ✅ thêm khe thoáng dưới nút */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .form { max-width: none; }     /* form giãn full width */
+}
+
+/* ≤ 768px: typographic scale nhỏ lại, tăng spacing */
+@media (max-width: 768px) {
+  .pageHeading { font-size: 34px; }
+  .subtitle { font-size: 15px; margin-bottom: 24px; }
+  .divider { margin: 12px 0 28px; }
+  .input { height: 42px; }
+  .primaryBtn { height: 40px; }
+}
+
+/* ≤ 640px (mobile): tối ưu khoảng cách & bo góc card menu */
+@media (max-width: 640px) {
+  .pageHeading { font-size: 30px; }
+  .wrapper { gap: 24px; }
+  .sidebar { padding: 14px; border-radius: 10px; }
+  .navItem { padding: 10px 10px; }
+}

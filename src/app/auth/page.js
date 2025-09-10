@@ -1,46 +1,42 @@
 // src/app/auth/page.js
 
-// --- THÊM DÒNG NÀY ĐỂ XỬ LÝ TRIỆT ĐỂ CẢNH BÁO ---
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-import AuthForm from "@/components/AuthForm";
+import AuthForm from '@/components/AuthForm';
 import { registerUser, loginUser } from './actions';
-import { Suspense } from 'react';
 
 const errorMessages = {
-  'CredentialsSignin': 'Email hoặc mật khẩu không đúng.',
-  'Default': 'Đã có lỗi xảy ra. Vui lòng thử lại.'
+  CredentialsSignin: 'Email hoặc mật khẩu không đúng.',
+  Default: 'Đã có lỗi xảy ra. Vui lòng thử lại.',
 };
 
-function AuthFormWrapper({ searchParams }) {
+export default async function AuthPage({ searchParams }) {
+  // ⬇️ Next 15: BẮT BUỘC await
+  const sp = await searchParams;
+  const errorKey = sp?.error;
+  const message = errorMessages[errorKey] || '';
+  const isError = Boolean(errorKey);
+  const callbackUrl = sp?.callbackUrl || '/';
+
   const pageStyles = {
-    display: 'flex', justifyContent: 'center', alignItems: 'flex-start',
-    paddingTop: '5vh', minHeight: '80vh', width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingTop: '5vh',
+    minHeight: '80vh',
+    width: '100%',
   };
 
-  const errorKey = searchParams.error;
-  const message = errorMessages[errorKey] || '';
-  const isError = !!errorKey;
-  const callbackUrl = searchParams.callbackUrl || '/'; 
-  
   return (
     <div style={pageStyles}>
-      <AuthForm 
-        registerUserAction={registerUser} 
+      <AuthForm
+        registerUserAction={registerUser}
         loginUserAction={loginUser}
         initialMessage={message}
         isError={isError}
         callbackUrl={callbackUrl}
       />
     </div>
-  );
-}
-
-export default function AuthPage({ searchParams }) {
-  return (
-    // Sử dụng Suspense là một best practice rất tốt!
-    <Suspense fallback={<div>Loading...</div>}>
-      <AuthFormWrapper searchParams={searchParams} />
-    </Suspense>
   );
 }

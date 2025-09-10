@@ -1,83 +1,52 @@
 // src/app/api/songs/route.js
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-// Hàm trợ giúp: Chuẩn hóa text để tìm kiếm
-function normalizeText(text) {
-  if (!text) return '';
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d");
-}
-
-export async function GET(request) {
+export async function GET(req) {
   try {
-    const { searchParams } = new URL(request.url);
-    const genreSlugs = searchParams.get('genre')?.split(',');
-    const composerQuery = searchParams.get('composer');
-    const sort = searchParams.get('sort');
+    const { searchParams } = new URL(req.url);
+    const q = (searchParams.get('query') || '').trim();
+    const sort = (searchParams.get('sort') || 'latest').trim(); // latest | popular | name_asc
 
-    // === Xây dựng điều kiện LỌC (whereClause) ===
-    const whereClause = {};
+    // --- WHERE ---
+    const whereClause = q
+      ? {
+          OR: [
+            { title: { contains: q, mode: 'insensitive' } },
+            { composer: { name: { contains: q, mode: 'insensitive' } } },
+          ],
+        }
+      : {};
 
-    // 1. Lọc theo Thể loại
-    if (genreSlugs && genreSlugs.length > 0 && genreSlugs[0] !== '') {
-      whereClause.genres = { some: { genre: { slug: { in: genreSlugs } } } };
-    }
-    
-    // 2. Lọc theo Tác giả (ĐÃ NÂNG CẤP)
-    if (composerQuery) {
-      const normalizedQuery = normalizeText(composerQuery);
-      whereClause.composer = {
-        search_name: {
-          contains: normalizedQuery,
-        },
-      };
-    }
-
-    // === Sắp xếp bằng Database (cho các trường hợp đơn giản) ===
-    let orderByClause = {}; 
-    switch (sort) {
-      case 'views':
-        orderByClause = { views: 'desc' };
-        break;
-      // 'name_asc' sẽ được xử lý sau bằng JavaScript
-      case 'newest':
-      default:
-        orderByClause = { created_at: 'desc' };
-        break;
+    // --- ORDER BY ---
+    let orderByClause;
+    if (sort === 'name_asc') {
+      orderByClause = { title: 'asc' };
+    } else if (sort === 'popular') {
+      orderByClause = { views: 'desc' }; // nếu chưa có cột views sẽ bỏ qua case này
+    } else {
+      orderByClause = { createdAt: 'desc' }; // ⬅️ đúng tên cột
     }
 
-    // === Truy vấn Database ===
     const songs = await prisma.song.findMany({
       where: whereClause,
-      // Chỉ áp dụng orderBy nếu không phải sắp xếp theo tên
-      orderBy: sort !== 'name_asc' ? orderByClause : undefined,
+      orderBy: orderByClause,
       select: {
         id: true,
         title: true,
         slug: true,
-        composer: {
-          select: { name: true, slug: true }
-        }
-      }
+        composer: { select: { name: true, slug: true } },
+      },
     });
 
-    // === Sắp xếp chuẩn Tiếng Việt (Áp dụng giải pháp tối ưu) ===
-    if (sort === 'name_asc') {
-      songs.sort((a, b) => {
-        // 'vi' để sắp xếp theo quy tắc tiếng Việt, 'base' để bỏ qua sự khác biệt nhỏ (như hoa/thường)
-        return a.title.localeCompare(b.title, 'vi', { sensitivity: 'base' });
-      });
-    }
-    
-    return NextResponse.json({ data: songs });
-
-  } catch (error) {
-    console.error("Error fetching songs:", error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return Response.json({ songs });
+  } catch (err) {
+    console.error('Error fetching songs:', err);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch songs' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }

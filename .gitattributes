@@ -1,22 +1,20 @@
-# Chuẩn hoá LF cho code/text
+# Chu?n ho? line endings
 * text=auto
-*.js   text eol=lf
-*.jsx  text eol=lf
-*.ts   text eol=lf
-*.tsx  text eol=lf
-*.mjs  text eol=lf
-*.cjs  text eol=lf
-*.css  text eol=lf
-*.scss text eol=lf
-*.json text eol=lf
-*.md   text eol=lf
-*.sql  text eol=lf
-*.toml text eol=lf
-*.prisma text eol=lf
 
-# File nhị phân
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.mp4 binary
+# Shell scripts & Husky hooks: lu?n LF
+*.sh text eol=lf
+.husky/* text eol=lf
+
+# M? ngu?n web: ?u ti?n LF ?? tr?nh diff noise
+*.js  text eol=lf
+*.ts  text eol=lf
+*.jsx text eol=lf
+*.tsx text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# PowerShell scripts: CRLF (Windows ch?y thu?n ti?n)
+*.ps1 text eol=crlf

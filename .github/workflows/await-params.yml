@@ -1,0 +1,40 @@
+﻿name: Await-Params Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Chỉ cần quyền đọc code
+permissions:
+  contents: read
+
+jobs:
+  lint-await-params:
+    runs-on: windows-latest  # chạy trên Windows cho hợp .ps1 CRLF
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # (tuỳ chọn) cache npm cho nhanh hơn
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install deps
+        run: npm ci
+
+      # Dùng script bạn đã có trong package.json
+      - name: Run await-params lint
+        shell: pwsh
+        run: npm run lint:await-params

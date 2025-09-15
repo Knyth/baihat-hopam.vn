@@ -1,0 +1,21 @@
+# EditorConfig gi?p IDE ??ng b? format theo repo
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Web sources (gi? LF)
+[*.{js,jsx,ts,tsx,css,scss,md,json,yml,yaml}]
+end_of_line = lf
+
+# Shell scripts & Husky hooks (LF)
+[*.sh]
+end_of_line = lf
+
+# PowerShell scripts (CRLF cho Windows PowerShell)
+[*.ps1]
+end_of_line = crlf

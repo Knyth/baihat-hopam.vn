@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
 # Run PowerShell script to check 'await params'
 # Try PowerShell 7 (pwsh) first, fallback to Windows PowerShell

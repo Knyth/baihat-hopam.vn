@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "prisma:seed": "prisma db seed",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint:await-params": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-await-params.ps1"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

@@ -1,67 +1,144 @@
 // src/components/RecentlyAddedSection.js
 
-"use client"; // <-- BƯỚC 1: BIẾN NÓ THÀNH CLIENT COMPONENT
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import styles from "./RecentlyAddedSection.module.css";
+import SongCard from "./SongCard";
 
-// Component SongCard bây giờ chỉ là một phần của Client Component, hoàn toàn hợp lệ
-function SongCard({ song }) {
-    // Style tạm thời cho card
-    const cardStyles = {
-        display: 'block',
-        border: '1px solid #ddd',
-        padding: '1rem',
-        borderRadius: '8px',
-        textDecoration: 'none',
-        color: 'inherit',
-        transition: 'box-shadow 0.2s',
+/**
+ * RecentlyAddedSection (v2)
+ * - Auto-hide arrows nếu số bài ≤ 4
+ * - Fallback Grid khi ít bài, Carousel khi nhiều bài
+ * - Có "Xem tất cả" dẫn tới /songs?sort=new
+ */
+export default function RecentlyAddedSection({
+  songs,
+  title = "Mới Cập Nhật",
+  isLoading = false,
+}) {
+  const loading = isLoading || songs === "loading";
+  const list = Array.isArray(songs) ? songs : [];
+
+  const fewItems = list.length <= 4;    // <=4: hiển thị dạng grid gọn
+  const showArrows = !fewItems;         // chỉ hiện mũi tên khi có thể cuộn
+
+  const scrollRef = useRef(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+
+  const updateNavState = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanLeft(scrollLeft > 0);
+    setCanRight(scrollLeft + clientWidth < scrollWidth - 1);
+  }, []);
+
+  useEffect(() => {
+    if (fewItems) return; // grid mode: không cần theo dõi scroll
+    updateNavState();
+    const el = scrollRef.current;
+    if (!el) return;
+    const handler = () => updateNavState();
+    el.addEventListener("scroll", handler, { passive: true });
+    window.addEventListener("resize", handler);
+    return () => {
+      el.removeEventListener("scroll", handler);
+      window.removeEventListener("resize", handler);
     };
+  }, [fewItems, updateNavState]);
 
-    // BƯỚC 2: LOGIC TƯƠNG TÁC ĐƯỢC XỬ LÝ HOÀN TOÀN BÊN TRONG CLIENT COMPONENT
-    const handleMouseOver = (e) => {
-        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-    };
+  const scrollByAmount = useMemo(() => 3 * 280, []);
+  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -scrollByAmount, behavior: "smooth" });
+  const scrollRight = () => scrollRef.current?.scrollBy({ left: scrollByAmount, behavior: "smooth" });
 
-    const handleMouseOut = (e) => {
-        e.currentTarget.style.boxShadow = 'none';
-    };
-
-    return (
-        <Link 
-            href={`/songs/${song.slug}`} 
-            style={cardStyles}
-            onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}
-        >
-            <h3>{song.title}</h3>
-        </Link>
-    );
-}
-
-export default function RecentlyAddedSection({ songs }) {
-  // Styles tạm thời
-  const styles = {
-    section: { padding: '2rem 0' },
-    title: { fontSize: '2rem', marginBottom: '1.5rem' },
-    songsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' },
-    emptyMessage: { color: '#666' }
-  };
+  const skeletons = useMemo(() => new Array(fewItems ? 4 : 8).fill(0), [fewItems]);
 
   return (
-    <section style={styles.section}>
-      <h2 style={styles.title}>Mới Cập Nhật</h2>
-      
-      {Array.isArray(songs) && songs.length > 0 ? (
-        <div style={styles.songsGrid}>
-          {songs.map((song) => (
-            <SongCard key={song.id} song={song} />
-          ))}
+    <section className={styles.section} aria-labelledby="recently-added-title">
+      <div className={styles.container}>
+        <div className={styles.headerRow}>
+          <h2 id="recently-added-title" className={styles.sectionTitle}>{title}</h2>
+
+          <div className={styles.headerActions}>
+            {list.length > 0 && (
+              <Link href="/songs?sort=new" className={styles.viewAll}>Xem tất cả</Link>
+            )}
+            {showArrows && (
+              <div className={styles.navGroup} aria-hidden={!showArrows}>
+                <button
+                  className={styles.navButton}
+                  onClick={scrollLeft}
+                  disabled={!canLeft}
+                  aria-label="Cuộn sang trái"
+                >
+                  ‹
+                </button>
+                <button
+                  className={styles.navButton}
+                  onClick={scrollRight}
+                  disabled={!canRight}
+                  aria-label="Cuộn sang phải"
+                >
+                  ›
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-      ) : (
-        <p style={styles.emptyMessage}>Chưa có bài hát nào được thêm vào.</p>
-      )}
-      
+
+        {/* CONTENT */}
+        {loading && (
+          <div className={fewItems ? styles.grid : styles.carousel} ref={!fewItems ? scrollRef : undefined}>
+            <div className={fewItems ? styles.gridInner : styles.track}>
+              {skeletons.map((_, i) => (
+                <div key={`sk-${i}`} className={styles.skeletonCard} aria-hidden="true">
+                  <div className={styles.skTitle} />
+                  <div className={styles.skMeta} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!loading && list.length > 0 && (
+          fewItems ? (
+            <div className={styles.grid}>
+              <div className={styles.gridInner}>
+                {list.map((song) => (
+                  <div key={song.id} className={styles.item}>
+                    <SongCard song={song} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={styles.carousel} ref={scrollRef}>
+              <div className={styles.track}>
+                {list.map((song) => (
+                  <div key={song.id} className={styles.item}>
+                    <SongCard song={song} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        )}
+
+        {!loading && list.length === 0 && (
+          <div className={styles.emptyWrap}>
+            <div className={styles.emptyState}>
+              <h3>Chưa có bài hát nào được thêm vào</h3>
+              <p>Hãy quay lại sau hoặc khám phá các mục thịnh hành nhé.</p>
+              <Link href="/songs?sort=trending" className={styles.linkButton}>
+                Xem thịnh hành
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

@@ -1,66 +1,91 @@
 // src/app/api/user/favorites/[songId]/route.js
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { getUserFromSession } from '@/lib/auth';
+// POST   → thêm bài vào "yêu thích" của user hiện tại
+// DELETE → bỏ yêu thích
+// Ràng buộc: yêu cầu đăng nhập; songId là số
 
-// --- POST: THÊM MỘT BÀI HÁT VÀO YÊU THÍCH ---
-export async function POST(request, { params }) {
-  const user = await getUserFromSession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  
-  try {
-    const songId = parseInt(params.songId, 10);
-    if (isNaN(songId)) return NextResponse.json({ error: 'Invalid Song ID' }, { status: 400 });
+export const dynamicParams = true;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-    // Sử dụng upsert để tránh lỗi trùng lặp, nếu đã có thì không làm gì
-    await prisma.userFavorite.upsert({
-        where: {
-            userId_songId: {
-                userId: user.userId,
-                songId: songId,
-            }
-        },
-        update: {},
-        create: {
-            userId: user.userId,
-            songId: songId,
-        }
-    });
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth"; // dùng NextAuth helpers của dự án
 
-    return NextResponse.json({ message: 'Favorite added successfully' }, { status: 200 });
-  } catch (error) {
-    console.error("API POST Favorite Error:", error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
+function parseSongId(raw) {
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? Math.trunc(n) : null;
 }
 
+// ====== POST /api/user/favorites/[songId] ======
+export async function POST(request, { params }) {
+  const session = await auth();
+  const userId = session?.user?.id;
 
-// --- DELETE: XÓA MỘT BÀI HÁT KHỎI YÊU THÍCH ---
-export async function DELETE(request, { params }) {
-  const user = await getUserFromSession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // ✅ Next 15: await params
+  const { songId: raw } = await params;
+  const songId = parseSongId(raw);
+  if (!songId) {
+    return NextResponse.json({ error: "Invalid songId" }, { status: 400 });
+  }
 
   try {
-    const songId = parseInt(params.songId, 10);
-    if (isNaN(songId)) return NextResponse.json({ error: 'Invalid Song ID' }, { status: 400 });
+    // Kiểm tra bài có tồn tại không (tránh rác)
+    const exists = await prisma.song.findUnique({
+      where: { id: songId },
+      select: { id: true },
+    });
+    if (!exists) {
+      return NextResponse.json({ error: "Song not found" }, { status: 404 });
+    }
 
-    // Sử dụng delete thay vì deleteMany cho trường hợp này
-    await prisma.userFavorite.delete({
-      where: {
-        userId_songId: {
-            userId: user.userId,
-            songId: songId,
-        },
+    // Tạo bản ghi yêu thích (idempotent)
+    await prisma.userFavorite.upsert({
+      where: { userId_songId: { userId, songId } },
+      update: {}, // đã có thì thôi
+      create: {
+        user: { connect: { id: userId } },
+        song: { connect: { id: songId } },
       },
     });
 
-    return NextResponse.json({ message: 'Favorite removed successfully' }, { status: 200 });
-  } catch (error) {
-    // Nếu bản ghi không tồn tại, Prisma sẽ throw lỗi, chúng ta có thể bỏ qua
-    if (error.code === 'P2025') {
-        return NextResponse.json({ message: 'Favorite not found, but operation is successful.' }, { status: 200 });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Error adding favorite:", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+// ====== DELETE /api/user/favorites/[songId] ======
+export async function DELETE(request, { params }) {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { songId: raw } = await params; // ✅ await
+  const songId = parseSongId(raw);
+  if (!songId) {
+    return NextResponse.json({ error: "Invalid songId" }, { status: 400 });
+  }
+
+  try {
+    await prisma.userFavorite.delete({
+      where: { userId_songId: { userId, songId } },
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    // Nếu xoá mục không tồn tại → coi như ok (idempotent xoá)
+    if (err?.code === "P2025") {
+      return NextResponse.json({ ok: true });
     }
-    console.error("API DELETE Favorite Error:", error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Error removing favorite:", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

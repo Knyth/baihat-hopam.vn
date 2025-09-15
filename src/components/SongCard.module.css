@@ -2,36 +2,50 @@
 
 .card {
   display: block;
-  background-color: #ffffff; /* Nền trắng như blueprint */
-  border: 1px solid #dee2e6;
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 1.25rem;
+  padding: 1rem;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* box-shadow như blueprint */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color .2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  outline: none;
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  border-color: var(--primary-color);
+}
+
+.card:focus-visible {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0,90,158,0.2), 0 4px 12px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
 }
 
 .songTitle {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #212529;
-  /* Ngăn không cho tiêu đề quá dài */
-  white-space: nowrap;
+  margin-bottom: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .displayName {
   font-size: 0.9rem;
-  color: #6c757d;
-  margin-top: 0.25rem;
-  white-space: nowrap;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.displayNameMuted {
+  font-size: 0.9rem;
+  color: #9aa3ab;
 }

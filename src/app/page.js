@@ -1,71 +1,87 @@
 // src/app/page.js
 
-// import HeroSection from "@/components/HeroSection";
-// import RecentlyAddedSection from "@/components/RecentlyAddedSection";
-// import TrendingSection from "@/components/TrendingSection";
-// import BrowseByGenreSection from "@/components/BrowseByGenreSection";
-// import FeaturedComposersSection from "@/components/FeaturedComposersSection";
-// import SignUpCtaSection from "@/components/SignUpCtaSection";
+import { Suspense } from "react";
+import prisma from "@/lib/prisma";
 
-// export default function HomePage() {
-//   return (
-//     <main>
-//       <HeroSection />
-//       <RecentlyAddedSection />
-//       <TrendingSection />
-//       <BrowseByGenreSection />
-//       <FeaturedComposersSection />
-//       <SignUpCtaSection />
-//     </main>
-//   );
-// }
+// ✅ Giữ nguyên Hero (server component) ở đầu trang
+import HeroSection from "@/components/HeroSection";
 
+// ✅ Recently Added (nhận songs từ server)
+import RecentlyAddedSection from "@/components/RecentlyAddedSection";
 
+// ✅ Container (bao lề đồng bộ theo thiết kế hiện tại)
+import Container from "@/components/layout/Container";
 
-// =================NEW=====================
+// ✅ NEW: Trending Section + Skeleton
+import TrendingSection from "@/components/TrendingSection";
+import TrendingSkeleton from "@/components/TrendingSkeleton";
 
-// src/app/page.js
+// ✅ ISR cho trang chủ: tự làm mới mỗi 120s (có thể chỉnh 60/180 tuỳ nhu cầu)
+export const revalidate = 120;
 
-import prisma from '@/lib/prisma';
-// import HeroSection from '@/components/HeroSection'; // Tạm thời comment nếu chưa có
-import RecentlyAddedSection from '@/components/RecentlyAddedSection';
-import Container from '@/components/layout/Container';
-
-async function getRecentSongs() {
+/**
+ * Lấy 8 bài hát mới nhất cho Homepage.
+ * - Chỉ select field cần dùng để tối ưu.
+ * - Chuẩn hoá artists => [{ name }] khớp với SongCard/RecentlyAddedSection.
+ */
+async function getRecentSongs(limit = 8) {
   try {
     const songs = await prisma.song.findMany({
-      take: 8,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
+      take: limit,
+      orderBy: { createdAt: "desc" }, // ⚠️ Nếu schema dùng created_at → đổi cho đúng
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        createdAt: true,
+        composer: { select: { name: true } },
         artists: {
-          include: {
-            artist: {
-              select: { name: true }
-            }
-          }
-        }
-      }
+          select: {
+            artist: { select: { name: true } },
+          },
+        },
+      },
     });
-    return songs.map(song => ({
-      ...song,
-      artists: song.artists.map(sa => sa.artist)
+
+    // Map artists từ { artists: [{ artist: { name } }] } → { artists: [{ name }] }
+    return songs.map((song) => ({
+      id: song.id,
+      slug: song.slug,
+      title: song.title,
+      createdAt: song.createdAt,
+      composer: song.composer || null,
+      artists: (song.artists || []).map((sa) => sa.artist), // [{ name }]
     }));
   } catch (error) {
     console.error("Failed to fetch recent songs:", error);
-    return []; // Quan trọng: Luôn trả về mảng rỗng khi có lỗi
+    return [];
   }
 }
 
 export default async function HomePage() {
-  const recentSongs = await getRecentSongs();
+  const recentSongs = await getRecentSongs(8);
 
   return (
     <main>
-      {/* <HeroSection /> */}
+      {/* ✅ Hero Section — giữ nguyên */}
+      <HeroSection />
+
+      {/* ✅ Recently Added — theo blueprint, ngay sau Hero */}
       <Container>
         <RecentlyAddedSection songs={recentSongs} />
+      </Container>
+
+      {/* ✅ NEW: Trending This Week — chèn ngay sau Recently Added, bọc Suspense */}
+      <Container>
+        <Suspense fallback={<TrendingSkeleton rows={6} variant="list" />}>
+          <TrendingSection
+            layout="list"
+            limit={8}
+            showMetric="views"
+            title="Thịnh hành trong Tuần"
+            viewAllHref="/songs?sort=trending"
+          />
+        </Suspense>
       </Container>
     </main>
   );

@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run PowerShell script to check 'await params'
+# Try PowerShell 7 (pwsh) first, fallback to Windows PowerShell
+if command -v pwsh >/dev/null 2>&1; then
+  pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/check-await-params.ps1 || exit 1
+else
+  powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-await-params.ps1 || exit 1
+fi

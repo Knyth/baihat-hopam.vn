@@ -1,12 +1,12 @@
 // src/components/TrendingSection.js
-// Giữ nguyên form + chiều rộng; chỉ thêm metric (số + pill "7 ngày")
+// UPDATED: nhận props, gọi API với ?limit&days, hiển thị badge #rank, optional metric
 
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./TrendingSection.module.css";
-import TrendingSkeleton from "./TrendingSkeleton";
+import TrendingSkeleton from "./TrendingSkeleton"; // NEW
 
 function rankClass(idx) {
   if (idx === 0) return styles.rank1;
@@ -18,9 +18,9 @@ function rankClass(idx) {
 export default function TrendingSection({
   title = "Thịnh hành trong Tuần",
   limit = 8,
-  layout = "list",             // 'list' | 'grid'
+  layout = "list", // 'list' | 'grid' (đã hỗ trợ cả 2)
   viewAllHref = "/songs?sort=trending",
-  showMetric = "views",        // 'views' | null
+  showMetric = "views", // 'views' | null
   days = 7,
 }) {
   const [songs, setSongs] = useState([]);
@@ -33,10 +33,9 @@ export default function TrendingSection({
     async function fetchTrending() {
       try {
         setIsLoading(true);
-        const res = await fetch(
-          `/api/songs/trending?limit=${encodeURIComponent(limit)}&days=${encodeURIComponent(days)}`,
-          { signal: controller.signal }
-        );
+        const res = await fetch(`/api/songs/trending?limit=${encodeURIComponent(limit)}&days=${encodeURIComponent(days)}`, {
+          signal: controller.signal,
+        });
         if (!res.ok) throw new Error("Failed to fetch trending");
         const data = await res.json();
         if (!ignore) setSongs(Array.isArray(data) ? data : []);
@@ -87,14 +86,9 @@ export default function TrendingSection({
                       <Link href={`/songs/${song.slug}`}>{song.title}</Link>
                     </h3>
                     <p className={styles.displayName}>{displayName}</p>
-
                     {showMetric === "views" && (
-                      <div className={styles.metric} aria-label="Lượt xem trong 7 ngày">
-                        <span className={styles.metricNumber}>
-                          {Intl.NumberFormat("vi-VN").format(song.views || 0)}
-                        </span>
-                        {/* >>> pill 7 ngày (bo góc nhỏ) */}
-                        <span className={styles.metricHint}>7 ngày</span>
+                      <div className={styles.metric} aria-label="Lượt xem">
+                        {Intl.NumberFormat("vi-VN").format(song.views || 0)} lượt xem
                       </div>
                     )}
                   </li>
@@ -108,21 +102,15 @@ export default function TrendingSection({
                 return (
                   <li key={song.id} className={styles.songListItem}>
                     <div className={`${styles.songRank} ${rankClass(index)}`}>{index + 1}</div>
-
                     <div className={styles.songInfo}>
                       <h3 className={styles.songTitle}>
                         <Link href={`/songs/${song.slug}`}>{song.title}</Link>
                       </h3>
                       <p className={styles.displayName}>{displayName}</p>
                     </div>
-
                     {showMetric === "views" && (
-                      <div className={styles.metric} aria-label="Lượt xem trong 7 ngày">
-                        <span className={styles.metricNumber}>
-                          {Intl.NumberFormat("vi-VN").format(song.views || 0)}
-                        </span>
-                        {/* >>> pill 7 ngày (bo góc nhỏ) */}
-                        <span className={styles.metricHint}>7 ngày</span>
+                      <div className={styles.metric} aria-label="Lượt xem">
+                        {Intl.NumberFormat("vi-VN").format(song.views || 0)}
                       </div>
                     )}
                   </li>

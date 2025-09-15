@@ -31,9 +31,6 @@ model Song {
   genres       SongGenre[]
   favoritedBy  UserFavorite[]
 
-  // NEW: quan hệ với bảng sự kiện view
-  viewEvents   SongView[]
-
   @@map("songs")
 }
 
@@ -43,7 +40,7 @@ model Artist {
   slug      String   @unique
   bio       String?
   imageUrl  String?  @map("image_url")
-
+  
   songs     SongArtist[]
 
   @@map("artists")
@@ -53,10 +50,10 @@ model Composer {
   id          Int      @id @default(autoincrement())
   name        String   @unique
   slug        String   @unique
-  search_name String
+  search_name String   // <<< THÊM VÀO ĐỂ FIX LỖI SEED
   bio         String?
   imageUrl    String?  @map("image_url")
-
+  
   songs     Song[]
 
   @@map("composers")
@@ -67,7 +64,7 @@ model Genre {
   name        String   @unique
   slug        String   @unique
   description String?
-
+  
   songs       SongGenre[]
 
   @@map("genres")
@@ -136,16 +133,17 @@ model Session {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?
+  name          String?   // Giữ lại 'name' làm tên hiển thị chính
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   password_hash String?
   image         String?
-
+  
   accounts      Account[]
   sessions      Session[]
   favorites     UserFavorite[]
   contributed   Song[]         @relation("ContributedSongs")
+  // <<< XÓA BỎ 'username' ĐỂ ĐƠN GIẢN HÓA
 
   @@map("users")
 }
@@ -157,22 +155,4 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
-}
-
-/* ====================== NEW MODEL ======================
-   Ghi nhận các sự kiện view (ẩn danh) để tổng hợp 7 ngày gần nhất.
-   - fingerprint: mã ẩn danh cho visitor (UUID từ localStorage, đã hash)
-   - bucketStart: neo theo block 8 giờ để chống spam (mỗi visitor x song x bucket chỉ tính 1 lần)
-*/
-model SongView {
-  id          Int      @id @default(autoincrement())
-  songId      Int      @map("song_id")
-  song        Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
-  fingerprint String   @db.VarChar(64)
-  bucketStart DateTime @map("bucket_start")
-  viewedAt    DateTime @default(now()) @map("viewed_at")
-
-  @@unique([songId, fingerprint, bucketStart])
-  @@index([viewedAt])
-  @@map("song_views")
 }

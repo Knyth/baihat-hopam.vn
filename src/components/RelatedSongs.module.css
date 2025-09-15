@@ -1,0 +1,65 @@
+/* src/components/RelatedSongs.module.css */
+/* NEW: style độc lập, không đụng globals */
+
+.section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-ui);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.viewAll {
+  display: inline-block;
+  padding: .35rem .65rem;
+  border: 1px solid var(--border-color);
+  background: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #343a40;
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
+}
+.viewAll:hover { background:#f1f3f5; border-color: var(--primary-color); transform: translateY(-1px); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.item { min-width: 0; }
+
+/* Skeleton */
+.skeletonCard {
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 1rem;
+  min-height: 84px;
+}
+.skTitle, .skMeta {
+  background: #e9ecef;
+  border-radius: 6px;
+}
+.skTitle { height: 18px; width: 70%; margin-bottom: .5rem; }
+.skMeta  { height: 14px; width: 40%; }
+
+.empty {
+  text-align: center;
+  color: var(--text-secondary);
+}

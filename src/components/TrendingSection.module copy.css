@@ -1,5 +1,5 @@
 /* src/components/TrendingSection.module.css */
-/* Giữ nguyên form & grid; chỉ bổ sung style nhỏ cho pill '7 ngày' */
+/* UPDATED: header row, list/grid, badge thứ hạng, metric, empty state */
 
 .section {
   padding: 3rem 1.5rem;
@@ -58,13 +58,15 @@
 
 .songListItem {
   display: grid;
-  grid-template-columns: 64px 1fr auto; /* giữ nguyên cấu trúc cũ */
+  grid-template-columns: 64px 1fr auto;
   align-items: center;
   gap: 1rem;
   padding: 0.9rem 0;
   border-bottom: 1px solid #dee2e6;
 }
-.songListItem:last-child { border-bottom: none; }
+.songListItem:last-child {
+  border-bottom: none;
+}
 
 .songRank {
   font-size: 1.5rem;
@@ -79,10 +81,9 @@
   background: #fff;
 }
 
-/* top 1/2/3 */
-.rank1 { background: #fff7e6; border-color: #ffd591; color: #ad6800; }
-.rank2 { background: #f5f7fa; border-color: #d9d9d9; color: #434343; }
-.rank3 { background: #fff2e8; border-color: #ffbb96; color: #873800; }
+.rank1 { background: #fff7e6; border-color: #ffd591; color: #ad6800; } /* gold vibe */
+.rank2 { background: #f5f7fa; border-color: #d9d9d9; color: #434343; } /* silver vibe */
+.rank3 { background: #fff2e8; border-color: #ffbb96; color: #873800; } /* bronze vibe */
 
 .songInfo {
   display: flex;
@@ -112,27 +113,10 @@
   overflow: hidden;
 }
 
-/* ===== Metric (số + pill '7 ngày') ===== */
 .metric {
-  display: inline-flex;           /* xếp số + pill ngang hàng */
-  align-items: center;
-  gap: .35rem;
   font-variant-numeric: tabular-nums;
   color: #6c757d;
   font-size: .95rem;
-}
-.metricNumber {
-  min-width: 2ch;
-  text-align: right;
-}
-/* >>> thay đổi theo yêu cầu: bo góc 4px (không phải viên thuốc) */
-.metricHint {
-  padding: 2px 6px;
-  font-size: .75rem;
-  color: #495057;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;             /* <<< CHỈNH 999px -> 4px */
-  background: #fff;
 }
 
 /* ===== GRID ===== */
@@ -144,6 +128,7 @@
   padding: 0;
   margin: 0;
 }
+
 .gridItem {
   position: relative;
   background: var(--container-color);
@@ -174,8 +159,12 @@
   color: #6c757d;
 }
 
-.gridItem .songTitle a { font-size: 1rem; }
-.gridItem .displayName { margin-top: .25rem; }
+.gridItem .songTitle a {
+  font-size: 1rem;
+}
+.gridItem .displayName {
+  margin-top: .25rem;
+}
 .gridItem .metric {
   margin-top: .5rem;
   font-size: .9rem;

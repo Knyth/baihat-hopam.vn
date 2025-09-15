@@ -1,42 +1,51 @@
 // src/app/api/songs/newest/route.js
 
-import prisma from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
+/**
+ * GET /api/songs/newest?limit=10
+ * Trả về các bài hát mới nhất với payload tối giản cho UI.
+ * - Chỉ lấy field cần thiết để nhẹ payload.
+ * - Chuẩn hóa artists thành mảng { name }.
+ */
 export async function GET(request) {
   try {
-    const newestSongs = await prisma.song.findMany({
-      orderBy: {
-        created_at: 'desc', // Sắp xếp theo ngày tạo, mới nhất lên đầu
-      },
-      take: 10, // Lấy 10 bài hát mới nhất
-      include: {
-        composer: {
-          select: { name: true },
-        },
+    const { searchParams } = new URL(request.url);
+    const limitParam = Number(searchParams.get("limit"));
+    const take = Number.isFinite(limitParam) ? Math.min(Math.max(limitParam, 1), 12) : 10;
+
+    const newest = await prisma.song.findMany({
+      orderBy: { created_at: "desc" }, // nếu schema dùng createdAt thì đổi lại
+      take,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        created_at: true,
+        composer: { select: { name: true } },
         artists: {
           select: {
-            artist: {
-              select: { name: true },
-            },
+            artist: { select: { name: true } },
           },
         },
       },
     });
 
-    // Xử lý lại dữ liệu artists cho gọn
-    const formattedSongs = newestSongs.map(song => ({
-      ...song,
-      artists: song.artists.map(sa => sa.artist)
+    const data = newest.map((s) => ({
+      id: s.id,
+      slug: s.slug,
+      title: s.title,
+      composer: s.composer || null,
+      artists: (s.artists || []).map((a) => a.artist),
     }));
-    
-    return NextResponse.json(formattedSongs);
 
-  } catch (error) {
-    console.error("Error fetching newest songs:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json(data, {
+      // (tuỳ) có thể thêm headers cache nếu cần
+      // headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+    });
+  } catch (err) {
+    console.error("Error fetching newest songs:", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

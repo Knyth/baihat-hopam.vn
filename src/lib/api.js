@@ -1,54 +1,51 @@
-// File này sẽ chứa tất cả các hàm để gọi đến API backend của chúng ta
+// src/lib/api.js
 
-// Xác định địa chỉ gốc của API.
-// Khi ở môi trường phát triển (development), nó sẽ là http://localhost:3000
-// Khi triển khai lên Vercel, nó sẽ tự động lấy tên miền của website
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
 /**
- * Hàm để lấy danh sách tất cả các thể loại nhạc từ backend
- * @returns {Promise<Array>} Một mảng chứa các đối tượng genre
+ * Lấy danh sách thể loại
  */
 export async function getAllGenres() {
   try {
-    // Dùng fetch để gửi một yêu cầu GET đến "đường ống" /api/genres
-    const response = await fetch(`${API_BASE_URL}/api/genres`);
-
-    // Nếu phản hồi không thành công (ví dụ: lỗi 404, 500), ném ra một lỗi
-    if (!response.ok) {
-      throw new Error('Lỗi khi lấy dữ liệu thể loại từ API');
-    }
-
-    // Chuyển đổi phản hồi từ dạng text sang dạng JSON
-    const data = await response.json();
-
-    // Trả về dữ liệu đã được xử lý
-    return data;
+    const res = await fetch(`${API_BASE_URL}/api/genres`);
+    if (!res.ok) throw new Error("Lỗi khi lấy dữ liệu thể loại từ API");
+    return await res.json();
   } catch (error) {
-    // In lỗi ra console để gỡ lỗi
-    console.error('Lỗi API (getAllGenres):', error);
-    // Trả về một mảng rỗng để tránh làm sập trang web nếu API lỗi
+    console.error("Lỗi API (getAllGenres):", error);
     return [];
   }
 }
 
 /**
- * Hàm để lấy danh sách tất cả các tác giả từ backend
- * @returns {Promise<Array>} Một mảng chứa các đối tượng composer
+ * Lấy danh sách tác giả
  */
 export async function getAllComposers() {
   try {
-    // Dùng fetch để gửi một yêu cầu GET đến "đường ống" /api/composers
-    const response = await fetch(`${API_BASE_URL}/api/composers`);
-
-    if (!response.ok) {
-      throw new Error('Lỗi khi lấy dữ liệu tác giả từ API');
-    }
-
-    const data = await response.json();
-    return data;
+    const res = await fetch(`${API_BASE_URL}/api/composers`);
+    if (!res.ok) throw new Error("Lỗi khi lấy dữ liệu tác giả từ API");
+    return await res.json();
   } catch (error) {
-    console.error('Lỗi API (getAllComposers):', error);
+    console.error("Lỗi API (getAllComposers):", error);
+    return [];
+  }
+}
+
+/**
+ * Lấy bài hát mới nhất cho Homepage Recently Added
+ * @param {number} limit
+ * @returns {Promise<Array>}
+ */
+export async function getNewestSongs(limit = 10) {
+  try {
+    const url = `${API_BASE_URL}/api/songs/newest?limit=${encodeURIComponent(limit)}`;
+    const res = await fetch(url, {
+      // (tuỳ) Nếu gọi ở server component, bạn có thể đặt revalidate:
+      // next: { revalidate: 60 }
+    });
+    if (!res.ok) throw new Error("Lỗi khi lấy dữ liệu bài hát mới nhất");
+    return await res.json();
+  } catch (error) {
+    console.error("Lỗi API (getNewestSongs):", error);
     return [];
   }
 }

@@ -1,6 +1,6 @@
 /* src/app/globals.css */
 
-/* src/app/globals.css — AFTER - merged & trimmed */
+/* src/app/globals.css — merged & trimmed */
 
 /* === Google Fonts (chỉ import những weight thực sự dùng) === */
 /* Thêm &subset=vietnamese nếu cần thiết */
@@ -111,7 +111,7 @@ a{ color: inherit; text-decoration: none; }
 .download-pdf-main:active{ background:#004a83; border-color:#004a83; transform:scale(.98); opacity:.9; }
 
 /* === List page === */
-.list-page-layout{ display:flex; gap:2rem; max-width:1140px /* 1200px */; margin:0 auto; padding:2rem; align-items:flex-start; }
+.list-page-layout{ display:flex; gap:2rem; max-width:1200px; margin:0 auto; padding:2rem; align-items:flex-start; }
 .list-main-content{ flex:1; min-width:0; }
 .list-sidebar{
   width:300px;

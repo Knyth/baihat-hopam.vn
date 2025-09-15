@@ -3,13 +3,16 @@
 // --- CẤU HÌNH MẠNH MẼ CHO DYNAMIC ROUTE ---
 export const dynamicParams = true;          // cho phép tham số động
 export const dynamic = "force-dynamic";     // luôn render động
-export const revalidate = 0;                 // không cache
+export const revalidate = 0;                // không cache
 
 import prisma from "@/lib/prisma";
 import SongDisplay from "@/components/SongDisplay";
 import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
 import { auth } from "@/lib/auth";
+
+// === NEW: import ViewTracker (client component) để tăng views an toàn ===
+import ViewTracker from "@/components/ViewTracker";
 
 // -------------------- HELPERS --------------------
 async function getSongData(slug) {
@@ -91,6 +94,9 @@ export default async function SongDetailPage({ params }) {
 
   return (
     <Container>
+      {/* === NEW: Tăng views an toàn — chỉ chạy ở client sau khi trang render === */}
+      <ViewTracker slug={slug} />
+
       <SongDisplay
         songData={songData}
         initialIsFavorited={isFavorited}

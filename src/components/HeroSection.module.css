@@ -1,59 +1,120 @@
 /* src/components/HeroSection.module.css */
 
+/* 
+  Design goals:
+  - Centered content with generous vertical rhythm
+  - Optional background image (set via --hero-bg-image)
+  - Soft overlay for readability (even if an image is used)
+  - Responsive typography using clamp()
+*/
+
 .heroSection {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 6rem 1.5rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+  /* Layout */
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
+
+  /* Vertical rhythm: desktop ~6–8rem, mobile ~4rem */
+  padding: clamp(4rem, 8vw, 8rem) 1.5rem;
+
+  /* Background fallback: soft gradient that matches your palette */
+  background:
+    radial-gradient(1200px 600px at 10% -20%, rgba(0,90,158,0.08), transparent 60%),
+    radial-gradient(900px 500px at 110% 120%, rgba(0,90,158,0.06), transparent 55%),
+    var(--background-color);
+
+  /* If a background image is provided via inline style, we render it under the overlay */
+  /* We use a pseudo layer for the image so we can blur/scale slightly without affecting content */
+}
+
+.heroSection::before {
+  /* Background image layer (optional) */
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  /* Use the CSS var if provided, otherwise 'none' means this layer is invisible */
+  background-image: var(--hero-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Gentle, cinematic feel without distraction */
+  filter: blur(2px) saturate(0.9) brightness(0.9);
+  transform: scale(1.03);
+  z-index: 0;
+}
+
+.heroSection::after {
+  /* Soft overlay to keep text readable on any bg */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.75) 0%,
+    rgba(255,255,255,0.85) 40%,
+    rgba(255,255,255,0.95) 100%
+  );
+  z-index: 0;
 }
 
 .heroContent {
-  max-width: 800px;
+  position: relative;
+  z-index: 1; /* above bg layers */
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .heroTitle {
-  font-size: 2.8rem;
-  font-weight: 700;
-  color: #212529;
-  line-height: 1.2;
+  font-family: var(--font-ui);
+  font-synthesis-weight: none;   /* ✅ NGĂN FAUX BOLD */
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+
+  /* clamp(min, vw-based, max) for fluid type */
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
+
+  /* Prefer the darker heading color; your globals set --text-main */
+  color: #212529; /* matches blueprint heading tone */
 }
 
 .heroSubtitle {
-  font-size: 1.25rem;
-  color: #6c757d;
+  font-family: var(--font-content);
   margin-top: 1rem;
   margin-bottom: 2.5rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+
+  /* Slightly smaller, also fluid */
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
 }
 
 .heroCtaButton {
   display: inline-block;
-  background-color: #005A9E;
+  background-color: var(--primary-color);
   color: #ffffff;
-  padding: 0.8rem 2.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 6px;
+  padding: 0.85rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 8px;
   text-decoration: none;
-  transition: background-color 0.2s ease-in-out, transform 0.2s ease;
+  transition: background-color 0.18s ease-in-out, transform 0.18s ease, box-shadow 0.18s ease;
+  will-change: transform;
 }
 
 .heroCtaButton:hover {
   background-color: #004a80;
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 90, 158, 0.25);
 }
 
-/* === MEDIA QUERY CHO HERO SECTION === */
+/* === Mobile refinements === */
 @media (max-width: 768px) {
-  .heroSection {
-    padding: 4rem 1rem; /* Giảm padding */
-  }
-  .heroTitle {
-    font-size: 2.2rem; /* Giảm cỡ chữ */
-  }
-  .heroSubtitle {
-    font-size: 1.1rem; /* Giảm cỡ chữ */
+  .heroContent { max-width: 680px; }
+  .heroCtaButton {
+    width: auto;
   }
 }

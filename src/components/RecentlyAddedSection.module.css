@@ -1,7 +1,6 @@
-/* src/components/RecentlyAddedSection.module.css */
-
 .section {
-  padding: 4rem 1.5rem;
+  padding: 3rem 1.5rem;
+  background: transparent;
 }
 
 .container {
@@ -9,42 +8,150 @@
   margin: 0 auto;
 }
 
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
 .sectionTitle {
-  font-size: 2rem;
+  font-family: var(--font-ui);
+  font-size: 1.75rem;
   font-weight: 700;
   color: #212529;
-  margin-bottom: 2rem;
-  text-align: center;
 }
 
-.songsGrid {
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.viewAll {
+  display: inline-block;
+  padding: .4rem .7rem;
+  border: 1px solid var(--border-color);
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #343a40;
+  transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
+}
+.viewAll:hover {
+  background: #e9ecef;
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.navGroup {
+  display: flex;
+  gap: .5rem;
+}
+
+.navButton {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
+}
+.navButton:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+.navButton:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* ====== GRID (fallback khi ít bài) ====== */
+.grid {
+  overflow: visible;
+}
+.gridInner {
   display: grid;
-  /* Mặc định là 4-5 cột trên màn hình lớn */
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem; 
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
 }
 
-/* === MEDIA QUERY ĐƯỢC THÊM VÀO === */
-/* Khi màn hình có chiều rộng từ 768px trở xuống (máy tính bảng) */
+/* ====== CAROUSEL (khi nhiều bài) ====== */
+.carousel {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+  scrollbar-gutter: stable; /* chừa rãnh chỉ cho vùng cuộn ngang */
+}
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(240px, 280px);
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
+  padding-bottom: .25rem;
+}
+.item {
+  scroll-snap-align: start;
+}
+
+/* ====== Skeletons ====== */
+.skeletonCard {
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 1rem;
+  min-height: 84px;
+}
+.skTitle, .skMeta {
+  background: #e9ecef;
+  border-radius: 6px;
+}
+.skTitle {
+  height: 18px;
+  width: 70%;
+  margin-bottom: .5rem;
+}
+.skMeta {
+  height: 14px;
+  width: 40%;
+}
+
+/* ====== Empty ====== */
+.emptyWrap { margin-top: .5rem; }
+.emptyState {
+  text-align: center;
+  background: var(--container-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2rem 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.emptyState h3 { font-size: 1.25rem; margin-bottom: .5rem; }
+.emptyState p { color: var(--text-secondary); margin-bottom: 1rem; }
+.linkButton {
+  display: inline-block;
+  background: var(--primary-color);
+  color: #fff;
+  padding: .6rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color .2s ease, transform .2s ease;
+}
+.linkButton:hover { background: #004a80; transform: translateY(-1px); }
+
+/* ====== Responsive ====== */
 @media (max-width: 768px) {
-  .section {
-    padding: 3rem 1rem; /* Giảm padding trên màn hình nhỏ */
-  }
-  .sectionTitle {
-    font-size: 1.8rem; /* Giảm cỡ chữ tiêu đề */
-  }
-  .songsGrid {
-    /* Hiển thị 2 cột */
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem; /* Giảm khoảng cách */
-  }
+  .section { padding: 2rem 1rem; }
+  .sectionTitle { font-size: 1.5rem; }
+  .track { gap: .75rem; grid-auto-columns: minmax(220px, 1fr); }
 }
-
-/* Khi màn hình có chiều rộng từ 480px trở xuống (điện thoại) */
-@media (max-width: 480px) {
-  .songsGrid {
-    /* Hiển thị 1 cột duy nhất */
-    grid-template-columns: 1fr;
-  }
-}
-

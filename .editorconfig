@@ -1,4 +1,4 @@
-# EditorConfig gi?p IDE ??ng b? format theo repo
+﻿# EditorConfig giúp IDE đồng bộ format theo repo
 root = true
 
 [*]
@@ -8,7 +8,7 @@ indent_size = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Web sources (gi? LF)
+# Web sources (giữ LF)
 [*.{js,jsx,ts,tsx,css,scss,md,json,yml,yaml}]
 end_of_line = lf
 
@@ -19,3 +19,7 @@ end_of_line = lf
 # PowerShell scripts (CRLF cho Windows PowerShell)
 [*.ps1]
 end_of_line = crlf
+
+
+# Keep .editorconfig as LF
+.editorconfig text eol=lf

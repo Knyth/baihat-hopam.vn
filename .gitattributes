@@ -18,3 +18,5 @@
 
 # PowerShell scripts: CRLF (Windows ch?y thu?n ti?n)
 *.ps1 text eol=crlf
+
+.editorconfig text eol=lf

@@ -1,113 +1,174 @@
-﻿/**
- * src/app/composers/[slug]/page.js
- * Composer detail page: fix 404 + SEO metadata + JSON-LD
- * KHÔNG đụng Header/Hero/Recently/Footer/globals.css
- */
+﻿// src/app/composers/[slug]/page.js
 
-import prisma from "@/lib/prisma";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import SongList from "@/components/SongList";
-import ComposerJsonLd from "@/components/seo/ComposerJsonLd";
+import prisma from "@/lib/prisma";
+import { toSlug, normalizeName } from "@/utils/text";
+import styles from "./page.module.css";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  process.env.NEXTAUTH_URL ||
-  "http://localhost:3000";
+// Selects (JS thuần)
+const composerSelectLight = {
+  id: true,
+  name: true,
+  slug: true,
+  description: true,
+  bio: true,
+  imageUrl: true,
+};
 
-// ------ SEO ------
+const composerSelectFull = {
+  ...composerSelectLight,
+  songs: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      originalKey: true,
+      rhythm: true,
+      tempo: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  },
+};
+
+// ---------- SEO ----------
 export async function generateMetadata({ params }) {
-  const { slug } = await params; // ✅ Next 15: phải await params
+  const { slug } = await params; // Next 15: phải await params
+  if (!slug) return {};
 
   const composer = await prisma.composer.findUnique({
     where: { slug },
-    select: { name: true },
+    select: { name: true, description: true },
   });
 
-  if (!composer) {
-    return {
-      title: "Nhạc sĩ không tồn tại",
-      description: "Trang bạn yêu cầu không tồn tại.",
-      robots: { index: false, follow: false },
-    };
-  }
+  if (!composer) return {};
 
-  const title = `Nhạc sĩ ${composer.name} – Hợp âm & bài hát`;
-  const description = `Các bài hát/hợp âm của nhạc sĩ ${composer.name} – được cập nhật thường xuyên.`;
-  const url = `${SITE_URL}/composers/${slug}`;
+  const title = `Nhạc sĩ ${composer.name}`;
+  const description =
+    composer.description ||
+    `Các bài hát nổi bật của nhạc sĩ ${composer.name} trên baihat-hopam.vn.`;
 
   return {
     title,
     description,
-    alternates: { canonical: url },
-    openGraph: {
-      title,
-      description,
-      url,
-      type: "profile",
-      siteName: "baihat-hopam.vn",
-      locale: "vi_VN",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
+    openGraph: { title, description },
   };
 }
 
-// ------ Page ------
-export default async function ComposerPage({ params }) {
-  const { slug } = await params; // ✅ Next 15: phải await params
-
-  const composer = await prisma.composer.findUnique({
+// ---------- Helper: tìm composer an toàn theo slug ----------
+async function findComposerBySlugSafe(slug) {
+  // 1) Exact slug
+  const exact = await prisma.composer.findUnique({
     where: { slug },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-    },
+    select: composerSelectFull,
   });
+  if (exact) return exact;
 
-  if (!composer) {
-    notFound();
+  // 2) Fallback: so khớp gần đúng
+  const light = await prisma.composer.findMany({ select: composerSelectLight });
+
+  // a) Tìm theo slug
+  const fromSlug = light.find((c) => c.slug === slug);
+  if (fromSlug) {
+    const full = await prisma.composer.findUnique({
+      where: { slug: fromSlug.slug },
+      select: composerSelectFull,
+    });
+    if (full) return full;
   }
 
-  const songs = await prisma.song.findMany({
-    where: { composerId: composer.id },
-    orderBy: [{ updatedAt: "desc" }, { views: "desc" }],
-    take: 30,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      views: true,
-      composer: { select: { name: true } },
-      artists: { select: { artist: { select: { name: true } } } },
-    },
-  });
+  // b) Tìm theo tên chuẩn hoá
+  const target = slug.replace(/-/g, " ");
+  const normTarget = normalizeName(target);
+  const byName = light.find(
+    (c) => normalizeName(c.name) === normTarget || toSlug(c.name) === slug
+  );
+  if (byName) {
+    const full = await prisma.composer.findUnique({
+      where: { slug: byName.slug },
+      select: composerSelectFull,
+    });
+    if (full) return full;
+  }
 
-  const songItems = songs.map((s) => ({
-    id: s.id,
-    slug: s.slug,
-    title: s.title,
-    views: s.views,
-    composer: s.composer || null,
-    artists: (s.artists || []).map((a) => a.artist),
-  }));
+  return null;
+}
+
+// ---------- Page ----------
+export default async function ComposerPage({ params }) {
+  const { slug } = await params; // Next 15: phải await params
+  if (!slug) return notFound();
+
+  const composer = await findComposerBySlugSafe(slug);
+  if (!composer) return notFound();
 
   return (
-    <div className="container" style={{ paddingTop: "1.25rem", paddingBottom: "3rem" }}>
-      <ComposerJsonLd composer={composer} songs={songItems} baseUrl={SITE_URL} />
+    // Header/Hero/Recently/Trending/Footer render từ layout; ở đây chỉ là CONTENT
+    <main>
+      <div
+        className="container"
+        style={{
+          // fallback để chắc chắn 1140px đúng spec
+          maxWidth: "1140px",
+          marginLeft: "auto",
+          marginRight: "auto",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+        }}
+      >
+        {/* === HERO CARD === */}
+        <section className={styles.hero}>
+          {composer.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={composer.imageUrl}
+              alt={composer.name}
+              className={styles.avatar}
+            />
+          ) : (
+            <div className={styles.avatarPlaceholder} aria-hidden />
+          )}
 
-      <header style={{ marginBottom: "1rem" }}>
-        <h1 className="text-4xl font-bold">Nhạc sĩ {composer.name}</h1>
-      </header>
+          <div className={styles.heroBody}>
+            <h1 className={styles.pageTitle}>Nhạc sĩ {composer.name}</h1>
 
-      {songItems.length > 0 ? (
-        <SongList songs={songItems} />
-      ) : (
-        <p>Chưa có bài hát nào của nhạc sĩ này.</p>
-      )}
-    </div>
+            {(composer.description || composer.bio) && (
+              <p className={styles.description}>
+                {composer.description || composer.bio}
+              </p>
+            )}
+
+            <div className={styles.meta}>
+              <span className={styles.badge}>Nhạc sĩ</span>
+              {Array.isArray(composer.songs) && (
+                <span>{composer.songs.length} bài hát</span>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* === DANH SÁCH BÀI HÁT === */}
+        <section>
+          {composer.songs?.length ? (
+            <ul className={styles.list}>
+              {composer.songs.map((s) => (
+                <li key={s.id} className={styles.item}>
+                  <Link href={`/songs/${s.slug}`} className={styles.songLink}>
+                    {s.title}
+                  </Link>
+                  <div className={styles.subline}>{composer.name}</div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className={styles.empty}>
+              Chưa có bài hát nào được ghi nhận cho tác giả này.
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
   );
 }

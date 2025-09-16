@@ -1,0 +1,109 @@
+/* src/app/composers/[slug]/page.module.css */
+
+/* ===== Hero Card ===== */
+.hero {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--border-color, #dee2e6);
+  border-radius: 12px;
+  background: var(--background-color, #f8f9fa);
+  margin: 24px 0 12px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #dee2e6);
+}
+
+.avatarPlaceholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f1f3f5, #e9ecef);
+  border: 1px solid var(--border-color, #dee2e6);
+}
+
+.heroBody { min-width: 0; }
+
+/* ===== Title & Description ===== */
+.pageTitle {
+  margin: 0 0 6px;
+  line-height: 1.2;
+  color: var(--text-main, #212529);
+  font-weight: 700; /* bạn có thể hạ xuống 600 nếu muốn nhẹ hơn */
+  font-size: 32px;
+}
+
+.description {
+  margin: 0 0 8px;
+  color: var(--text-secondary, #6c757d);
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+.meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: var(--text-secondary, #6c757d);
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary-color, #005A9E);
+}
+
+/* ===== List ===== */
+.list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color, #dee2e6);
+}
+
+.songLink {
+  text-decoration: none;
+  font-weight: 500;
+  color: var(--primary-color, #005A9E);
+  font-size: 18px;
+  font-family: var(--font-ui);
+}
+
+.songLink:hover,
+.songLink:focus {
+  text-decoration: underline;
+}
+
+.subline {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--text-secondary, #6c757d);
+}
+
+/* ===== Empty State ===== */
+.empty {
+  padding: 16px;
+  border: 1px dashed var(--border-color, #dee2e6);
+  border-radius: 12px;
+  color: var(--text-secondary, #6c757d);
+  background: var(--background-color, #f8f9fa);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .hero { grid-template-columns: 1fr; }
+  .avatar, .avatarPlaceholder { width: 100%; height: 180px; }
+}

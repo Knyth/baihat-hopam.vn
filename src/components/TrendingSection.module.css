@@ -159,7 +159,7 @@
   box-shadow: 0 8px 16px rgba(0,0,0,0.08);
 }
 
-.rankBadge {
+/* .rankBadge {
   position: absolute;
   top: .5rem;
   left: .5rem;
@@ -172,7 +172,7 @@
   display: grid;
   place-items: center;
   color: #6c757d;
-}
+} */
 
 .gridItem .songTitle a { font-size: 1rem; }
 .gridItem .displayName { margin-top: .25rem; }

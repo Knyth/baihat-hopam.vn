@@ -1,66 +1,59 @@
 /* src/components/SongDisplay.module.css */
 
-/* <<< ĐÃ ĐỔI TÊN TỪ .mainLayout THÀNH .songDetailLayout THEO CHỈ THỊ >>> */
-.songDetailLayout {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+/* Bố cục riêng của trang bài hát (dùng cùng globals.css) */
+.songDetailLayout{ display:flex; gap:2rem; }
+.mainContent{ flex:1; min-width:0; }
+
+/* Sidebar sticky – dùng biến top để không chui vào header */
+.sidebar{
+  width:350px;
+  position: sticky;
+  /* ĐỒNG BỘ với globals: dùng alias --sticky-top đã map sang --control-sticky-top */
+  top: var(--sticky-top);
+  align-self: flex-start;
 }
 
-.mainContent {
-    flex: 3;
-    min-width: 0;
+/* Header & meta */
+.header{ margin-bottom:1rem; }
+.songMeta{ color:#6c757d; }
+.composerLink{ color:#005A9E; text-decoration:none; font-weight:500; margin-left:5px; }
+.composerLink:hover{ text-decoration:underline; }
+
+/* Divider ngay dưới header (giống panel-divider) */
+.sectionDivider{
+  border: 0;
+  height: 1px;
+  background: var(--border-color);
+  /* Khoảng cách phía trên nhẹ, phía dưới = verse-gap để match giữa các đoạn */
+  margin: .5rem 0 var(--verse-gap, 1.125rem);
 }
 
-.sidebar {
-    flex: 1;
-    position: sticky;
-    top: 80px;
-    /* top: 3rem; */
-    align-self: flex-start;
-    /* Chiều cao của sidebar sẽ tự điều chỉnh theo nội dung của nó */
-    /* Bỏ height và overflow để tránh các lỗi hiển thị không mong muốn */
+/* Lyrics */
+.lyricsContainer{ line-height:1.7; white-space:pre-wrap; }
+.lyricsLine{
+  margin: .125rem 0;
+  /* Tránh ngắt trang ngay giữa mỗi dòng khi render PDF */
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
-/* === CLASS CSS CHO TÊN TÁC GIẢ VÀ META === */
-.songMeta {
-    font-size: 1rem;
-    color: #6c757d;
-    margin-top: 0.5rem; /* Thêm một chút khoảng cách với tiêu đề */
+/* Khoảng đệm giữa các đoạn (verse).
+   Dùng var(--verse-gap) nếu đã được định nghĩa ở globals; 
+   nếu chưa có, fallback 1.125rem (matching spacing bạn đang dùng). */
+.lineBreak{
+  height: var(--verse-gap, 1.125rem);
 }
 
-.composerLink {
-  color: #005A9E; /* Màu xanh chủ đạo */
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 5px;
+/* Chord màu theo biến toàn cục */
+.chord{
+  color: var(--chord-color, var(--primary-color));
+  font-weight:700;
+  transition: color .15s ease, text-shadow .15s ease;
 }
-
-.composerLink:hover {
-  text-decoration: underline;
-}
-
-/* Thêm style cho các phần tử khác nếu cần */
-.header h1 {
-    margin-bottom: 0;
-}
-
-.lyricsContainer {
-    margin-top: 1.5rem;
-}
-
-.lyricsLine {
-    margin-bottom: 0.5rem;
-    line-height: 1.8;
-}
-
-.chord {
-    font-weight: 700;
-    color: #005A9E; /* Màu xanh chủ đạo */
-}
-
-.lineBreak {
-    height: 1rem;
+.chord:hover{ text-shadow: 0 0 0.01px currentColor; }
+.chord:active{ text-shadow: none; color:#003e6d; }
+.chord:focus-visible{
+  outline: 2px solid rgba(0,90,158,.35);
+  outline-offset: 1px;
+  border-radius: 2px;
 }

@@ -26,16 +26,16 @@
 
 .genreTag {
   background-color: #ffffff;
-  color: #005A9E; /* Màu chữ là màu xanh chủ đạo */
-  border: 1px solid #005A9E;
+  color: #005a9e;
+  border: 1px solid #005a9e;
   padding: 0.6rem 1.5rem;
-  border-radius: 50px; /* Bo tròn để tạo thành tag */
+  border-radius: 50px;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
 }
 
 .genreTag:hover {
-  background-color: #005A9E;
+  background-color: #005a9e;
   color: #ffffff;
 }

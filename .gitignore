@@ -45,3 +45,8 @@ next-env.d.ts
 # Confidential
 .env
 
+
+# temp/sample
+import-samples/
+src/app/admin/
+src/app/api/admin/

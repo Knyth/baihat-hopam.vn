@@ -16,6 +16,12 @@ import Container from "@/components/layout/Container";
 import TrendingSection from "@/components/TrendingSection";
 import TrendingSkeleton from "@/components/TrendingSkeleton";
 
+// NEW - 09-19-2025 | Ken
+import BrowseByGenreSection from "@/components/BrowseByGenreSection";
+import FeaturedComposersSection from "@/components/FeaturedComposersSection";
+
+import SignUpCtaSection from "@/components/SignUpCtaSection";
+
 // ✅ ISR cho trang chủ: tự làm mới mỗi 120s (có thể chỉnh 60/180 tuỳ nhu cầu)
 export const revalidate = 120;
 
@@ -71,7 +77,7 @@ export default async function HomePage() {
         <RecentlyAddedSection songs={recentSongs} />
       </Container>
 
-      {/* ✅ NEW: Trending This Week — chèn ngay sau Recently Added, bọc Suspense */}
+      {/* ✅ Trending This Week */}
       <Container>
         <Suspense fallback={<TrendingSkeleton rows={6} variant="list" />}>
           <TrendingSection
@@ -83,6 +89,16 @@ export default async function HomePage() {
           />
         </Suspense>
       </Container>
+
+      {/* ✅ Browse by Genre */}
+      <BrowseByGenreSection />
+
+      {/* ✅ Featured Composers */}
+      <FeaturedComposersSection />
+
+      {/* ✅ CTA đăng ký — đặt ngay trên footer */}
+      <SignUpCtaSection />
+
     </main>
   );
 }

@@ -1,7 +1,4 @@
 // src/components/RelatedSongs.js
-// NEW: Section "Có thể bạn sẽ thích" – hiển thị các bài liên quan theo composer/genre.
-// Dùng SongCard để đồng bộ UI.
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,20 +11,28 @@ export default function RelatedSongs({ slug, limit = 8, title = "Có thể bạn
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let alive = true;
-    (async () => {
+    if (!slug) return;
+    const ctrl = new AbortController();
+    const run = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/songs/related/${encodeURIComponent(slug)}?limit=${encodeURIComponent(limit)}`);
+        const res = await fetch(
+          `/api/songs/related/${encodeURIComponent(slug)}?limit=${encodeURIComponent(limit)}`,
+          { signal: ctrl.signal }
+        );
+        if (!res.ok) throw new Error("Bad response");
         const data = await res.json();
-        if (alive) setSongs(Array.isArray(data) ? data : []);
+        setSongs(Array.isArray(data) ? data : []);
       } catch (e) {
-        console.error("Failed to fetch related songs:", e);
+        if (e.name !== "AbortError") {
+          // giữ console sạch
+        }
       } finally {
-        if (alive) setLoading(false);
+        setLoading(false);
       }
-    })();
-    return () => { alive = false; };
+    };
+    run();
+    return () => ctrl.abort();
   }, [slug, limit]);
 
   if (!slug) return null;

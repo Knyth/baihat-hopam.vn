@@ -2,7 +2,7 @@
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
   push:
     branches:
       - chore/**
@@ -19,8 +19,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
-          cache: 'npm'
+          node-version: "22.x"
+          cache: "npm"
 
       - name: Install dependencies (clean)
         run: npm ci
@@ -54,8 +54,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
-          cache: 'npm'
+          node-version: "22.x"
+          cache: "npm"
 
       - name: Install dependencies (clean)
         run: npm ci

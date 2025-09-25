@@ -5,9 +5,11 @@ on:
     branches: [main]
   push:
     branches:
+      - main # 👈 chạy CI khi push thẳng vào main
       - chore/**
       - feat/**
       - fix/**
+  workflow_dispatch: {} # 👈 cho phép Run workflow thủ công trong tab Actions
 
 jobs:
   lint-and-format:
@@ -41,9 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-format
     env:
-      # tắt telemetry cho CI
       NEXT_TELEMETRY_DISABLED: 1
-      # giá trị placeholder để Next/Auth không phàn nàn khi build
+      # placeholder để Next/Auth không báo khi build
       NEXTAUTH_URL: http://localhost:3000
       NEXTAUTH_SECRET: dummysecretfordevonly
       DATABASE_URL: postgresql://user:pass@localhost:5432/db

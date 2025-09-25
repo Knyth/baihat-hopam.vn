@@ -10,29 +10,28 @@ import RelatedSongs from "./RelatedSongs";
 import * as TT from "@/utils/transposeText";
 import { safeStorage } from "@/utils/safeStorage";
 
+// ✅ Hoist regex ra module scope
+const CHORD_TOKEN_REGEX = /(\[[^\]]+\])/g;
+
 export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }) {
-  // Keys for per-song persistence
   const songSlug = songData?.slug || "";
   const K = {
     font: songSlug ? `bhha.font.${songSlug}` : null,
     tr:   songSlug ? `bhha.tr.${songSlug}`   : null,
   };
 
-  // State
   const [transposeAmount, setTransposeAmount] = useState(0);
   const [fontSize, setFontSize] = useState(16);
 
-  // Load saved values (once per song)
   useEffect(() => {
     if (!songSlug) return;
     const savedFont = Number(safeStorage.get(K.font)) || 16;
     const savedTr = Number(safeStorage.get(K.tr)) || 0;
     setFontSize(Math.max(12, Math.min(32, savedFont)));
-    setTransposeAmount(((savedTr % 12) + 12) % 12); // normalize
+    setTransposeAmount(((savedTr % 12) + 12) % 12);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songSlug]);
 
-  // Persist on change
   useEffect(() => {
     if (!songSlug) return;
     safeStorage.set(K.font, String(fontSize));
@@ -43,7 +42,6 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
     safeStorage.set(K.tr, String(transposeAmount));
   }, [transposeAmount, songSlug, K.tr]);
 
-  // Handlers
   const handleTranspose = (delta) => {
     setTransposeAmount((prev) => {
       let next = prev + delta;
@@ -55,7 +53,6 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
   const handleFontSizeChange = (delta) =>
     setFontSize((prev) => Math.max(12, Math.min(32, prev + delta)));
 
-  // Derived
   const displayKey = useMemo(
     () => TT.transposeKey(songData?.originalKey || "C", transposeAmount),
     [songData?.originalKey, transposeAmount]
@@ -71,14 +68,13 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
     [normalizedText, transposeAmount]
   );
 
-  const chordTokenRegex = /(\[[^\]]+\])/g;
   const parsedLyrics = useMemo(() => {
     if (!displayedText) return null;
     return displayedText.split("\n").map((line, i) => {
       if (line.trim() === "") {
         return <div key={`br-${i}`} className={styles.lineBreak} />;
       }
-      const parts = line.split(chordTokenRegex);
+      const parts = line.split(CHORD_TOKEN_REGEX);
       return (
         <div key={`ln-${i}`} className={styles.lyricsLine}>
           {parts.map((part, j) => {
@@ -127,7 +123,6 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
               </p>
             </div>
 
-            {/* Divider thẩm mỹ dưới header */}
             <hr className={styles.sectionDivider} aria-hidden="true" />
 
             <div className={styles.lyricsContainer} style={{ fontSize: `${fontSize}px` }}>
@@ -138,7 +133,6 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
           <RelatedSongs slug={songSlug} limit={8} />
         </div>
 
-        {/* Desktop sticky card */}
         <aside className="song-detail-sidebar">
           <ControlPanel
             current_key={displayKey}
@@ -153,7 +147,6 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
         </aside>
       </div>
 
-      {/* Tablet/mobile fixed toolbar */}
       <div className="control-toolbar">
         <div className="toolbar-inner">
           <ControlPanel

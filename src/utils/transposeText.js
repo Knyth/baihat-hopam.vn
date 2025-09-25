@@ -31,5 +31,6 @@ export function transposeKey(originalKey = "C", steps = 0) {
   }
 }
 
-// Also export default to avoid import mismatches
-export default { normalizeNewlines, transposeChordedText, transposeKey };
+// ✅ named const rồi export default để tránh warning "anonymous default export"
+const transposeUtils = { normalizeNewlines, transposeChordedText, transposeKey };
+export default transposeUtils;

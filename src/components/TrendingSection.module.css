@@ -1,4 +1,4 @@
-/* src/components/TrendingSection.module.css */
+﻿/* src/components/TrendingSection.module.css */
 /* Giữ nguyên form & grid; chỉ bổ sung style nhỏ cho pill '7 ngày' */
 
 .section {
@@ -211,3 +211,4 @@
   .sectionTitle { font-size: 1.5rem; }
   .songListItem { grid-template-columns: 52px 1fr auto; }
 }
+

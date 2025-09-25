@@ -1,4 +1,4 @@
-// src/components/SongLyrics.js
+﻿// src/components/SongLyrics.js
 
 import transposeChord from '@/utils/music';
 

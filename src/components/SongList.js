@@ -1,4 +1,4 @@
-// src/components/SongList.js
+﻿// src/components/SongList.js
 
 "use client";
 
@@ -50,3 +50,4 @@ export default function SongList({ songs }) {
     </ul>
   );
 }
+

@@ -1,4 +1,4 @@
-.section {
+﻿.section {
   padding: 3rem 1.5rem;
   background: transparent;
 }
@@ -155,3 +155,4 @@
   .sectionTitle { font-size: 1.5rem; }
   .track { gap: .75rem; grid-auto-columns: minmax(220px, 1fr); }
 }
+

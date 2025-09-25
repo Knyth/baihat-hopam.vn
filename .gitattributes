@@ -1,22 +1,29 @@
-# Chu?n ho? line endings
 * text=auto
 
-# Shell scripts & Husky hooks: lu?n LF
-*.sh text eol=lf
-.husky/* text eol=lf
-
-# M? ngu?n web: ?u ti?n LF ?? tr?nh diff noise
-*.js  text eol=lf
-*.ts  text eol=lf
-*.jsx text eol=lf
-*.tsx text eol=lf
-*.css text eol=lf
+# Force LF cho text/code files
+*.js   text eol=lf
+*.jsx  text eol=lf
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.mjs  text eol=lf
+*.cjs  text eol=lf
+*.css  text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md   text eol=lf
 *.json text eol=lf
-*.md text eol=lf
-*.yml text eol=lf
+*.yml  text eol=lf
 *.yaml text eol=lf
+*.env  text eol=lf
+*.prisma text eol=lf
 
-# PowerShell scripts: CRLF (Windows ch?y thu?n ti?n)
-*.ps1 text eol=crlf
-
-.editorconfig text eol=lf
+# Binary (kh?ng ??i EOL)
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.svg  binary
+*.ico  binary
+*.pdf  binary
+*.mp4  binary
+*.mp3  binary

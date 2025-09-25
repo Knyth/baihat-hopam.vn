@@ -1,23 +1,36 @@
 // src/components/SignUpCtaSection.js
-"use client";
 
-import Link from 'next/link';
-import styles from './SignUpCtaSection.module.css';
+import Link from "next/link";
+import styles from "./SignUpCtaSection.module.css";
 
-const SignUpCtaSection = () => {
+export const dynamic = "force-static";
+
+export default function SignUpCtaSection() {
   return (
-    <section className={styles.section}>
+    <section className={styles.wrapper} aria-labelledby="cta-title">
       <div className={styles.container}>
-        <h2 className={styles.title}>Trở thành một phần của Cộng đồng!</h2>
-        <p className={styles.subtitle}>
-          Lưu bài hát yêu thích, tạo playlist riêng và nhận những cập nhật mới nhất. Hoàn toàn miễn phí!
-        </p>
-        <Link href="/login" className={styles.ctaButton}>
-          Đăng ký Ngay
-        </Link>
+        <div className={styles.card}>
+          <h2 id="cta-title" className={styles.title}>
+            Tham gia cộng đồng baihat-hopam.vn
+          </h2>
+          <p className={styles.subtitle}>
+            Lưu bài hát yêu thích, tạo playlist, và khám phá hợp âm Việt nhanh hơn.
+          </p>
+
+          <div className={styles.actions}>
+            <Link href="/auth/register" className={styles.primaryBtn}>
+              Đăng ký miễn phí
+            </Link>
+            <Link href="/auth" className={styles.secondaryBtn}>
+              Đăng nhập
+            </Link>
+          </div>
+
+          <p className={styles.smallNote}>
+            Miễn phí • Không spam • Huỷ bất cứ lúc nào
+          </p>
+        </div>
       </div>
     </section>
   );
-};
-
-export default SignUpCtaSection;
+}

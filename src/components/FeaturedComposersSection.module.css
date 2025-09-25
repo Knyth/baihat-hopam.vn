@@ -67,13 +67,13 @@
     font-size: 1.8rem;
   }
   .composerGrid {
-    gap: 1.5rem; /* Giảm khoảng cách */
+    gap: 1.5rem;
   }
   .composerCard {
-    width: 120px; /* Thu nhỏ card một chút */
+    width: 120px;
   }
   .avatarWrapper {
-    width: 80px; /* Thu nhỏ avatar */
+    width: 80px;
     height: 80px;
   }
 }

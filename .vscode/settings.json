@@ -1,0 +1,18 @@
+﻿{
+  // Luôn dùng LF khi lưu file
+  "files.eol": "\n",
+
+  // Khoá indent: 2 spaces, không tự đoán theo file cũ
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+
+  // Nhìn trực quan khoảng trắng ở rìa từ/cuối dòng
+  "editor.renderWhitespace": "boundary",
+
+  // Tự xoá khoảng trắng cuối dòng khi lưu (đỡ noisy diff)
+  "files.trimTrailingWhitespace": true,
+
+  // Giữ newline cuối file theo .editorconfig
+  "files.insertFinalNewline": true
+}

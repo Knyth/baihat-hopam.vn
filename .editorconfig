@@ -1,25 +1,13 @@
-﻿# EditorConfig giúp IDE đồng bộ format theo repo
+# .editorconfig
 root = true
 
 [*]
 charset = utf-8
+end_of_line = lf
+insert_final_newline = true
 indent_style = space
 indent_size = 2
-insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Web sources (giữ LF)
-[*.{js,jsx,ts,tsx,css,scss,md,json,yml,yaml}]
-end_of_line = lf
-
-# Shell scripts & Husky hooks (LF)
-[*.sh]
-end_of_line = lf
-
-# PowerShell scripts (CRLF cho Windows PowerShell)
-[*.ps1]
-end_of_line = crlf
-
-
-# Keep .editorconfig as LF
-.editorconfig text eol=lf
+[*.md]
+trim_trailing_whitespace = false

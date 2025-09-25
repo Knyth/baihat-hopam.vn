@@ -1,6 +1,6 @@
 // prisma/seed.js  (CommonJS)
-const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcryptjs');
+const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcryptjs");
 const prisma = new PrismaClient();
 
 /** Utils */
@@ -24,13 +24,13 @@ function daysAgo(n) {
 
 /** Upserts */
 async function upsertUser() {
-  const hashedPassword = await bcrypt.hash('adminpassword', 10);
+  const hashedPassword = await bcrypt.hash("adminpassword", 10);
   return prisma.user.upsert({
-    where: { email: 'admin@baihat-hopam.vn' },
+    where: { email: "admin@baihat-hopam.vn" },
     update: {},
     create: {
-      name: 'admin',
-      email: 'admin@baihat-hopam.vn',
+      name: "admin",
+      email: "admin@baihat-hopam.vn",
       password_hash: hashedPassword,
     },
   });
@@ -38,11 +38,11 @@ async function upsertUser() {
 
 async function upsertGenres() {
   const genresToSeed = [
-    { name: 'Nhạc Trịnh', slug: 'nhac-trinh' },
-    { name: 'Nhạc Vàng',  slug: 'nhac-vang'  },
-    { name: 'V-Pop',      slug: 'v-pop'      },
-    { name: 'Ballad',     slug: 'ballad'     },
-    { name: 'Rock',       slug: 'rock'       },
+    { name: "Nhạc Trịnh", slug: "nhac-trinh" },
+    { name: "Nhạc Vàng", slug: "nhac-vang" },
+    { name: "V-Pop", slug: "v-pop" },
+    { name: "Ballad", slug: "ballad" },
+    { name: "Rock", slug: "rock" },
   ];
   for (const g of genresToSeed) {
     await prisma.genre.upsert({
@@ -55,10 +55,10 @@ async function upsertGenres() {
 
 async function upsertComposers() {
   const composersToSeed = [
-    { name: 'Trịnh Công Sơn', slug: 'trinh-cong-son' },
-    { name: 'Lam Phương',     slug: 'lam-phuong'     },
-    { name: 'Phạm Duy',       slug: 'pham-duy'       },
-    { name: 'Văn Cao',        slug: 'van-cao'        },
+    { name: "Trịnh Công Sơn", slug: "trinh-cong-son" },
+    { name: "Lam Phương", slug: "lam-phuong" },
+    { name: "Phạm Duy", slug: "pham-duy" },
+    { name: "Văn Cao", slug: "van-cao" },
   ];
   for (const c of composersToSeed) {
     const search_name = normalizeText(c.name); // composer yêu cầu search_name
@@ -106,7 +106,7 @@ async function connectSongArtists(songId, artistNames = []) {
     if (!artist) continue;
     await prisma.songArtist.create({
       data: {
-        song:   { connect: { id: songId } },
+        song: { connect: { id: songId } },
         artist: { connect: { id: artist.id } },
       },
     });
@@ -115,13 +115,13 @@ async function connectSongArtists(songId, artistNames = []) {
 
 async function upsertSong({
   title,
-  slug,           // optional → auto từ title nếu không truyền
-  composerSlug,   // optional
-  authorUserId,   // dùng để connect relation author
-  lyricsChords,   // optional (NHƯNG model đang bắt buộc) → sẽ fill default
-  originalKey,    // optional
-  rhythm,         // optional
-  createdAt,      // optional
+  slug, // optional → auto từ title nếu không truyền
+  composerSlug, // optional
+  authorUserId, // dùng để connect relation author
+  lyricsChords, // optional (NHƯNG model đang bắt buộc) → sẽ fill default
+  originalKey, // optional
+  rhythm, // optional
+  createdAt, // optional
   genreSlugs = [],
   artistNames = [],
 }) {
@@ -136,9 +136,9 @@ async function upsertSong({
   const base = {
     title,
     slug: songSlug,
-    lyricsChords: lc,                // ✅ luôn set
-    ...(originalKey  ? { originalKey }  : {}),
-    ...(rhythm       ? { rhythm }       : {}),
+    lyricsChords: lc, // ✅ luôn set
+    ...(originalKey ? { originalKey } : {}),
+    ...(rhythm ? { rhythm } : {}),
     ...(composer ? { composer: { connect: { id: composer.id } } } : {}),
   };
 
@@ -166,65 +166,131 @@ async function upsertSong({
 
 /** MAIN */
 async function main() {
-  console.log('Bắt đầu seed…');
+  console.log("Bắt đầu seed…");
   const user = await upsertUser();
   await upsertGenres();
   await upsertComposers();
 
   // Bảo đảm các nghệ sĩ chính có mặt
   await upsertArtists([
-    'Trịnh Công Sơn',
-    'Khánh Ly',
-    'Hồng Nhung',
-    'Elvis Phương',
-    'Chế Linh',
-    'Thanh Tuyền',
+    "Trịnh Công Sơn",
+    "Khánh Ly",
+    "Hồng Nhung",
+    "Elvis Phương",
+    "Chế Linh",
+    "Thanh Tuyền",
   ]);
 
   // ===== Hai bài đã có (cập nhật & gắn artists/genres) =====
   await upsertSong({
-    title: 'Diễm Xưa',
-    slug: 'diem-xua',
-    composerSlug: 'trinh-cong-son',
+    title: "Diễm Xưa",
+    slug: "diem-xua",
+    composerSlug: "trinh-cong-son",
     authorUserId: user.id,
-    originalKey: 'Am',
-    rhythm: 'Slow',
-    lyricsChords:
-      `1. Mưa vẫn mưa bay trên tầng tháp [Am] cổ...\n\nĐK: Chiều này còn [Dm] mưa sao em không lại...`,
-    genreSlugs: ['nhac-trinh', 'ballad'],
-    artistNames: ['Trịnh Công Sơn', 'Khánh Ly'],
+    originalKey: "Am",
+    rhythm: "Slow",
+    lyricsChords: `1. Mưa vẫn mưa bay trên tầng tháp [Am] cổ...\n\nĐK: Chiều này còn [Dm] mưa sao em không lại...`,
+    genreSlugs: ["nhac-trinh", "ballad"],
+    artistNames: ["Trịnh Công Sơn", "Khánh Ly"],
   });
 
   await upsertSong({
-    title: 'Hạ Trắng',
-    slug: 'ha-trang',
-    composerSlug: 'trinh-cong-son',
+    title: "Hạ Trắng",
+    slug: "ha-trang",
+    composerSlug: "trinh-cong-son",
     authorUserId: user.id,
-    originalKey: 'Am',
-    rhythm: 'Ballad',
-    lyricsChords:
-      `1. Gọi [Am] nắng, trên vai em gầy đường xa áo [Dm] bay...\n\nĐK: Thôi xin ơn [Dm] đời trong cơn mê này...`,
-    genreSlugs: ['nhac-trinh', 'ballad'],
-    artistNames: ['Trịnh Công Sơn'],
+    originalKey: "Am",
+    rhythm: "Ballad",
+    lyricsChords: `1. Gọi [Am] nắng, trên vai em gầy đường xa áo [Dm] bay...\n\nĐK: Thôi xin ơn [Dm] đời trong cơn mê này...`,
+    genreSlugs: ["nhac-trinh", "ballad"],
+    artistNames: ["Trịnh Công Sơn"],
   });
 
   // Bổ sung composer nếu thiếu
   await prisma.composer.upsert({
-    where: { slug: 'tran-thien-thanh' },
-    update: { name: 'Trần Thiện Thanh', search_name: normalizeText('Trần Thiện Thanh') },
-    create: { name: 'Trần Thiện Thanh', slug: 'tran-thien-thanh', search_name: normalizeText('Trần Thiện Thanh') },
+    where: { slug: "tran-thien-thanh" },
+    update: { name: "Trần Thiện Thanh", search_name: normalizeText("Trần Thiện Thanh") },
+    create: {
+      name: "Trần Thiện Thanh",
+      slug: "tran-thien-thanh",
+      search_name: normalizeText("Trần Thiện Thanh"),
+    },
   });
 
   // ===== Thêm batch bài mới cho Recently Added =====
   const batch = [
-    { title: 'Biển Nhớ',           composerSlug: 'trinh-cong-son', artistNames: ['Khánh Ly'],                    genreSlugs: ['nhac-trinh','ballad'], originalKey: 'Am', rhythm: 'Slow',   createdAt: daysAgo(0) },
-    { title: 'Tuổi Đá Buồn',       composerSlug: 'trinh-cong-son', artistNames: ['Khánh Ly'],                    genreSlugs: ['nhac-trinh','ballad'], originalKey: 'Dm', rhythm: 'Slow',   createdAt: daysAgo(1) },
-    { title: 'Cát Bụi',            composerSlug: 'trinh-cong-son', artistNames: ['Trịnh Công Sơn'],              genreSlugs: ['nhac-trinh'],         originalKey: 'C',  rhythm: 'Slow',   createdAt: daysAgo(2) },
-    { title: 'Một Cõi Đi Về',      composerSlug: 'trinh-cong-son', artistNames: ['Hồng Nhung'],                  genreSlugs: ['nhac-trinh'],         originalKey: 'G',  rhythm: 'Ballad', createdAt: daysAgo(3) },
-    { title: 'Nối Vòng Tay Lớn',   composerSlug: 'trinh-cong-son', artistNames: ['Trịnh Công Sơn'],              genreSlugs: ['nhac-trinh','rock'],  originalKey: 'G',  rhythm: 'March',  createdAt: daysAgo(4) },
-    { title: 'Đóa Hoa Vô Thường',  composerSlug: 'trinh-cong-son', artistNames: ['Hồng Nhung'],                  genreSlugs: ['nhac-trinh'],         originalKey: 'Em', rhythm: 'Ballad', createdAt: daysAgo(5) },
-    { title: 'Tình Khúc Vàng',     composerSlug: 'lam-phuong',     artistNames: ['Elvis Phương'],                genreSlugs: ['nhac-vang','ballad'], originalKey: 'G',  rhythm: 'Ballad', createdAt: daysAgo(6) },
-    { title: 'Lâu Đài Tình Ái',    composerSlug: 'tran-thien-thanh', artistNames: ['Chế Linh','Thanh Tuyền'],  genreSlugs: ['nhac-vang','ballad'], originalKey: 'G',  rhythm: 'Slow',   createdAt: daysAgo(7) },
+    {
+      title: "Biển Nhớ",
+      composerSlug: "trinh-cong-son",
+      artistNames: ["Khánh Ly"],
+      genreSlugs: ["nhac-trinh", "ballad"],
+      originalKey: "Am",
+      rhythm: "Slow",
+      createdAt: daysAgo(0),
+    },
+    {
+      title: "Tuổi Đá Buồn",
+      composerSlug: "trinh-cong-son",
+      artistNames: ["Khánh Ly"],
+      genreSlugs: ["nhac-trinh", "ballad"],
+      originalKey: "Dm",
+      rhythm: "Slow",
+      createdAt: daysAgo(1),
+    },
+    {
+      title: "Cát Bụi",
+      composerSlug: "trinh-cong-son",
+      artistNames: ["Trịnh Công Sơn"],
+      genreSlugs: ["nhac-trinh"],
+      originalKey: "C",
+      rhythm: "Slow",
+      createdAt: daysAgo(2),
+    },
+    {
+      title: "Một Cõi Đi Về",
+      composerSlug: "trinh-cong-son",
+      artistNames: ["Hồng Nhung"],
+      genreSlugs: ["nhac-trinh"],
+      originalKey: "G",
+      rhythm: "Ballad",
+      createdAt: daysAgo(3),
+    },
+    {
+      title: "Nối Vòng Tay Lớn",
+      composerSlug: "trinh-cong-son",
+      artistNames: ["Trịnh Công Sơn"],
+      genreSlugs: ["nhac-trinh", "rock"],
+      originalKey: "G",
+      rhythm: "March",
+      createdAt: daysAgo(4),
+    },
+    {
+      title: "Đóa Hoa Vô Thường",
+      composerSlug: "trinh-cong-son",
+      artistNames: ["Hồng Nhung"],
+      genreSlugs: ["nhac-trinh"],
+      originalKey: "Em",
+      rhythm: "Ballad",
+      createdAt: daysAgo(5),
+    },
+    {
+      title: "Tình Khúc Vàng",
+      composerSlug: "lam-phuong",
+      artistNames: ["Elvis Phương"],
+      genreSlugs: ["nhac-vang", "ballad"],
+      originalKey: "G",
+      rhythm: "Ballad",
+      createdAt: daysAgo(6),
+    },
+    {
+      title: "Lâu Đài Tình Ái",
+      composerSlug: "tran-thien-thanh",
+      artistNames: ["Chế Linh", "Thanh Tuyền"],
+      genreSlugs: ["nhac-vang", "ballad"],
+      originalKey: "G",
+      rhythm: "Slow",
+      createdAt: daysAgo(7),
+    },
   ];
 
   for (const item of batch) {
@@ -235,7 +301,7 @@ async function main() {
     });
   }
 
-  console.log('✅ Seed hoàn tất!');
+  console.log("✅ Seed hoàn tất!");
 }
 
 /** Run */

@@ -55,21 +55,50 @@ export default function LibraryMenu() {
         Thư viện
         <svg
           className={styles.caret}
-          width="16" height="16" viewBox="0 0 20 20"
-          aria-hidden="true" focusable="false"
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+          focusable="false"
         >
-          <path d="M5 7l5 6 5-6" fill="none" stroke="currentColor"
-                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path
+            d="M5 7l5 6 5-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </button>
 
       <div className={styles.menuDropdown} role="menu">
         <ul className={styles.dropdownList}>
-          <li role="none"><Link href="/genres"     role="menuitem" className={styles.dropdownItem}>Thể loại</Link></li>
-          <li role="none"><Link href="/melodies"   role="menuitem" className={styles.dropdownItem}>Giai điệu</Link></li>
-          <li role="none"><Link href="/composers"  role="menuitem" className={styles.dropdownItem}>Tác giả</Link></li>
-          <li role="none"><Link href="/songs"      role="menuitem" className={styles.dropdownItem}>Bài hát</Link></li>
-          <li role="none"><Link href="/chords"     role="menuitem" className={styles.dropdownItem}>Hợp âm</Link></li>
+          <li role="none">
+            <Link href="/genres" role="menuitem" className={styles.dropdownItem}>
+              Thể loại
+            </Link>
+          </li>
+          <li role="none">
+            <Link href="/melodies" role="menuitem" className={styles.dropdownItem}>
+              Giai điệu
+            </Link>
+          </li>
+          <li role="none">
+            <Link href="/composers" role="menuitem" className={styles.dropdownItem}>
+              Tác giả
+            </Link>
+          </li>
+          <li role="none">
+            <Link href="/songs" role="menuitem" className={styles.dropdownItem}>
+              Bài hát
+            </Link>
+          </li>
+          <li role="none">
+            <Link href="/chords" role="menuitem" className={styles.dropdownItem}>
+              Hợp âm
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

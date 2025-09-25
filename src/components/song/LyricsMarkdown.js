@@ -9,8 +9,7 @@ import React from "react";
  *  - \n -> <br/>
  */
 function renderChorded(text = "") {
-  const esc = (s) =>
-    s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
   const withChords = esc(text).replace(/\[([^\]\n]+)\]/g, (_, c) => {
     return `<span class="chord">${c}</span>`;
   });

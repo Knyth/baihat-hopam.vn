@@ -1,16 +1,26 @@
 // src/components/layout/MobileMenuClient.js
 
-'use client';
+"use client";
 
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
 import {
-  FiMenu, FiX, FiHome, FiMusic, FiTrendingUp, FiBookOpen,
-  FiPlusCircle, FiSettings, FiUser, FiLogIn, FiLogOut, FiHeart
-} from 'react-icons/fi';
-import styles from './MobileMenu.module.css';
+  FiMenu,
+  FiX,
+  FiHome,
+  FiMusic,
+  FiTrendingUp,
+  FiBookOpen,
+  FiPlusCircle,
+  FiSettings,
+  FiUser,
+  FiLogIn,
+  FiLogOut,
+  FiHeart,
+} from "react-icons/fi";
+import styles from "./MobileMenu.module.css";
 
 export default function MobileMenuClient({ user, canUpload }) {
   const [open, setOpen] = useState(false);
@@ -22,46 +32,58 @@ export default function MobileMenuClient({ user, canUpload }) {
 
   // ====== Swipe state (CHỈ cho touch) ======
   const dragRef = useRef({
-    active: false,          // đã có pointerdown hợp lệ chưa
-    dragging: false,        // đã vượt qua ngưỡng để coi là kéo chưa
-    pointerId: null,        // id của con trỏ đang theo dõi
-    startX: 0, startY: 0,
+    active: false, // đã có pointerdown hợp lệ chưa
+    dragging: false, // đã vượt qua ngưỡng để coi là kéo chưa
+    pointerId: null, // id của con trỏ đang theo dõi
+    startX: 0,
+    startY: 0,
     panelW: 0,
   });
   const [dragX, setDragX] = useState(0);
 
   // ====== Active item & a11y (không thay đổi cấu trúc) ======
   const initial = useMemo(() => {
-    const src = (user?.name || user?.email || '').trim();
-    return src ? src[0].toUpperCase() : 'U';
+    const src = (user?.name || user?.email || "").trim();
+    return src ? src[0].toUpperCase() : "U";
   }, [user]);
 
-  const close = useCallback(() => { setDragX(0); setOpen(false); }, []);
+  const close = useCallback(() => {
+    setDragX(0);
+    setOpen(false);
+  }, []);
   const openMenu = useCallback(() => setOpen(true), []);
 
-  useEffect(() => { setOpen(false); }, [pathname]); // đổi route -> đóng
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]); // đổi route -> đóng
 
   // Khóa scroll + focus trap khi mở
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     closeBtnRef.current?.focus();
 
     const onKey = (e) => {
-      if (e.key === 'Escape') close();
-      if (e.key === 'Tab') {
+      if (e.key === "Escape") close();
+      if (e.key === "Tab") {
         const f = drawerRef.current?.querySelectorAll('a,button,[tabindex]:not([tabindex="-1"])');
         if (!f || f.length === 0) return;
-        const first = f[0], last = f[f.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        const first = f[0],
+          last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
-    document.addEventListener('keydown', onKey);
+    document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
-      document.removeEventListener('keydown', onKey);
+      document.removeEventListener("keydown", onKey);
     };
   }, [open, close]);
 
@@ -74,8 +96,8 @@ export default function MobileMenuClient({ user, canUpload }) {
       const onHamburger = hamburgerRef.current?.contains(t);
       if (!inDrawer && !onHamburger) close();
     };
-    document.addEventListener('pointerdown', onDocPointerDown, true);
-    return () => document.removeEventListener('pointerdown', onDocPointerDown, true);
+    document.addEventListener("pointerdown", onDocPointerDown, true);
+    return () => document.removeEventListener("pointerdown", onDocPointerDown, true);
   }, [open, close]);
 
   // ====== SWIPE-TO-CLOSE (Fix: chỉ cho touch, không cho mouse) ======
@@ -86,7 +108,7 @@ export default function MobileMenuClient({ user, canUpload }) {
 
     const start = (e) => {
       // CHỈ nhận bắt đầu vuốt khi là touch (không phải chuột/stylus)
-      if (e.pointerType !== 'touch') return;
+      if (e.pointerType !== "touch") return;
 
       dragRef.current.active = true;
       dragRef.current.dragging = false;
@@ -110,8 +132,8 @@ export default function MobileMenuClient({ user, canUpload }) {
 
       // chỉ nhận kéo ngang rõ rệt
       if (!d.dragging) {
-        if (Math.abs(dx) < 8) return;                         // ngưỡng tối thiểu
-        if (Math.abs(dx) < Math.abs(dy) * 1.5) return;        // ưu tiên dọc -> không coi là kéo
+        if (Math.abs(dx) < 8) return; // ngưỡng tối thiểu
+        if (Math.abs(dx) < Math.abs(dy) * 1.5) return; // ưu tiên dọc -> không coi là kéo
         d.dragging = true;
       }
 
@@ -146,30 +168,28 @@ export default function MobileMenuClient({ user, canUpload }) {
     };
 
     // LƯU Ý: chỉ gắn handler lên panel; không bắt pointermove toàn window nữa
-    panel.addEventListener('pointerdown', start);
-    panel.addEventListener('pointermove', move);
-    panel.addEventListener('pointerup', end);
-    panel.addEventListener('pointercancel', cancel);
+    panel.addEventListener("pointerdown", start);
+    panel.addEventListener("pointermove", move);
+    panel.addEventListener("pointerup", end);
+    panel.addEventListener("pointercancel", cancel);
     return () => {
-      panel.removeEventListener('pointerdown', start);
-      panel.removeEventListener('pointermove', move);
-      panel.removeEventListener('pointerup', end);
-      panel.removeEventListener('pointercancel', cancel);
+      panel.removeEventListener("pointerdown", start);
+      panel.removeEventListener("pointermove", move);
+      panel.removeEventListener("pointerup", end);
+      panel.removeEventListener("pointercancel", cancel);
     };
   }, [open, dragX, close]);
 
   // Active-state (chỉ dùng để highlight nhẹ; KHÔNG đổi markup)
   const currentURL = useMemo(() => {
     const q = searchParams?.toString();
-    return q ? `${pathname}?${q}` : pathname || '/';
+    return q ? `${pathname}?${q}` : pathname || "/";
   }, [pathname, searchParams]);
 
   const isActive = useCallback((href) => currentURL === href, [currentURL]);
 
   // Inline transform khi đang kéo (chỉ tác động lúc touch-drag)
-  const panelTransformStyle = dragX
-    ? { transform: `translateX(${dragX}px)` }
-    : undefined;
+  const panelTransformStyle = dragX ? { transform: `translateX(${dragX}px)` } : undefined;
 
   return (
     <>
@@ -189,13 +209,13 @@ export default function MobileMenuClient({ user, canUpload }) {
 
       {/* Drawer */}
       <aside
-        className={`${styles.drawer} ${open ? styles.open : ''}`}
+        className={`${styles.drawer} ${open ? styles.open : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="mobileMenuTitle"
         ref={drawerRef}
         // Chỉ apply transform khi đang swipe bằng touch
-        style={{ isolation: 'isolate', touchAction: 'pan-y', ...panelTransformStyle }}
+        style={{ isolation: "isolate", touchAction: "pan-y", ...panelTransformStyle }}
       >
         {/* Drawer header */}
         <div className={styles.topbar}>
@@ -217,36 +237,89 @@ export default function MobileMenuClient({ user, canUpload }) {
         <div className={styles.userBox}>
           <div className={styles.avatar}>{initial}</div>
           <div className={styles.userMeta}>
-            <div className={styles.userName}>{user?.name || 'Khách'}</div>
-            <div className={styles.userEmail}>{user?.email || 'Chưa đăng nhập'}</div>
+            <div className={styles.userName}>{user?.name || "Khách"}</div>
+            <div className={styles.userEmail}>{user?.email || "Chưa đăng nhập"}</div>
           </div>
         </div>
 
         <nav className={styles.nav} aria-label="Điều hướng chính">
-          <MobileLink href="/" icon={<FiHome />} onClick={close} label="Trang chủ" active={isActive('/')} />
-          <MobileLink href="/songs?sort=new" icon={<FiMusic />} onClick={close} label="Bài hát mới" active={isActive('/songs?sort=new')} />
-          <MobileLink href="/songs?sort=trending" icon={<FiTrendingUp />} onClick={close} label="Thịnh hành" active={isActive('/songs?sort=trending')} />
-          <MobileLink href="/blog" icon={<FiBookOpen />} onClick={close} label="Blog" active={isActive('/blog')} />
+          <MobileLink
+            href="/"
+            icon={<FiHome />}
+            onClick={close}
+            label="Trang chủ"
+            active={isActive("/")}
+          />
+          <MobileLink
+            href="/songs?sort=new"
+            icon={<FiMusic />}
+            onClick={close}
+            label="Bài hát mới"
+            active={isActive("/songs?sort=new")}
+          />
+          <MobileLink
+            href="/songs?sort=trending"
+            icon={<FiTrendingUp />}
+            onClick={close}
+            label="Thịnh hành"
+            active={isActive("/songs?sort=trending")}
+          />
+          <MobileLink
+            href="/blog"
+            icon={<FiBookOpen />}
+            onClick={close}
+            label="Blog"
+            active={isActive("/blog")}
+          />
           {canUpload && (
-            <MobileLink href="/upload" icon={<FiPlusCircle />} onClick={close} label="Tải bài hát" active={isActive('/upload')} />
+            <MobileLink
+              href="/upload"
+              icon={<FiPlusCircle />}
+              onClick={close}
+              label="Tải bài hát"
+              active={isActive("/upload")}
+            />
           )}
         </nav>
 
         <div className={styles.sectionDivider} />
 
         <nav className={styles.nav} aria-label="Tài khoản">
-          <MobileLink href="/my-songs" icon={<FiHeart />} onClick={close} label="Bài hát của tôi" active={isActive('/my-songs')} />
-          <MobileLink href="/settings" icon={<FiSettings />} onClick={close} label="Cài đặt" active={isActive('/settings')} />
+          <MobileLink
+            href="/my-songs"
+            icon={<FiHeart />}
+            onClick={close}
+            label="Bài hát của tôi"
+            active={isActive("/my-songs")}
+          />
+          <MobileLink
+            href="/settings"
+            icon={<FiSettings />}
+            onClick={close}
+            label="Cài đặt"
+            active={isActive("/settings")}
+          />
 
           {!user ? (
-            <MobileLink href="/auth" icon={<FiLogIn />} onClick={close} label="Đăng nhập / Đăng ký" active={isActive('/auth')} />
+            <MobileLink
+              href="/auth"
+              icon={<FiLogIn />}
+              onClick={close}
+              label="Đăng nhập / Đăng ký"
+              active={isActive("/auth")}
+            />
           ) : (
             <button
               type="button"
               className={`${styles.item} ${styles.buttonLike}`}
-              onClick={() => { close(); signOut(); }}
+              onClick={() => {
+                close();
+                signOut();
+              }}
             >
-              <span className={styles.left}><FiLogOut /></span>
+              <span className={styles.left}>
+                <FiLogOut />
+              </span>
               <span className={styles.text}>Đăng xuất</span>
             </button>
           )}
@@ -262,18 +335,20 @@ export default function MobileMenuClient({ user, canUpload }) {
 
 function MobileLink({ href, icon, label, onClick, active }) {
   // highlight rất nhẹ khi active (không đụng CSS module)
-  const activeStyle = active ? {
-    background: '#f6f7fb',
-    borderColor: 'var(--border, #e5e7eb)',
-    color: 'var(--brand, #005a9e)'
-  } : undefined;
+  const activeStyle = active
+    ? {
+        background: "#f6f7fb",
+        borderColor: "var(--border, #e5e7eb)",
+        color: "var(--brand, #005a9e)",
+      }
+    : undefined;
 
   return (
     <Link
       href={href}
       className={styles.item}
       onClick={onClick}
-      aria-current={active ? 'page' : undefined}
+      aria-current={active ? "page" : undefined}
       style={activeStyle}
     >
       <span className={styles.left}>{icon}</span>

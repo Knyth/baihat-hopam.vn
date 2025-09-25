@@ -11,10 +11,8 @@
 //   );
 // }
 
-
-
 // src/components/ActionButtonsSkeleton.js
-import styles from './ActionButtonsSkeleton.module.css';
+import styles from "./ActionButtonsSkeleton.module.css";
 
 export default function ActionButtonsSkeleton() {
   return (

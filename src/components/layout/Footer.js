@@ -1,6 +1,6 @@
 // src/components/layout/Footer.js
-import Link from 'next/link';
-import styles from './Footer.module.css';
+import Link from "next/link";
+import styles from "./Footer.module.css";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,7 +12,8 @@ export default function Footer() {
         <div className={styles.column}>
           <h3 className={styles.logo}>baihat-hopam.vn</h3>
           <p className={styles.description}>
-            Nơi chia sẻ và khám phá hợp âm, sheet nhạc cho cộng đồng yêu nhạc Việt. Xây dựng với niềm đam mê và sự tận tâm.
+            Nơi chia sẻ và khám phá hợp âm, sheet nhạc cho cộng đồng yêu nhạc Việt. Xây dựng với
+            niềm đam mê và sự tận tâm.
           </p>
         </div>
 
@@ -20,8 +21,12 @@ export default function Footer() {
         <div className={styles.column}>
           <h4 className={styles.columnTitle}>Khám phá</h4>
           <ul className={styles.linkList}>
-            <li><Link href="/songs?sort=newest">Bài hát Mới</Link></li>
-            <li><Link href="/songs?sort=views">Thịnh hành</Link></li>
+            <li>
+              <Link href="/songs?sort=newest">Bài hát Mới</Link>
+            </li>
+            <li>
+              <Link href="/songs?sort=views">Thịnh hành</Link>
+            </li>
             {/* <li><Link href="/genres">Thể loại</Link></li> */}
             {/* <li><Link href="/composers">Tác giả</Link></li> */}
           </ul>
@@ -31,10 +36,16 @@ export default function Footer() {
         <div className={styles.column}>
           <h4 className={styles.columnTitle}>Hỗ trợ</h4>
           <ul className={styles.linkList}>
-            <li><Link href="/about">Giới thiệu</Link></li>
-            <li><Link href="/contact">Liên hệ & Góp ý</Link></li>
+            <li>
+              <Link href="/about">Giới thiệu</Link>
+            </li>
+            <li>
+              <Link href="/contact">Liên hệ & Góp ý</Link>
+            </li>
             {/* <li><Link href="/faq">Câu hỏi thường gặp</Link></li> */}
-            <li><Link href="/dmca">Chính sách Bản quyền</Link></li>
+            <li>
+              <Link href="/dmca">Chính sách Bản quyền</Link>
+            </li>
           </ul>
         </div>
 

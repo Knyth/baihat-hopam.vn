@@ -99,11 +99,7 @@ export default async function SongDetailPage({ params }) {
       {/* Chỉ chạy ở client sau khi render */}
       <ViewTracker slug={safeSlug} />
 
-      <SongDisplay
-        songData={songData}
-        initialIsFavorited={isFavorited}
-        isLoggedIn={isLoggedIn}
-      />
+      <SongDisplay songData={songData} initialIsFavorited={isFavorited} isLoggedIn={isLoggedIn} />
     </Container>
   );
 }

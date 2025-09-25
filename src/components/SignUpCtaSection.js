@@ -26,9 +26,7 @@ export default function SignUpCtaSection() {
             </Link>
           </div>
 
-          <p className={styles.smallNote}>
-            Miễn phí • Không spam • Huỷ bất cứ lúc nào
-          </p>
+          <p className={styles.smallNote}>Miễn phí • Không spam • Huỷ bất cứ lúc nào</p>
         </div>
       </div>
     </section>

@@ -36,8 +36,8 @@ export async function toggleFavorite({ songId }) {
           },
         },
       });
-       // Cập nhật lại trang danh sách bài hát yêu thích nếu người dùng đang ở đó
-      revalidatePath('/my-songs');
+      // Cập nhật lại trang danh sách bài hát yêu thích nếu người dùng đang ở đó
+      revalidatePath("/my-songs");
       return { success: true, added: false }; // Trả về kết quả: đã xóa
     } else {
       // Nếu chưa thích -> Thêm vào danh sách yêu thích
@@ -47,7 +47,7 @@ export async function toggleFavorite({ songId }) {
           songId: songId,
         },
       });
-      revalidatePath('/my-songs');
+      revalidatePath("/my-songs");
       return { success: true, added: true }; // Trả về kết quả: đã thêm
     }
   } catch (error) {

@@ -90,7 +90,7 @@ export async function PUT(request, { params }) {
   if (Object.keys(data).length === 0) {
     return NextResponse.json(
       { error: "Nothing to update. Provide lyricsChords/originalKey or newSlug." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

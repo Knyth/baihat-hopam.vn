@@ -29,19 +29,22 @@
 .headerActions {
   display: flex;
   align-items: center;
-  gap: .75rem;
+  gap: 0.75rem;
 }
 
 .viewAll {
   display: inline-block;
-  padding: .4rem .7rem;
+  padding: 0.4rem 0.7rem;
   border: 1px solid var(--border-color);
   background: #ffffff;
   border-radius: 8px;
   font-weight: 600;
   text-decoration: none;
   color: #343a40;
-  transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
 .viewAll:hover {
   background: #f1f3f5;
@@ -64,7 +67,9 @@
   padding: 0.9rem 0;
   border-bottom: 1px solid #dee2e6;
 }
-.songListItem:last-child { border-bottom: none; }
+.songListItem:last-child {
+  border-bottom: none;
+}
 
 .songRank {
   font-size: 1.5rem;
@@ -80,9 +85,21 @@
 }
 
 /* top 1/2/3 */
-.rank1 { background: #fff7e6; border-color: #ffd591; color: #ad6800; }
-.rank2 { background: #f5f7fa; border-color: #d9d9d9; color: #434343; }
-.rank3 { background: #fff2e8; border-color: #ffbb96; color: #873800; }
+.rank1 {
+  background: #fff7e6;
+  border-color: #ffd591;
+  color: #ad6800;
+}
+.rank2 {
+  background: #f5f7fa;
+  border-color: #d9d9d9;
+  color: #434343;
+}
+.rank3 {
+  background: #fff2e8;
+  border-color: #ffbb96;
+  color: #873800;
+}
 
 .songInfo {
   display: flex;
@@ -94,18 +111,20 @@
   font-weight: 700;
   color: #212529;
   text-decoration: none;
-  transition: color .2s;
+  transition: color 0.2s;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.songTitle a:hover { color: #005A9E; }
+.songTitle a:hover {
+  color: #005a9e;
+}
 
 .displayName {
-  font-size: .9rem;
+  font-size: 0.9rem;
   color: #6c757d;
-  margin-top: .2rem;
+  margin-top: 0.2rem;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
@@ -114,12 +133,12 @@
 
 /* ===== Metric (số + pill '7 ngày') ===== */
 .metric {
-  display: inline-flex;           /* xếp số + pill ngang hàng */
+  display: inline-flex; /* xếp số + pill ngang hàng */
   align-items: center;
-  gap: .35rem;
+  gap: 0.35rem;
   font-variant-numeric: tabular-nums;
   color: #6c757d;
-  font-size: .95rem;
+  font-size: 0.95rem;
 }
 .metricNumber {
   min-width: 2ch;
@@ -128,17 +147,17 @@
 /* >>> thay đổi theo yêu cầu: bo góc 4px (không phải viên thuốc) */
 .metricHint {
   padding: 2px 6px;
-  font-size: .75rem;
+  font-size: 0.75rem;
   color: #495057;
   border: 1px solid var(--border-color);
-  border-radius: 4px;             /* <<< CHỈNH 999px -> 4px */
+  border-radius: 4px; /* <<< CHỈNH 999px -> 4px */
   background: #fff;
 }
 
 /* ===== GRID ===== */
 .grid {
   display: grid;
-  grid-template-columns: repeat( auto-fill, minmax(220px, 1fr) );
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
   list-style: none;
   padding: 0;
@@ -150,13 +169,16 @@
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .gridItem:hover {
   transform: translateY(-2px);
   border-color: var(--primary-color);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* .rankBadge {
@@ -174,41 +196,63 @@
   color: #6c757d;
 } */
 
-.gridItem .songTitle a { font-size: 1rem; }
-.gridItem .displayName { margin-top: .25rem; }
+.gridItem .songTitle a {
+  font-size: 1rem;
+}
+.gridItem .displayName {
+  margin-top: 0.25rem;
+}
 .gridItem .metric {
-  margin-top: .5rem;
-  font-size: .9rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
 }
 
 /* ===== Empty ===== */
-.emptyWrap { margin-top: .5rem; }
+.emptyWrap {
+  margin-top: 0.5rem;
+}
 .emptyState {
   text-align: center;
   background: var(--container-color);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-.emptyState h3 { font-size: 1.25rem; margin-bottom: .5rem; }
-.emptyState p { color: var(--text-secondary); margin-bottom: 1rem; }
+.emptyState h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.emptyState p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
 .linkButton {
   display: inline-block;
   background: var(--primary-color);
   color: #fff;
-  padding: .6rem 1rem;
+  padding: 0.6rem 1rem;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  transition: background-color .2s ease, transform .2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
-.linkButton:hover { background: #004a80; transform: translateY(-1px); }
+.linkButton:hover {
+  background: #004a80;
+  transform: translateY(-1px);
+}
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .section { padding: 2rem 1rem; }
-  .sectionTitle { font-size: 1.5rem; }
-  .songListItem { grid-template-columns: 52px 1fr auto; }
+  .section {
+    padding: 2rem 1rem;
+  }
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+  .songListItem {
+    grid-template-columns: 52px 1fr auto;
+  }
 }
-

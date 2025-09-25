@@ -38,16 +38,25 @@ export function parseChordPro(src = "") {
       else if (k === "key") meta.key = v;
       else if (k === "slug") meta.slug = v;
       else if (k === "artists")
-        meta.artists = v.split(",").map((s) => s.trim()).filter(Boolean);
+        meta.artists = v
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
       else if (k === "genres")
-        meta.genres = v.split(",").map((s) => s.trim()).filter(Boolean);
+        meta.genres = v
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
 
       continue; // bỏ dòng directive khỏi body
     }
     bodyLines.push(line);
   }
 
-  const body = bodyLines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  const body = bodyLines
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 
   return { meta, body };
 }

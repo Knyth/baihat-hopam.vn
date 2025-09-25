@@ -1,4 +1,4 @@
-﻿{
+{
   // Luôn dùng LF khi lưu file
   "files.eol": "\n",
 
@@ -14,5 +14,10 @@
   "files.trimTrailingWhitespace": true,
 
   // Giữ newline cuối file theo .editorconfig
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+
+  // Để “khóa form” toàn repo cho đẹp đồng nhất
+
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

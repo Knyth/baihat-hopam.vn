@@ -2,9 +2,9 @@
 
 // ✅ NOTE: Removed "use client" so this is a Server Component.
 // No client-only APIs are used; this avoids hydration flashes.
-import Link from 'next/link';
-import Container from '@/components/layout/Container';
-import styles from './HeroSection.module.css';
+import Link from "next/link";
+import Container from "@/components/layout/Container";
+import styles from "./HeroSection.module.css";
 
 /**
  * Optional background image:
@@ -29,8 +29,8 @@ export default function HeroSection() {
           </h1>
 
           <p className={styles.heroSubtitle}>
-            Tìm kiếm, tùy chỉnh tông, và tải về hàng ngàn bài hát
-            một cách dễ dàng và hoàn toàn miễn phí.
+            Tìm kiếm, tùy chỉnh tông, và tải về hàng ngàn bài hát một cách dễ dàng và hoàn toàn miễn
+            phí.
           </p>
 
           <Link href="/songs" className={styles.heroCtaButton}>

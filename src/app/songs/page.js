@@ -117,9 +117,7 @@ export default async function SongsPage({ searchParams }) {
   return (
     <>
       {/* JSON-LD chỉ render khi trending (không chạm tới layout/UI) */}
-      {sort === "trending" && (
-        <TrendingJsonLd items={jsonLdItems} baseUrl={SITE_URL} days={days} />
-      )}
+      {sort === "trending" && <TrendingJsonLd items={jsonLdItems} baseUrl={SITE_URL} days={days} />}
 
       {/* UI danh sách giữ nguyên */}
       <SongListContainer genres={genres} />

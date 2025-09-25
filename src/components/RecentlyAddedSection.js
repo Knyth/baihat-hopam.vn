@@ -13,16 +13,12 @@ import SongCard from "./SongCard";
  * - Fallback Grid khi ít bài, Carousel khi nhiều bài
  * - Có "Xem tất cả" dẫn tới /songs?sort=new
  */
-export default function RecentlyAddedSection({
-  songs,
-  title = "Mới Cập Nhật",
-  isLoading = false,
-}) {
+export default function RecentlyAddedSection({ songs, title = "Mới Cập Nhật", isLoading = false }) {
   const loading = isLoading || songs === "loading";
   const list = Array.isArray(songs) ? songs : [];
 
-  const fewItems = list.length <= 4;    // <=4: hiển thị dạng grid gọn
-  const showArrows = !fewItems;         // chỉ hiện mũi tên khi có thể cuộn
+  const fewItems = list.length <= 4; // <=4: hiển thị dạng grid gọn
+  const showArrows = !fewItems; // chỉ hiện mũi tên khi có thể cuộn
 
   const scrollRef = useRef(null);
   const [canLeft, setCanLeft] = useState(false);
@@ -51,8 +47,10 @@ export default function RecentlyAddedSection({
   }, [fewItems, updateNavState]);
 
   const scrollByAmount = useMemo(() => 3 * 280, []);
-  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -scrollByAmount, behavior: "smooth" });
-  const scrollRight = () => scrollRef.current?.scrollBy({ left: scrollByAmount, behavior: "smooth" });
+  const scrollLeft = () =>
+    scrollRef.current?.scrollBy({ left: -scrollByAmount, behavior: "smooth" });
+  const scrollRight = () =>
+    scrollRef.current?.scrollBy({ left: scrollByAmount, behavior: "smooth" });
 
   const skeletons = useMemo(() => new Array(fewItems ? 4 : 8).fill(0), [fewItems]);
 
@@ -60,11 +58,15 @@ export default function RecentlyAddedSection({
     <section className={styles.section} aria-labelledby="recently-added-title">
       <div className={styles.container}>
         <div className={styles.headerRow}>
-          <h2 id="recently-added-title" className={styles.sectionTitle}>{title}</h2>
+          <h2 id="recently-added-title" className={styles.sectionTitle}>
+            {title}
+          </h2>
 
           <div className={styles.headerActions}>
             {list.length > 0 && (
-              <Link href="/songs?sort=new" className={styles.viewAll}>Xem tất cả</Link>
+              <Link href="/songs?sort=new" className={styles.viewAll}>
+                Xem tất cả
+              </Link>
             )}
             {showArrows && (
               <div className={styles.navGroup} aria-hidden={!showArrows}>
@@ -91,7 +93,10 @@ export default function RecentlyAddedSection({
 
         {/* CONTENT */}
         {loading && (
-          <div className={fewItems ? styles.grid : styles.carousel} ref={!fewItems ? scrollRef : undefined}>
+          <div
+            className={fewItems ? styles.grid : styles.carousel}
+            ref={!fewItems ? scrollRef : undefined}
+          >
             <div className={fewItems ? styles.gridInner : styles.track}>
               {skeletons.map((_, i) => (
                 <div key={`sk-${i}`} className={styles.skeletonCard} aria-hidden="true">
@@ -103,8 +108,9 @@ export default function RecentlyAddedSection({
           </div>
         )}
 
-        {!loading && list.length > 0 && (
-          fewItems ? (
+        {!loading &&
+          list.length > 0 &&
+          (fewItems ? (
             <div className={styles.grid}>
               <div className={styles.gridInner}>
                 {list.map((song) => (
@@ -124,8 +130,7 @@ export default function RecentlyAddedSection({
                 ))}
               </div>
             </div>
-          )
-        )}
+          ))}
 
         {!loading && list.length === 0 && (
           <div className={styles.emptyWrap}>

@@ -98,7 +98,6 @@ export default async function HomePage() {
 
       {/* ✅ CTA đăng ký — đặt ngay trên footer */}
       <SignUpCtaSection />
-
     </main>
   );
 }

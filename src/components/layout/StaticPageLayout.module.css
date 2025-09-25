@@ -12,7 +12,7 @@
   padding: 3rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .title {
@@ -32,15 +32,18 @@
 
   font-size: 1.1rem;
   /* NÂNG CẤP 3: Tăng line-height để thoáng hơn */
-  line-height: 1.9; 
+  line-height: 1.9;
   color: var(--text-main);
 }
 
-.body p, .body ul, .body ol {
+.body p,
+.body ul,
+.body ol {
   margin-bottom: 1.5rem;
 }
 
-.body ul, .body ol {
+.body ul,
+.body ol {
   padding-left: 2rem;
 }
 
@@ -55,18 +58,18 @@
 }
 
 .body h2 {
-    font-size: 1.8rem;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    font-family: var(--font-ui);
-    /* NÂNG CẤP 1: Căn chỉnh để icon hiển thị đẹp hơn */
-    display: flex;
-    align-items: center;
+  font-size: 1.8rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-ui);
+  /* NÂNG CẤP 1: Căn chỉnh để icon hiển thị đẹp hơn */
+  display: flex;
+  align-items: center;
 }
 
 /* NÂNG CẤP 1: Thêm Icon vào trước mỗi thẻ h2 */
 .body h2::before {
-  content: '';
+  content: "";
   display: inline-block;
   width: 24px;
   height: 24px;

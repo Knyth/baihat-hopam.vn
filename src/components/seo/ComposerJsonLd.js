@@ -8,7 +8,7 @@ export default function ComposerJsonLd({ composer, songs, baseUrl }) {
   const composerUrl = `${baseUrl}/composers/${composer.slug}`;
 
   const itemList = (songs || []).map((s, i) => ({
-    '@type': 'ListItem',
+    "@type": "ListItem",
     position: i + 1,
     url: `${baseUrl}/songs/${s.slug}`,
     name: s.title,
@@ -16,16 +16,16 @@ export default function ComposerJsonLd({ composer, songs, baseUrl }) {
 
   const payload = [
     {
-      '@context': 'https://schema.org',
-      '@type': 'Person',
+      "@context": "https://schema.org",
+      "@type": "Person",
       name: composer.name,
       url: composerUrl,
     },
     {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
+      "@context": "https://schema.org",
+      "@type": "ItemList",
       name: `Bài hát của ${composer.name}`,
-      itemListOrder: 'http://schema.org/ItemListOrderDescending',
+      itemListOrder: "http://schema.org/ItemListOrderDescending",
       numberOfItems: itemList.length,
       itemListElement: itemList,
     },

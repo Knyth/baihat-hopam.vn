@@ -5,7 +5,7 @@ export const transposeChord = (chord, amount) => {
   // BƯỚC BẢO VỆ (GUARD CLAUSE):
   // Nếu "chord" không phải là một chuỗi ký tự hợp lệ,
   // hãy trả về ngay lập tức để tránh bị crash.
-  if (!chord || typeof chord !== 'string') {
+  if (!chord || typeof chord !== "string") {
     return chord;
   }
 

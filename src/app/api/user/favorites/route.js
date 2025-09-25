@@ -35,9 +35,7 @@ export async function GET() {
       take: 100,
     });
 
-    const data = favorites
-      .map((f) => f.song)
-      .filter(Boolean);
+    const data = favorites.map((f) => f.song).filter(Boolean);
 
     return NextResponse.json(data);
   } catch (err) {

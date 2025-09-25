@@ -4,10 +4,7 @@ import { transposeChord } from "@/utils/music";
 const CHORD_IN_BRACKETS = /\[([A-G](?:#|b)?[^\]\s]*)\]/g;
 
 export function normalizeNewlines(text = "") {
-  return (text || "")
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n")
-    .replace(/\\n/g, "\n");
+  return (text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/\\n/g, "\n");
 }
 
 export function transposeChordedText(text = "", steps = 0) {

@@ -5,11 +5,10 @@
 // để Next.js có thể tạo API endpoints cho việc đăng nhập, đăng xuất, etc.
 // export { GET, POST } from "@/lib/auth";
 
-
 // src/app/api/auth/[...nextauth]/route.js
 
 // Import object 'handlers' từ nhà máy auth.js
-import { handlers } from "@/lib/auth"; 
+import { handlers } from "@/lib/auth";
 
 // Lấy ra GET và POST từ object handlers
 export const { GET, POST } = handlers;

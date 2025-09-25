@@ -1,31 +1,31 @@
 // src/app/settings/SettingsClient.js
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
-import styles from './page.module.css';
-import { updateProfile, changePassword } from './actions';
+import { useState } from "react";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import styles from "./page.module.css";
+import { updateProfile, changePassword } from "./actions";
 
 function SubmitBtn({ children, className }) {
   const { pending } = useFormStatus();
   return (
     <button type="submit" className={className} disabled={pending}>
-      {pending ? 'Đang xử lý…' : children}
+      {pending ? "Đang xử lý…" : children}
     </button>
   );
 }
 
 export default function SettingsClient({ user }) {
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState("profile");
 
   const [profileState, profileAction] = useActionState(updateProfile, {
     ok: null,
-    message: '',
+    message: "",
   });
   const [pwdState, pwdAction] = useActionState(changePassword, {
     ok: null,
-    message: '',
+    message: "",
   });
 
   return (
@@ -37,8 +37,8 @@ export default function SettingsClient({ user }) {
           <li>
             <button
               type="button"
-              className={`${styles.navItem} ${activeTab === 'profile' ? styles.menuActive : ''}`}
-              onClick={() => setActiveTab('profile')}
+              className={`${styles.navItem} ${activeTab === "profile" ? styles.menuActive : ""}`}
+              onClick={() => setActiveTab("profile")}
             >
               Thông tin cá nhân
             </button>
@@ -46,8 +46,8 @@ export default function SettingsClient({ user }) {
           <li>
             <button
               type="button"
-              className={`${styles.navItem} ${activeTab === 'password' ? styles.menuActive : ''}`}
-              onClick={() => setActiveTab('password')}
+              className={`${styles.navItem} ${activeTab === "password" ? styles.menuActive : ""}`}
+              onClick={() => setActiveTab("password")}
             >
               Đổi mật khẩu
             </button>
@@ -58,32 +58,38 @@ export default function SettingsClient({ user }) {
       {/* ===== Content (không lặp tiêu đề ở cột phải) ===== */}
       <main className={styles.content}>
         {/* ---- TAB: PROFILE ---- */}
-        {activeTab === 'profile' && (
+        {activeTab === "profile" && (
           <div className={styles.card}>
             <div className={styles.cardBody}>
               {profileState.message ? (
-                <div className={`${styles.alert} ${profileState.ok ? styles.success : styles.error}`}>
+                <div
+                  className={`${styles.alert} ${profileState.ok ? styles.success : styles.error}`}
+                >
                   {profileState.message}
                 </div>
               ) : null}
 
               <form action={profileAction} className={styles.form}>
                 <div className={styles.inputGrp}>
-                  <label className={styles.label} htmlFor="displayName">Tên hiển thị</label>
+                  <label className={styles.label} htmlFor="displayName">
+                    Tên hiển thị
+                  </label>
                   <input
                     id="displayName"
                     name="displayName"
                     className={styles.input}
-                    defaultValue={user.name || ''}
+                    defaultValue={user.name || ""}
                   />
                 </div>
 
                 <div className={styles.inputGrp}>
-                  <label className={styles.label} htmlFor="email">Email</label>
+                  <label className={styles.label} htmlFor="email">
+                    Email
+                  </label>
                   <input
                     id="email"
                     className={styles.input}
-                    defaultValue={user.email || ''}
+                    defaultValue={user.email || ""}
                     disabled
                     readOnly
                   />
@@ -97,7 +103,7 @@ export default function SettingsClient({ user }) {
         )}
 
         {/* ---- TAB: PASSWORD (❌ không render tiêu đề “Đổi mật khẩu” ở cột phải) ---- */}
-        {activeTab === 'password' && (
+        {activeTab === "password" && (
           <div className={styles.card}>
             <div className={styles.cardBody}>
               {pwdState.message ? (
@@ -108,17 +114,23 @@ export default function SettingsClient({ user }) {
 
               <form action={pwdAction} className={styles.form}>
                 <div className={styles.inputGrp}>
-                  <label className={styles.label} htmlFor="current">Mật khẩu hiện tại</label>
+                  <label className={styles.label} htmlFor="current">
+                    Mật khẩu hiện tại
+                  </label>
                   <input id="current" name="current" type="password" className={styles.input} />
                 </div>
 
                 <div className={styles.inputGrp}>
-                  <label className={styles.label} htmlFor="next">Mật khẩu mới</label>
+                  <label className={styles.label} htmlFor="next">
+                    Mật khẩu mới
+                  </label>
                   <input id="next" name="next" type="password" className={styles.input} />
                 </div>
 
                 <div className={styles.inputGrp}>
-                  <label className={styles.label} htmlFor="confirm">Xác nhận mật khẩu mới</label>
+                  <label className={styles.label} htmlFor="confirm">
+                    Xác nhận mật khẩu mới
+                  </label>
                   <input id="confirm" name="confirm" type="password" className={styles.input} />
                 </div>
 

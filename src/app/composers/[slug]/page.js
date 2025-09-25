@@ -82,9 +82,7 @@ async function findComposerBySlugSafe(slug) {
   // b) Tìm theo tên chuẩn hoá
   const target = slug.replace(/-/g, " ");
   const normTarget = normalizeName(target);
-  const byName = light.find(
-    (c) => normalizeName(c.name) === normTarget || toSlug(c.name) === slug
-  );
+  const byName = light.find((c) => normalizeName(c.name) === normTarget || toSlug(c.name) === slug);
   if (byName) {
     const full = await prisma.composer.findUnique({
       where: { slug: byName.slug },
@@ -122,11 +120,7 @@ export default async function ComposerPage({ params }) {
         <section className={styles.hero}>
           {composer.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={composer.imageUrl}
-              alt={composer.name}
-              className={styles.avatar}
-            />
+            <img src={composer.imageUrl} alt={composer.name} className={styles.avatar} />
           ) : (
             <div className={styles.avatarPlaceholder} aria-hidden />
           )}
@@ -135,16 +129,12 @@ export default async function ComposerPage({ params }) {
             <h1 className={styles.pageTitle}>Nhạc sĩ {composer.name}</h1>
 
             {(composer.description || composer.bio) && (
-              <p className={styles.description}>
-                {composer.description || composer.bio}
-              </p>
+              <p className={styles.description}>{composer.description || composer.bio}</p>
             )}
 
             <div className={styles.meta}>
               <span className={styles.badge}>Nhạc sĩ</span>
-              {Array.isArray(composer.songs) && (
-                <span>{composer.songs.length} bài hát</span>
-              )}
+              {Array.isArray(composer.songs) && <span>{composer.songs.length} bài hát</span>}
             </div>
           </div>
         </section>
@@ -163,9 +153,7 @@ export default async function ComposerPage({ params }) {
               ))}
             </ul>
           ) : (
-            <div className={styles.empty}>
-              Chưa có bài hát nào được ghi nhận cho tác giả này.
-            </div>
+            <div className={styles.empty}>Chưa có bài hát nào được ghi nhận cho tác giả này.</div>
           )}
         </section>
       </div>

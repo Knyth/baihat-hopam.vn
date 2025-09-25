@@ -18,9 +18,9 @@ function rankClass(idx) {
 export default function TrendingSection({
   title = "Thịnh hành trong Tuần",
   limit = 8,
-  layout = "list",             // 'list' | 'grid'
+  layout = "list", // 'list' | 'grid'
   viewAllHref = "/songs?sort=trending",
-  showMetric = "views",        // 'views' | null
+  showMetric = "views", // 'views' | null
   days = 7,
 }) {
   const [songs, setSongs] = useState([]);
@@ -35,7 +35,7 @@ export default function TrendingSection({
         setIsLoading(true);
         const res = await fetch(
           `/api/songs/trending?limit=${encodeURIComponent(limit)}&days=${encodeURIComponent(days)}`,
-          { signal: controller.signal }
+          { signal: controller.signal },
         );
         if (!res.ok) throw new Error("Failed to fetch trending");
         const data = await res.json();

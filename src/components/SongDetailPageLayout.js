@@ -6,12 +6,8 @@
 export default function SongDetailPageLayout({ mainContent, sidebarContent }) {
   return (
     <div className="song-detail-container">
-      <main className="song-detail-main">
-        {mainContent}
-      </main>
-      <aside className="song-detail-sidebar">
-        {sidebarContent}
-      </aside>
+      <main className="song-detail-main">{mainContent}</main>
+      <aside className="song-detail-sidebar">{sidebarContent}</aside>
     </div>
   );
 }

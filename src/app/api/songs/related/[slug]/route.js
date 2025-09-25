@@ -3,9 +3,9 @@
 // Ưu tiên cùng composer → nếu thiếu thì bổ sung theo genre → nếu vẫn thiếu thì thêm top views (loại trừ chính nó).
 
 // === CẤU HÌNH RENDER ĐỘNG (nhất quán với các route khác của dự án) ===
-export const dynamicParams = true;       // cho phép tham số động
-export const dynamic = "force-dynamic";  // luôn render động
-export const revalidate = 0;             // không cache
+export const dynamicParams = true; // cho phép tham số động
+export const dynamic = "force-dynamic"; // luôn render động
+export const revalidate = 0; // không cache
 
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";

@@ -1,6 +1,6 @@
 // auth.config.js
 export const authConfig = {
-  pages: { signIn: '/auth' },
+  pages: { signIn: "/auth" },
   providers: [],
   callbacks: {
     // Chúng ta vẫn cần 2 callbacks này để session có id

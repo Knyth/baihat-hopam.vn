@@ -49,7 +49,9 @@ export default function SearchBarClient() {
 
     recogRef.current = recog;
     return () => {
-      try { recog.stop(); } catch {}
+      try {
+        recog.stop();
+      } catch {}
       recogRef.current = null;
     };
   }, [router]);
@@ -80,7 +82,10 @@ export default function SearchBarClient() {
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M12 3a3 3 0 0 0-3 3v5a3 3 0 1 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0"
-            stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
           />
         </svg>
       </button>
@@ -110,7 +115,6 @@ export default function SearchBarClient() {
         suppressHydrationWarning
       />
 
-
       <button
         type="button"
         className={styles.iconBtn}
@@ -120,7 +124,10 @@ export default function SearchBarClient() {
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
-            stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
           />
         </svg>
       </button>

@@ -18,7 +18,7 @@ export default function RelatedSongs({ slug, limit = 8, title = "Có thể bạn
         setLoading(true);
         const res = await fetch(
           `/api/songs/related/${encodeURIComponent(slug)}?limit=${encodeURIComponent(limit)}`,
-          { signal: ctrl.signal }
+          { signal: ctrl.signal },
         );
         if (!res.ok) throw new Error("Bad response");
         const data = await res.json();
@@ -40,8 +40,12 @@ export default function RelatedSongs({ slug, limit = 8, title = "Có thể bạn
   return (
     <section className={styles.section} aria-labelledby="related-songs-title">
       <div className={styles.headerRow}>
-        <h2 id="related-songs-title" className={styles.sectionTitle}>{title}</h2>
-        <Link href="/songs?sort=trending" className={styles.viewAll}>Xem thịnh hành</Link>
+        <h2 id="related-songs-title" className={styles.sectionTitle}>
+          {title}
+        </h2>
+        <Link href="/songs?sort=trending" className={styles.viewAll}>
+          Xem thịnh hành
+        </Link>
       </div>
 
       {loading ? (

@@ -17,7 +17,7 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
   const songSlug = songData?.slug || "";
   const K = {
     font: songSlug ? `bhha.font.${songSlug}` : null,
-    tr:   songSlug ? `bhha.tr.${songSlug}`   : null,
+    tr: songSlug ? `bhha.tr.${songSlug}` : null,
   };
 
   const [transposeAmount, setTransposeAmount] = useState(0);
@@ -55,17 +55,17 @@ export default function SongDisplay({ songData, initialIsFavorited, isLoggedIn }
 
   const displayKey = useMemo(
     () => TT.transposeKey(songData?.originalKey || "C", transposeAmount),
-    [songData?.originalKey, transposeAmount]
+    [songData?.originalKey, transposeAmount],
   );
 
   const normalizedText = useMemo(
     () => TT.normalizeNewlines(songData?.lyricsChords || ""),
-    [songData?.lyricsChords]
+    [songData?.lyricsChords],
   );
 
   const displayedText = useMemo(
     () => TT.transposeChordedText(normalizedText, transposeAmount),
-    [normalizedText, transposeAmount]
+    [normalizedText, transposeAmount],
   );
 
   const parsedLyrics = useMemo(() => {

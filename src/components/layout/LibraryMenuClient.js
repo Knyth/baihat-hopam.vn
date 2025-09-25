@@ -52,17 +52,44 @@ export default function LibraryMenuClient() {
       >
         Thư viện
         <svg className={styles.caret} width="16" height="16" viewBox="0 0 20 20">
-          <path d="M5 7l5 6 5-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path
+            d="M5 7l5 6 5-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </button>
 
       <div className={styles.menuDropdown} role="menu">
         <ul className={styles.dropdownList}>
-          <li><Link href="/genres"    className={styles.dropdownItem}>Thể loại</Link></li>
-          <li><Link href="/melodies"  className={styles.dropdownItem}>Giai điệu</Link></li>
-          <li><Link href="/composers" className={styles.dropdownItem}>Tác giả</Link></li>
-          <li><Link href="/songs"     className={styles.dropdownItem}>Bài hát</Link></li>
-          <li><Link href="/chords"    className={styles.dropdownItem}>Hợp âm</Link></li>
+          <li>
+            <Link href="/genres" className={styles.dropdownItem}>
+              Thể loại
+            </Link>
+          </li>
+          <li>
+            <Link href="/melodies" className={styles.dropdownItem}>
+              Giai điệu
+            </Link>
+          </li>
+          <li>
+            <Link href="/composers" className={styles.dropdownItem}>
+              Tác giả
+            </Link>
+          </li>
+          <li>
+            <Link href="/songs" className={styles.dropdownItem}>
+              Bài hát
+            </Link>
+          </li>
+          <li>
+            <Link href="/chords" className={styles.dropdownItem}>
+              Hợp âm
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

@@ -4,21 +4,21 @@
 // - List mode (mode=list): phân trang { items, hasMore } với ?page=&limit=.
 //   Quy tắc: ưu tiên các bài trong "days" ngày, sau đó đến all-time (views giảm dần).
 
-import prisma from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const limitParam = Number(searchParams.get('limit'));
-    const daysParam  = Number(searchParams.get('days'));
-    const pageParam  = Number(searchParams.get('page'));
-    const mode       = (searchParams.get('mode') || '').toLowerCase();
+    const limitParam = Number(searchParams.get("limit"));
+    const daysParam = Number(searchParams.get("days"));
+    const pageParam = Number(searchParams.get("page"));
+    const mode = (searchParams.get("mode") || "").toLowerCase();
 
-    const take  = Number.isFinite(limitParam) ? Math.min(Math.max(limitParam, 1), 50) : 8;
-    const days  = Number.isFinite(daysParam)  ? Math.min(Math.max(daysParam, 1), 30) : 7;
-    const page  = Number.isFinite(pageParam)  ? Math.max(pageParam, 1) : 1;
+    const take = Number.isFinite(limitParam) ? Math.min(Math.max(limitParam, 1), 50) : 8;
+    const days = Number.isFinite(daysParam) ? Math.min(Math.max(daysParam, 1), 30) : 7;
+    const page = Number.isFinite(pageParam) ? Math.max(pageParam, 1) : 1;
 
     const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
@@ -28,11 +28,11 @@ export async function GET(request) {
       title: true,
       views: true,
       composer: { select: { name: true } },
-      artists:  { select: { artist: { select: { name: true } } } },
+      artists: { select: { artist: { select: { name: true } } } },
     };
 
     // ---------- LIST MODE: phân trang ----------
-    if (mode === 'list') {
+    if (mode === "list") {
       const skip = (page - 1) * take;
 
       // Đếm toàn bộ + đếm trong cửa sổ
@@ -48,10 +48,10 @@ export async function GET(request) {
           where: { createdAt: { gte: since } },
           select: { id: true },
         });
-        inWindowIds = ids.map(x => x.id);
+        inWindowIds = ids.map((x) => x.id);
       }
 
-      const order = [{ views: 'desc' }, { updatedAt: 'desc' }];
+      const order = [{ views: "desc" }, { updatedAt: "desc" }];
 
       let items = [];
 
@@ -93,13 +93,13 @@ export async function GET(request) {
         items = part2;
       }
 
-      const normalized = items.map(s => ({
+      const normalized = items.map((s) => ({
         id: s.id,
         slug: s.slug,
         title: s.title,
         views: s.views,
         composer: s.composer || null,
-        artists: (s.artists || []).map(a => a.artist),
+        artists: (s.artists || []).map((a) => a.artist),
       }));
 
       const hasMore = skip + take < totalAll;
@@ -110,7 +110,7 @@ export async function GET(request) {
     // 1) Top trong cửa sổ 'days'
     const inWindow = await prisma.song.findMany({
       where: { createdAt: { gte: since } },
-      orderBy: [{ views: 'desc' }, { updatedAt: 'desc' }],
+      orderBy: [{ views: "desc" }, { updatedAt: "desc" }],
       take,
       select: baseSelect,
     });
@@ -120,28 +120,28 @@ export async function GET(request) {
     // 2) Fallback nếu chưa đủ: top all-time (tránh trùng)
     if (songs.length < take) {
       const needed = take - songs.length;
-      const excludeIds = songs.map(s => s.id);
+      const excludeIds = songs.map((s) => s.id);
       const fillers = await prisma.song.findMany({
         where: excludeIds.length ? { id: { notIn: excludeIds } } : {},
-        orderBy: [{ views: 'desc' }, { updatedAt: 'desc' }],
+        orderBy: [{ views: "desc" }, { updatedAt: "desc" }],
         take: needed,
         select: baseSelect,
       });
       songs = [...songs, ...fillers];
     }
 
-    const data = songs.map(s => ({
+    const data = songs.map((s) => ({
       id: s.id,
       slug: s.slug,
       title: s.title,
       views: s.views,
       composer: s.composer || null,
-      artists: (s.artists || []).map(a => a.artist),
+      artists: (s.artists || []).map((a) => a.artist),
     }));
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching trending songs:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Error fetching trending songs:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

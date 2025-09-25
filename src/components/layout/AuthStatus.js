@@ -22,8 +22,7 @@ export default async function AuthStatus() {
   }
 
   // Đã đăng nhập: ẩn/hiện +Tải bài hát theo role
-  const canUpload =
-    user?.role === "contributor" || user?.role === "admin";
+  const canUpload = user?.role === "contributor" || user?.role === "admin";
 
   return (
     <nav className={styles.userArea} aria-label="Tài khoản">
@@ -33,11 +32,7 @@ export default async function AuthStatus() {
         </Link>
       )}
 
-      <UserMenu
-        name={user.name || "Bạn"}
-        email={user.email || ""}
-        image={user.image || ""}
-      />
+      <UserMenu name={user.name || "Bạn"} email={user.email || ""} image={user.image || ""} />
     </nav>
   );
 }

@@ -11,8 +11,7 @@ export default async function Header() {
   const session = await auth();
   const user = session?.user ?? null;
   const canUpload =
-    !!session?.user &&
-    (session.user.role === "contributor" || session.user.role === "admin");
+    !!session?.user && (session.user.role === "contributor" || session.user.role === "admin");
 
   return (
     <header className={styles.header}>
@@ -38,9 +37,15 @@ export default async function Header() {
         {/* RIGHT: Nav + User + Hamburger */}
         <div className={styles.right}>
           <nav className={`${styles.mainNav} ${styles.hideOnMobile}`} aria-label="Điều hướng">
-            <Link href="/songs?sort=new" className={styles.navLink}>Bài hát mới</Link>
-            <Link href="/songs?sort=trending" className={styles.navLink}>Thịnh hành</Link>
-            <Link href="/blog" className={styles.navLink}>Blog</Link>
+            <Link href="/songs?sort=new" className={styles.navLink}>
+              Bài hát mới
+            </Link>
+            <Link href="/songs?sort=trending" className={styles.navLink}>
+              Thịnh hành
+            </Link>
+            <Link href="/blog" className={styles.navLink}>
+              Blog
+            </Link>
           </nav>
 
           {canUpload && (

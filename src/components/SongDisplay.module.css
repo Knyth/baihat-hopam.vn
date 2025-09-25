@@ -1,12 +1,18 @@
 /* src/components/SongDisplay.module.css */
 
 /* Bố cục riêng của trang bài hát (dùng cùng globals.css) */
-.songDetailLayout{ display:flex; gap:2rem; }
-.mainContent{ flex:1; min-width:0; }
+.songDetailLayout {
+  display: flex;
+  gap: 2rem;
+}
+.mainContent {
+  flex: 1;
+  min-width: 0;
+}
 
 /* Sidebar sticky – dùng biến top để không chui vào header */
-.sidebar{
-  width:350px;
+.sidebar {
+  width: 350px;
   position: sticky;
   /* ĐỒNG BỘ với globals: dùng alias --sticky-top đã map sang --control-sticky-top */
   top: var(--sticky-top);
@@ -14,24 +20,38 @@
 }
 
 /* Header & meta */
-.header{ margin-bottom:1rem; }
-.songMeta{ color:#6c757d; }
-.composerLink{ color:#005A9E; text-decoration:none; font-weight:500; margin-left:5px; }
-.composerLink:hover{ text-decoration:underline; }
+.header {
+  margin-bottom: 1rem;
+}
+.songMeta {
+  color: #6c757d;
+}
+.composerLink {
+  color: #005a9e;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 5px;
+}
+.composerLink:hover {
+  text-decoration: underline;
+}
 
 /* Divider ngay dưới header (giống panel-divider) */
-.sectionDivider{
+.sectionDivider {
   border: 0;
   height: 1px;
   background: var(--border-color);
   /* Khoảng cách phía trên nhẹ, phía dưới = verse-gap để match giữa các đoạn */
-  margin: .5rem 0 var(--verse-gap, 1.125rem);
+  margin: 0.5rem 0 var(--verse-gap, 1.125rem);
 }
 
 /* Lyrics */
-.lyricsContainer{ line-height:1.7; white-space:pre-wrap; }
-.lyricsLine{
-  margin: .125rem 0;
+.lyricsContainer {
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.lyricsLine {
+  margin: 0.125rem 0;
   /* Tránh ngắt trang ngay giữa mỗi dòng khi render PDF */
   break-inside: avoid;
   page-break-inside: avoid;
@@ -40,20 +60,27 @@
 /* Khoảng đệm giữa các đoạn (verse).
    Dùng var(--verse-gap) nếu đã được định nghĩa ở globals; 
    nếu chưa có, fallback 1.125rem (matching spacing bạn đang dùng). */
-.lineBreak{
+.lineBreak {
   height: var(--verse-gap, 1.125rem);
 }
 
 /* Chord màu theo biến toàn cục */
-.chord{
+.chord {
   color: var(--chord-color, var(--primary-color));
-  font-weight:700;
-  transition: color .15s ease, text-shadow .15s ease;
+  font-weight: 700;
+  transition:
+    color 0.15s ease,
+    text-shadow 0.15s ease;
 }
-.chord:hover{ text-shadow: 0 0 0.01px currentColor; }
-.chord:active{ text-shadow: none; color:#003e6d; }
-.chord:focus-visible{
-  outline: 2px solid rgba(0,90,158,.35);
+.chord:hover {
+  text-shadow: 0 0 0.01px currentColor;
+}
+.chord:active {
+  text-shadow: none;
+  color: #003e6d;
+}
+.chord:focus-visible {
+  outline: 2px solid rgba(0, 90, 158, 0.35);
   outline-offset: 1px;
   border-radius: 2px;
 }

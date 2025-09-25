@@ -2,9 +2,9 @@
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 # Chỉ cần quyền đọc code
 permissions:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   lint-await-params:
-    runs-on: windows-latest  # chạy trên Windows cho hợp .ps1 CRLF
+    runs-on: windows-latest # chạy trên Windows cho hợp .ps1 CRLF
     steps:
       - name: Checkout
         uses: actions/checkout@v4

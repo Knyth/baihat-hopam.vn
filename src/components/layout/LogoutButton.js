@@ -1,7 +1,7 @@
 // src/components/layout/LogoutButton.js
 
-import { logoutUser } from '@/app/auth/actions';
-import styles from './Header.module.css'; // Tái sử dụng style từ Header
+import { logoutUser } from "@/app/auth/actions";
+import styles from "./Header.module.css"; // Tái sử dụng style từ Header
 
 export default function LogoutButton() {
   return (

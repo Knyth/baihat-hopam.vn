@@ -1,10 +1,11 @@
-
 # baihat-hopam.vn — General Directory Structure (Consolidated)
+
 _Last updated: 2025-09-10_
 
 This file consolidates the current project layout from the latest screenshots (01–07). It merges all parts into a single, tidy tree with brief notes for each key area. **This supersedes any older structures.**
 
 ## Top-Level
+
 ```
 baihat-hopam.vn/
 ├─ .next/                       # Next.js build output (generated)
@@ -121,6 +122,7 @@ baihat-hopam.vn/
 ```
 
 ## Notes & Conventions
+
 - **App Router**: All pages live under `src/app`. Prefer co-located styles (`*.module.css`).
 - **Route Handlers**: REST endpoints under `src/app/api/**/route.js` per feature.
 - **Components**: Split between `components/layout` (site chrome) and feature sections (Homepage + Song Detail components).
@@ -129,6 +131,7 @@ baihat-hopam.vn/
 - **Styles**: Global tokens in `src/app/globals.css` (align with project design system).
 
 ## Quick Map (Features → Files)
+
 - **Homepage**: built in `src/app/page.js` and composed from:
   - `HeroSection`, `RecentlyAddedSection`, `TrendingSection`,
   - `BrowseByGenreSection`, `FeaturedComposersSection`, `SignUpCtaSection`.

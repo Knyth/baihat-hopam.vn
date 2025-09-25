@@ -22,8 +22,7 @@ export function useIsDesktop(breakpoint = 1025) {
 
     // Safari/old Chromium fallback
     const add = mql.addEventListener?.bind(mql) ?? mql.addListener?.bind(mql);
-    const remove =
-      mql.removeEventListener?.bind(mql) ?? mql.removeListener?.bind(mql);
+    const remove = mql.removeEventListener?.bind(mql) ?? mql.removeListener?.bind(mql);
 
     if (add && remove) {
       add("change", update);

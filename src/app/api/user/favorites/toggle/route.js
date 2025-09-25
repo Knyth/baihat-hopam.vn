@@ -17,7 +17,6 @@ export async function POST(request) {
 
     // Trả kết quả về cho client
     return NextResponse.json(result, { status: 200 });
-
   } catch (error) {
     // Xử lý các lỗi có thể xảy ra (ví dụ: người dùng chưa đăng nhập)
     if (error.message.includes("Unauthorized")) {

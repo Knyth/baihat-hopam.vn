@@ -2,18 +2,16 @@
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
   push:
     branches:
-      - chore/**   # cho phép test khi push lên nhánh chore/*
-      - feat/**    # và feat/*
+      - chore/**
+      - feat/**
       - fix/**
 
 jobs:
   lint-and-format:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +28,7 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
         env:
-          # Không cần DB thật để 'generate'; chỉ cần .env hợp lệ
+          # generate chỉ cần biến môi trường hợp lệ, không cần DB thật
           DATABASE_URL: postgresql://user:pass@localhost:5432/db
 
       - name: Prettier check
@@ -38,3 +36,32 @@ jobs:
 
       - name: ESLint
         run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    env:
+      # tắt telemetry cho CI
+      NEXT_TELEMETRY_DISABLED: 1
+      # giá trị placeholder để Next/Auth không phàn nàn khi build
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: dummysecretfordevonly
+      DATABASE_URL: postgresql://user:pass@localhost:5432/db
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install dependencies (clean)
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Next.js build
+        run: npm run build

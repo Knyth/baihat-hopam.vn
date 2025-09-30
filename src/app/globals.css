@@ -1,3 +1,5 @@
+/* src/app/globals.css */
+
 /* === Fonts === */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@600;700&display=swap");
 
@@ -13,18 +15,12 @@
   --text-secondary: #6c757d;
   --border-color: #dee2e6;
 
-  /* Dùng cho bài hát, trang SongDetailPage */
-  --verse-gap: 1.125rem; /* đang dùng */
-
+  --verse-gap: 1.125rem;
   --font-ui: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-content: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
-  /* SPEC: 1140px */
   --page-max: 1140px;
-
-  /* vị trí sticky dưới header */
   --control-sticky-top: 86px;
-  /* alias để các module cũ dùng không lỗi */
   --sticky-top: var(--control-sticky-top);
 
   --toolbar-h: 64px;
@@ -44,6 +40,15 @@ html,
 body {
   max-width: 100vw;
 }
+
+/* Tắt CSS “smooth scroll” toàn cục
+Tránh xung đột với requestAnimationFrame của mình. */
+
+html,
+body {
+  scroll-behavior: auto;
+}
+
 body {
   color: var(--text-main);
   background: var(--background-color);
@@ -70,7 +75,6 @@ a {
   flex: 1;
   min-width: 0;
 }
-
 .song-detail-sidebar {
   width: 350px;
   position: sticky;
@@ -166,7 +170,6 @@ a {
   gap: 0.75rem;
   width: 100%;
 }
-
 .speed-slider {
   -webkit-appearance: none;
   appearance: none;
@@ -191,7 +194,7 @@ a {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Action row */
+/* Action row (desktop sidebar) */
 .action-controls {
   grid-column: 2 / -1;
   display: flex;
@@ -227,7 +230,7 @@ a {
 }
 .lyrics-container .chord:active {
   text-shadow: none;
-  color: #003e6d; /* đậm hơn 20–30% */
+  color: #003e6d;
 }
 .lyrics-container .chord:focus-visible {
   outline: 2px solid rgba(0, 90, 158, 0.35);
@@ -235,7 +238,7 @@ a {
   border-radius: 2px;
 }
 
-/* ——— CHIP MÀU: GLOBAL cho cả desktop & toolbar ——— */
+/* ——— CHIP MÀU (global) ——— */
 .chip-color {
   display: inline-block;
   width: 20px;
@@ -277,24 +280,184 @@ a {
   box-shadow: 0 -8px 24px rgba(16, 24, 40, 0.06);
   display: none;
   z-index: 1000;
+
+  /* Biến khoảng cách */
+  --group-gap: 0.9rem; /* KHUNG–ĐẾN–KHUNG (lớn hơn) */
+  --item-gap: 0.36rem; /* PHẦN TỬ–ĐẾN–PHẦN TỬ (nhỏ hơn, đồng nhất) */
 }
 .control-toolbar .toolbar-inner {
   max-width: var(--page-max);
   margin: 0 auto;
   height: 100%;
+
   display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
-  gap: 0.75rem;
-  padding: 0 0.75rem;
-}
-.control-toolbar .toolbar-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  justify-items: center;
+  column-gap: var(--group-gap);
+  padding: 0 0.5rem;
 }
 
-/* === Responsive === */
+/* Mỗi nhóm dùng grid cột + khoảng cách nội bộ đồng nhất */
+.control-toolbar .toolbar-group {
+  display: grid;
+  grid-auto-flow: column; /* sắp xếp theo cột */
+  align-items: center;
+  justify-content: center;
+  column-gap: var(--item-gap); /* khoảng cách PHẦN TỬ–ĐẾN–PHẦN TỬ */
+  min-width: 0;
+}
+/* Chặn mọi margin lẻ từ component con (range, button bên trong Favorite, v.v.) */
+.control-toolbar .toolbar-group > * {
+  margin: 0 !important;
+}
+
+/* ===== COMPACT items ===== */
+.control-toolbar .control-button,
+.control-toolbar .icon-button {
+  width: 34px;
+  height: 34px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+}
+
+/* Metric cố định width để hai bên gap nhìn đều hẳn */
+.control-toolbar .metric {
+  width: 36px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+.control-toolbar .metric-key {
+  width: 36px;
+} /* ví dụ "Am" / "C#" */
+.control-toolbar .metric-font {
+  width: 32px;
+} /* ví dụ 10–28 */
+
+/* Chips nhỏ hơn, khoảng cách đã do column-gap quản */
+.control-toolbar .chip-color {
+  width: 16px;
+  height: 16px;
+  border-width: 1.5px;
+}
+
+/* Slider ngắn + bỏ margin mặc định để gap chuẩn xác */
+.control-toolbar .speed-slider {
+  width: clamp(96px, 12vw, 132px);
+  max-width: 100%;
+  height: 5px;
+  margin: 0; /* quan trọng để gap đều */
+}
+.control-toolbar .speed-slider::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+}
+
+/* Favorite & Download ép kích thước, bỏ margin */
+.control-toolbar .favorite-compact button,
+.control-toolbar .download-pdf-compact {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0;
+}
+.control-toolbar .download-pdf-compact:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 3 tinh chỉnh nhỏ – chỉ trong toolbar */
+.control-toolbar {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 -12px 32px rgba(16, 24, 40, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(130%) blur(2px);
+}
+.control-toolbar .chip-color:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+.control-toolbar {
+  --item-gap: 0.32rem;
+} /* nén 10% */
+
+/* === Breakpoint tinh gọn thêm (<=420px) === */
+@media (max-width: 420px) {
+  .control-toolbar {
+    --group-gap: 0.7rem;
+    --item-gap: 0.3rem;
+  }
+  .control-toolbar .speed-slider {
+    width: clamp(84px, 18vw, 110px);
+  }
+}
+
+/* ===== Ultra-narrow safeguard (<=520px): tránh tràn & chồng chéo ===== */
+@media (max-width: 520px) {
+  /* switch sang 1 hàng cuộn ngang */
+  .control-toolbar .toolbar-inner {
+    display: flex; /* thay cho grid */
+    overflow-x: auto; /* cho phép cuộn ngang */
+    gap: var(--group-gap); /* khoảng cách giữa 5 nhóm */
+    column-gap: 0 !important;
+    scroll-snap-type: x mandatory; /* cuộn dừng “khớp” từng nhóm */
+    -webkit-overflow-scrolling: touch;
+    padding: 0 6px;
+    max-width: 100%; /* tránh giới hạn page-max gây cảm giác “lệch” */
+  }
+  .control-toolbar .toolbar-group {
+    flex: 0 0 auto; /* không co lại */
+    scroll-snap-align: center;
+    min-width: 0;
+  }
+  /* thu nhỏ 1 nấc để gọn hơn */
+  .control-toolbar .control-button,
+  .control-toolbar .icon-button {
+    width: 32px;
+    height: 32px;
+    font-size: 0.88rem;
+  }
+  .control-toolbar .metric {
+    width: 32px;
+    font-size: 0.92rem;
+  }
+  .control-toolbar .metric-key {
+    width: 32px;
+  }
+  .control-toolbar .metric-font {
+    width: 30px;
+  }
+  .control-toolbar .chip-color {
+    width: 15px;
+    height: 15px;
+  }
+  .control-toolbar .speed-slider {
+    width: clamp(80px, 20vw, 110px);
+    height: 5px;
+    margin: 0 !important;
+  }
+  .control-toolbar .speed-slider::-webkit-slider-thumb {
+    width: 12px;
+    height: 12px;
+  }
+  .control-toolbar .favorite-compact button,
+  .control-toolbar .download-pdf-compact {
+    width: 32px;
+    height: 32px;
+  }
+  /* ẩn thanh scroll ngang (polish) */
+  .control-toolbar .toolbar-inner::-webkit-scrollbar {
+    display: none;
+  }
+  .control-toolbar .toolbar-inner {
+    scrollbar-width: none;
+  }
+}
+
+/* === Responsive: bật toolbar, ẩn sidebar === */
 @media (max-width: 1024px) {
   .song-detail-container {
     flex-direction: column;
@@ -308,25 +471,18 @@ a {
   }
 }
 
-/* NEW */
-
 /* === PDF / Print helpers === */
 @media print {
-  /* Container in có lề trong để tránh cắt sát mép */
   #song-content-to-print {
     padding: 8mm 10mm;
     background: #fff;
   }
-
-  /* Không cho ngắt giữa các dòng lyric */
   .lyricsContainer,
   .lyricsLine {
     break-inside: avoid;
     page-break-inside: avoid;
   }
 }
-
-/* Khi đang export PDF (class do JS gắn tạm) */
 #song-content-to-print.pdf-exporting {
   background: #fff;
 }

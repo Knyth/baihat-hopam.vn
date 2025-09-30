@@ -21,7 +21,7 @@
 
 /* Header & meta */
 .header {
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
 }
 .songMeta {
   color: #6c757d;
@@ -42,7 +42,7 @@
   height: 1px;
   background: var(--border-color);
   /* Khoảng cách phía trên nhẹ, phía dưới = verse-gap để match giữa các đoạn */
-  margin: 0.5rem 0 var(--verse-gap, 1.125rem);
+  margin: 0.5rem 0 var(--verse-gap, 4.125rem);
 }
 
 /* Lyrics */
@@ -58,7 +58,7 @@
 }
 
 /* Khoảng đệm giữa các đoạn (verse).
-   Dùng var(--verse-gap) nếu đã được định nghĩa ở globals; 
+   Dùng var(--verse-gap) nếu đã được định nghĩa ở globals;
    nếu chưa có, fallback 1.125rem (matching spacing bạn đang dùng). */
 .lineBreak {
   height: var(--verse-gap, 1.125rem);
